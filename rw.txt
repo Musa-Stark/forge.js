@@ -1,0 +1,14 @@
+handlers/
+├── auth/          // login, signup, logout, refresh, 2FA...
+├── crud/          // create, read, update, delete, bulk...
+├── middleware/    // auth, rateLimit, cors, validation...
+├── upload/        // file/image uploads
+├── webhook/       // webhook handlers
+├── realtime/      // socket/sse
+├── admin/         // dashboard/admin-only handlers
+├── health/        // health, ping, metrics
+├── system/        // internal framework handlers
+└── utils/
+
+- create a separate func for sending cookie
+sendOTP: true | false
