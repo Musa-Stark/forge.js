@@ -1,0 +1,206 @@
+import mongoose from "mongoose";
+
+import type {
+  BooleanField,
+  DateField,
+  ImageMetaDataField,
+  NumberField,
+  ObjectArrayField,
+  ObjectIdField,
+  StringArrayField,
+  StringField,
+} from "./Mongoose.js";
+
+const { ObjectId } = mongoose.Schema.Types;
+
+const requiredString: StringField = {
+  type: String,
+  required: true,
+  trim: true,
+};
+
+const optionalString: StringField = {
+  type: String,
+  default: "",
+  trim: true,
+};
+
+const requiredUniqueString: StringField = {
+  type: String,
+  required: true,
+  unique: true,
+  trim: true,
+};
+
+const email: StringField = {
+  type: String,
+  required: true,
+  unique: true,
+  lowercase: true,
+  trim: true,
+};
+
+const password: StringField = {
+  type: String,
+  required: true,
+  minlength: 6,
+  select: false,
+};
+
+const requiredNumber: NumberField = {
+  type: Number,
+  required: true,
+};
+
+const optionalNumber: NumberField = {
+  type: Number,
+  default: 0,
+};
+
+const booleanTrue: BooleanField = {
+  type: Boolean,
+  default: true,
+};
+
+const booleanFalse: BooleanField = {
+  type: Boolean,
+  default: false,
+};
+
+const dateNow: DateField = {
+  type: Date,
+  default: Date.now,
+};
+
+const stringArray: StringArrayField = {
+  type: [String],
+  default: [],
+};
+
+const objectArray: ObjectArrayField = {
+  type: [Object],
+  default: [],
+};
+
+const objectId: ObjectIdField = {
+  type: ObjectId,
+};
+
+const requiredObjectId: ObjectIdField = {
+  type: ObjectId,
+  required: true,
+};
+
+const userRef: ObjectIdField = {
+  type: ObjectId,
+  ref: "User",
+};
+
+const requiredUserRef: ObjectIdField = {
+  type: ObjectId,
+  ref: "User",
+  required: true,
+};
+
+const userRefArray = [
+  {
+    type: ObjectId,
+    ref: "User",
+  },
+] as const;
+
+const timestamps = {
+  createdAt: dateNow,
+  updatedAt: dateNow,
+};
+
+const provider: StringField = {
+  type: String,
+  enum: ["local", "google"],
+  default: "local",
+};
+
+const role: StringField = {
+  type: String,
+  required: true,
+  trim: true,
+  enum: ["user"],
+  default: "user",
+};
+
+const otp: StringField = {
+  type: String,
+  required: true,
+};
+
+const otpExpiry: NumberField = {
+  type: Number,
+  required: true,
+};
+
+const otpCount: NumberField = {
+  type: Number,
+  required: true,
+  default: 0,
+  max: [10, "OTP verification limit reached. Please try again later."],
+};
+
+const otpStatus: StringField = {
+  type: String,
+  enum: ["pending", "verified", "blocked"],
+  default: "pending",
+};
+
+const recruitmentStatus: StringField = {
+  type: String,
+  enum: ["new", "reviewing", "accepted", "rejected"],
+  default: "new",
+};
+
+const imageMetaData: ImageMetaDataField = {
+  public_id: {
+    type: String,
+  },
+  secure_url: {
+    type: String,
+  },
+  width: {
+    type: Number,
+  },
+  height: {
+    type: Number,
+  },
+};
+
+const mongooseFields = {
+  requiredString,
+  optionalString,
+  requiredUniqueString,
+  email,
+  password,
+  requiredNumber,
+  optionalNumber,
+  booleanTrue,
+  booleanFalse,
+  dateNow,
+  stringArray,
+  objectArray,
+  objectId,
+  requiredObjectId,
+  userRef,
+  requiredUserRef,
+  userRefArray,
+  timestamps,
+  provider,
+  role,
+  otp,
+  otpExpiry,
+  otpCount,
+  otpStatus,
+  recruitmentStatus,
+  imageMetaData,
+} as const;
+
+export type MongooseField = (typeof mongooseFields)[keyof typeof mongooseFields];
+
+export default mongooseFields;
