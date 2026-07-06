@@ -4,10 +4,14 @@ import StarkNexus, {
   zodFields,
   startServer,
 } from "./dist/js/index.js";
-import { healthCollection, testCollection } from "./collections/index.js";
+import {
+  healthCollection,
+  testCollection,
+  authCollection,
+} from "./collections/index.js";
 
 new StarkNexus({
-  collections: [testCollection, healthCollection],
+  collections: [testCollection, healthCollection, authCollection],
 });
 
 startServer();

@@ -1,5 +1,6 @@
-import crud from "../crud/index.js";
 import health from "../health/index.js";
+import crud from "../crud/index.js";
+import auth from "../auth/index.js";
 import type { Express } from "express";
 import type { ReqType } from "../types/Collection.ts";
 import type { Route } from "../types/Collection.ts";
@@ -7,6 +8,7 @@ import type { Route } from "../types/Collection.ts";
 const reqMap = {
   health,
   crud,
+  auth,
 };
 
 const handleReqType = (

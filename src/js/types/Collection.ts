@@ -13,8 +13,8 @@ export type Handler = healthHandlers;
 export type Middleware = "upload" | "protect";
 export type MiddlewareInput = Middleware | Middleware[];
 
-export type Auth = "admin" | "owner";
-export type AuthInput = false | Auth | Auth[];
+export type AuthRole = "admin" | "owner" | "both";
+export type AuthInput = false | AuthRole | AuthRole[];
 
 export type Upload = false | "image" | "images" | "file" | "files";
 
@@ -26,21 +26,22 @@ export interface Email {
 
 export type RouteMethod = "get" | "post" | "put" | "patch" | "delete";
 export type RoutePath = "/" | "/:id";
+export type AuthMode = "credentials" | "otp";
 
 export interface Route {
   method: RouteMethod;
   path: RoutePath;
   handler: Handler;
   middlewares?: MiddlewareInput;
-  auth?: AuthInput;
+  authRole?: AuthInput;
   upload?: Upload;
   emails?: Email[];
+  mode?: AuthMode;
 }
 
 export type ReqType =
   // | "admin"
-  // | "auth"
-  "crud" | "health";
+  "auth" | "crud" | "health";
 // | "realtime"
 // | "upload";
 

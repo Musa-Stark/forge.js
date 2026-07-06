@@ -10,6 +10,5 @@ handlers/
 ├── system/        // internal framework handlers
 └── utils/
 
-app.get("/health", (req, res) => {
-    res.json({success: true})
-})
+- create a separate func for sending cookie
+sendOTP: true | false
