@@ -5,26 +5,68 @@ import buildSchema from "./schema.builder.js";
 import AppLog from "../utils/AppLog.js";
 import AppError from "../utils/AppError.js";
 
-type ModelDefinition = Record<string, SchemaDefinitionProperty<unknown>>;
+type Primitive = string | number | boolean | Date;
+
+type ModelField = Primitive | SchemaDefinitionProperty<unknown>;
+
+type ModelDefinition = Record<string, ModelField>;
+
+const normalizeDefinition = (
+  definition: ModelDefinition,
+): Record<string, SchemaDefinitionProperty<unknown>> => {
+  return Object.fromEntries(
+    Object.entries(definition).map(([key, value]) => {
+      // Already a schema definition
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        "type" in value
+      ) {
+        return [key, value];
+      }
+
+      switch (typeof value) {
+        case "number":
+          return [key, { type: Number, default: value }];
+
+        case "string":
+          return [key, { type: String, default: value }];
+
+        case "boolean":
+          return [key, { type: Boolean, default: value }];
+
+        default:
+          if (value instanceof Date) {
+            return [key, { type: Date, default: value }];
+          }
+
+          return [key, value];
+      }
+    }),
+  ) as Record<string, SchemaDefinitionProperty<unknown>>;
+};
 
 const createModel = (
   routeName: string,
   name: string,
   definition: ModelDefinition,
 ) => {
-  if (!name)
+  if (!name) {
     throw new AppError({
       message: `modelName for ${routeName} route is required`,
       statusCode: 409,
     });
+  }
 
-  if (!definition)
+  if (!definition) {
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
       statusCode: 409,
     });
+  }
 
-  const schema = buildSchema(definition);
+  const schema = buildSchema(normalizeDefinition(definition));
 
   if (mongoose.modelNames().includes(name)) {
     return mongoose.model(name);

@@ -4,6 +4,7 @@ import type { Express } from "express";
 import type { ReqType } from "../types/Collection.ts";
 import type { Route } from "../types/Collection.ts";
 import type { ValidationsObj } from "../types/ValidationsObj.js";
+import type { OTPSchema } from "../types/MongooseOTPSchemaObj.js";
 
 const reqMap = {
   health,
@@ -16,10 +17,11 @@ const handleReqType = (
   routeName: string,
   routes: Route[],
   modelName: string | undefined,
-  validationsObj?: ValidationsObj
+  validationsObj?: ValidationsObj,
+  mongooseSchemaObj? : OTPSchema,
 ) => {
   // health(app, health, [{...}])
-  reqMap[reqType](app, routeName, routes, modelName, validationsObj);
+  reqMap[reqType](app, routeName, routes, modelName, validationsObj, mongooseSchemaObj);
 };
 
 export default handleReqType;

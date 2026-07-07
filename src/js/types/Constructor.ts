@@ -21,6 +21,7 @@ export interface Constructor {
   port: number;
   rateLimitDuration: string | number;
   rateLimitMsg: string;
+  adminEmailSender?: string;
   resendAPIKey?: string;
   tokenExpiry: string;
 }

@@ -2,6 +2,8 @@ import type { MongooseField } from "../lib/mongoose.fields.ts";
 import type { ZodValidation } from "../lib/zod.fields.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { healthHandlers } from "./healthHandlers.ts";
+import type { RoutePath } from "./Routepath.js";
+import type { OTPSchema } from "./MongooseOTPSchemaObj.js";
 
 export type Handler = healthHandlers | authHandlers;
 
@@ -20,8 +22,8 @@ export interface Email {
 }
 
 export type RouteMethod = "get" | "post" | "put" | "patch" | "delete";
-export type RoutePath = "/" | "/:id";
-export type AuthMode = "credentials" | "otp";
+export type AuthMode = "credentials" | "otp" 
+                        // | "magic-link" | "oauth";
 
 export interface Route {
   method: RouteMethod;
@@ -50,16 +52,11 @@ export interface Collection {
     [key: string]: MongooseField;
   };
 
-  mongooseOTPSchemaObj?: {
-    maxOtpTries: 5 | 7 | 10 | 15 | 20;
-    otpExpiry: "3m" | "5m" | "10m" | "15m" | "20m";
-  } & {
-    [key: string]: MongooseField;
-  };
+  mongooseOTPSchemaObj?: OTPSchema;
 
   validationsObj?: {
     status: "pending" | "accepted" | "rejected";
   } & {
-      [key: string]: ZodValidation;
-    };
+    [key: string]: ZodValidation;
+  };
 }

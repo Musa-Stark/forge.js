@@ -9,7 +9,7 @@ export interface AppResponse {
 
 const appResponse = ({
   res,
-  data,
+  data = undefined,
   message,
   statusCode = 200,
 }: AppResponse): void => {

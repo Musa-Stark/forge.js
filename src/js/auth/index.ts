@@ -3,7 +3,10 @@ import type { Route } from "../types/Collection.ts";
 import { getEnvs } from "../config/envs.js";
 import type { ValidationsObj } from "../types/ValidationsObj.js";
 import asyncHandler from "../utils/AsyncHandler.js";
-import signup from "./signup.js";
+import handlerMap from "../lib/handlerMap.js";
+import type { OTPSchema } from "../types/MongooseOTPSchemaObj.js";
+import registerModel from "../lib/model.registry.js";
+import createModel from "../lib/model.factory.js";
 
 const auth = (
   app: Express,
@@ -11,14 +14,28 @@ const auth = (
   routes: Route[],
   modelName: string | undefined,
   validationsObj?: ValidationsObj,
+  mongooseSchemaObj?: OTPSchema,
 ) => {
   const { apiVersion } = getEnvs();
+
+  // create otp model
+  const otpRoute = routes.some((r) => r.mode === "otp");
+  if (otpRoute) {
+    const otpUserModel = createModel(routeName, "otpUser", {
+      otpCount: { type: Number, default: 0 },
+      OTP: { type: String },
+      otpExpiry: { type: Date },
+      isVerified: { type: Boolean, default: false },
+      ...mongooseSchemaObj,
+    });
+    registerModel["otpUser"] = otpUserModel;
+  }
 
   for (const route of routes) {
     app[route.method](
       // /api/v1/auth/signup
       `/api/v${apiVersion}/${routeName}${route.path}`,
-      asyncHandler(signup(modelName!, validationsObj)),
+      asyncHandler(handlerMap[route.handler](modelName, route, validationsObj)),
     );
   }
 };

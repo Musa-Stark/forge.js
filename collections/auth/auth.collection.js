@@ -16,6 +16,9 @@ const authCollection = collection({
   mongooseOTPSchemaObj: {
     maxOtpTries: 10,
     otpExpiry: "5m",
+    name: mongooseFields.requiredString,
+    email: mongooseFields.email,
+    password: mongooseFields.password,
   },
   routesArray: [
     {
@@ -23,6 +26,12 @@ const authCollection = collection({
       handler: "signup",
       path: "/signup",
       mode: "otp",
+    },
+    {
+      handler: "signup",
+      method: "post",
+      path: "/login",
+      mode: "credentials",
     },
   ],
   validationsObj: {
