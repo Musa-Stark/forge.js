@@ -6,7 +6,32 @@ const authCollection = collection({
   modelName: "User",
   reqType: "auth",
   routeName: "auth",
-  routes: [{ method: "get", path: "/", authRole: "both", mode: "credentials" }],
+
+  mongooseSchemaObj: {
+    name: mongooseFields.requiredString,
+    email: mongooseFields.email,
+    password: mongooseFields.password,
+  },
+
+  mongooseOTPSchemaObj: {
+    maxOtpTries: 10,
+    otpExpiry: "5m",
+  },
+  routesArray: [
+    {
+      method: "post",
+      handler: "signup",
+      path: "/signup",
+      mode: "otp",
+    },
+  ],
+  validationsObj: {
+    signup: {
+      name: zodFields.requiredString,
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+  },
 });
 
 export default authCollection;

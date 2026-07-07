@@ -1,19 +1,14 @@
 import type { MongooseField } from "../lib/mongoose.fields.ts";
 import type { ZodValidation } from "../lib/zod.fields.ts";
+import type { authHandlers } from "./authHandlers.ts";
+import type { healthHandlers } from "./healthHandlers.ts";
 
-type healthHandlers =
-  | "healthGet"
-  | "healthPost"
-  | "healthPut"
-  | "healthPatch"
-  | "healthDelete";
-
-export type Handler = healthHandlers;
+export type Handler = healthHandlers | authHandlers;
 
 export type Middleware = "upload" | "protect";
 export type MiddlewareInput = Middleware | Middleware[];
 
-export type AuthRole = "admin" | "owner" | "both";
+export type AuthRole = "admin" | "owner" | "both" | "public";
 export type AuthInput = false | AuthRole | AuthRole[];
 
 export type Upload = false | "image" | "images" | "file" | "files";
@@ -39,24 +34,32 @@ export interface Route {
   mode?: AuthMode;
 }
 
-export type ReqType =
-  // | "admin"
-  "auth" | "crud" | "health";
+export type ReqType = "auth" | "health";
+// | "admin"
 // | "realtime"
 // | "upload";
 
 export interface Collection {
   routeName: string;
-  modelName: string;
-  routes: Route[];
+  modelName?: string;
+  routesArray: Route[];
   reqType: ReqType;
-  mongooseSchema: {
+  mongooseSchemaObj?: {
+    status: "pending" | "accepted" | "rejected";
+  } & {
     [key: string]: MongooseField;
   };
-  mongooseOTPSchema: {
+
+  mongooseOTPSchemaObj?: {
+    maxOtpTries: 5 | 7 | 10 | 15 | 20;
+    otpExpiry: "3m" | "5m" | "10m" | "15m" | "20m";
+  } & {
     [key: string]: MongooseField;
   };
-  validations: {
-    [key: string]: ZodValidation;
-  };
+
+  validationsObj?: {
+    status: "pending" | "accepted" | "rejected";
+  } & {
+      [key: string]: ZodValidation;
+    };
 }

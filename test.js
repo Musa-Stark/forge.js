@@ -6,12 +6,15 @@ import StarkNexus, {
 } from "./dist/js/index.js";
 import {
   healthCollection,
-  testCollection,
   authCollection,
 } from "./collections/index.js";
 
 new StarkNexus({
-  collections: [testCollection, healthCollection, authCollection],
+  collections: [healthCollection, authCollection],
+  apiVersion: 1,
+  isOffline: process.env.ISOFFLINE,
+  databaseName: process.env.DATABASE_NAME,
+  mongoDBURI: process.env.MONGODB_URI,
 });
 
 startServer();

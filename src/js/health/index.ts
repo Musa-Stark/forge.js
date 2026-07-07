@@ -1,37 +1,22 @@
 import type { Express } from "express";
 import type { Route } from "../types/Collection.ts";
 import { getEnvs } from "../config/envs.js";
-import asyncHandler from "../utils/AsyncHandler.js";
-import {
-  healthGet,
-  healthPost,
-  healthPut,
-  healthPatch,
-  healthDelete,
-} from "./bunch.health.js";
-import AppError from "../utils/AppError.js";
+import handlerMap from "../lib/handlerMap.js";
+import type { ValidationsObj } from "../types/ValidationsObj.js";
 
-const healthMap = {
-  healthGet,
-  healthPost,
-  healthPut,
-  healthPatch,
-  healthDelete,
-};
-
-const health = (app: Express, routeName: string, routes: Route[]) => {
+const health = (
+  app: Express,
+  routeName: string,
+  routes: Route[],
+  modelName: string | undefined,
+  validationsObj?: ValidationsObj | undefined
+) => {
   const { apiVersion } = getEnvs();
 
   for (const route of routes) {
-    if (!healthMap[route.handler])
-      throw new AppError({
-        message: `${route.handler} not available`,
-        statusCode: 409,
-      });
-
     app[route.method](
       `/api/v${apiVersion}/${routeName}`,
-      healthMap[route.handler],
+      handlerMap[route.handler],
     );
   }
 };
