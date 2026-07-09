@@ -29,7 +29,7 @@ const handleCollection = (collections: Collection[]): void => {
       Req.routesArray,
       Req.modelName,
       Req.validationsObj,
-      Req.mongooseOTPSchemaObj,
+      Req.mongooseSchemaObj,
     );
   }
 };

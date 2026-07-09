@@ -7,6 +7,7 @@ import handlerMap from "../lib/handlerMap.js";
 import type { OTPSchema } from "../types/MongooseOTPSchemaObj.js";
 import registerModel from "../lib/model.registry.js";
 import createModel from "../lib/model.factory.js";
+import createOTPModel from "./utils/createOTPModel.js";
 
 const auth = (
   app: Express,
@@ -19,23 +20,19 @@ const auth = (
   const { apiVersion } = getEnvs();
 
   // create otp model
-  const otpRoute = routes.some((r) => r.mode === "otp");
-  if (otpRoute) {
-    const otpUserModel = createModel(routeName, "otpUser", {
-      otpCount: { type: Number, default: 0 },
-      OTP: { type: String },
-      otpExpiry: { type: Date },
-      isVerified: { type: Boolean, default: false },
-      ...mongooseSchemaObj,
-    });
-    registerModel["otpUser"] = otpUserModel;
-  }
+  // const otpRoute = routes.some((r) => r.mode === "otp");
+  // if (otpRoute) {
+  const otpUserModel = createOTPModel(routeName, mongooseSchemaObj!);
+  registerModel["otpUser"] = otpUserModel;
+  // }
 
   for (const route of routes) {
     app[route.method](
       // /api/v1/auth/signup
       `/api/v${apiVersion}/${routeName}${route.path}`,
-      asyncHandler(handlerMap[route.handler](modelName, route, validationsObj)),
+      asyncHandler(
+        handlerMap[route.handler]({ modelName, route, validationsObj }),
+      ),
     );
   }
 };

@@ -2,6 +2,18 @@ import AppError from "./AppError.js";
 import z from "zod";
 
 const validate = (validationSchema: any, body: any) => {
+  if (!validationSchema)
+    throw new AppError({
+      message: "validationSchema is required to validate",
+      statusCode: 409,
+    });
+
+  if (!body)
+    throw new AppError({
+      message: "body is required to validate",
+      statusCode: 409,
+    });
+
   const zodBodyObj = z.object(validationSchema);
 
   const isValid = zodBodyObj.safeParse(body);

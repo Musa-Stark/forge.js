@@ -1,13 +1,10 @@
 import StarkNexus, {
-  collection,
-  mongooseFields,
-  zodFields,
   startServer,
+  generateJWTSecret,
+  generateMasterKey,
 } from "./dist/js/index.js";
-import {
-  healthCollection,
-  authCollection,
-} from "./collections/index.js";
+
+import { healthCollection, authCollection } from "./collections/index.js";
 
 new StarkNexus({
   collections: [healthCollection, authCollection],

@@ -22,8 +22,8 @@ export interface Email {
 }
 
 export type RouteMethod = "get" | "post" | "put" | "patch" | "delete";
-export type AuthMode = "credentials" | "otp" 
-                        // | "magic-link" | "oauth";
+export type AuthMode = "credentials" | "otp";
+// | "magic-link" | "oauth";
 
 export interface Route {
   method: RouteMethod;
@@ -36,6 +36,18 @@ export interface Route {
   mode?: AuthMode;
 }
 
+export type MongooseSchema = {
+  status: "pending" | "accepted" | "rejected";
+} & {
+  [key: string]: MongooseField;
+};
+
+export type ValidationsObj = {
+  status: "pending" | "accepted" | "rejected";
+} & {
+  [key: string]: ZodValidation;
+};
+
 export type ReqType = "auth" | "health";
 // | "admin"
 // | "realtime"
@@ -46,17 +58,7 @@ export interface Collection {
   modelName?: string;
   routesArray: Route[];
   reqType: ReqType;
-  mongooseSchemaObj?: {
-    status: "pending" | "accepted" | "rejected";
-  } & {
-    [key: string]: MongooseField;
-  };
+  mongooseSchemaObj?: MongooseSchema;
 
-  mongooseOTPSchemaObj?: OTPSchema;
-
-  validationsObj?: {
-    status: "pending" | "accepted" | "rejected";
-  } & {
-    [key: string]: ZodValidation;
-  };
+  validationsObj?: ValidationsObj;
 }

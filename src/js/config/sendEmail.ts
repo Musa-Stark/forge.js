@@ -60,6 +60,7 @@ const sendEmail = async ({
   });
 
   if (error) {
+    console.log("Email error: ")
     console.dir(error, { depth: null });
     throw new AppError({ message: error.message, statusCode: 409 });
   }

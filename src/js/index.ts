@@ -23,3 +23,5 @@ export { default as zodFields } from "./lib/zod.fields.js";
 export const collection = (values: Collection): Collection => {
   return values;
 };
+
+export { generateJWTSecret, generateMasterKey } from "./utils/libsodium.js";

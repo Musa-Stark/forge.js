@@ -12,14 +12,6 @@ const authCollection = collection({
     email: mongooseFields.email,
     password: mongooseFields.password,
   },
-
-  mongooseOTPSchemaObj: {
-    maxOtpTries: 10,
-    otpExpiry: "5m",
-    name: mongooseFields.requiredString,
-    email: mongooseFields.email,
-    password: mongooseFields.password,
-  },
   routesArray: [
     {
       method: "post",
@@ -28,10 +20,9 @@ const authCollection = collection({
       mode: "otp",
     },
     {
-      handler: "signup",
       method: "post",
-      path: "/login",
-      mode: "credentials",
+      handler: "verifyOTP",
+      path: "/verify-otp",
     },
   ],
   validationsObj: {
@@ -39,6 +30,10 @@ const authCollection = collection({
       name: zodFields.requiredString,
       email: zodFields.email,
       password: zodFields.password,
+    },
+    verifyOTP: {
+      email: zodFields.email,
+      otp: zodFields.requiredString,
     },
   },
 });

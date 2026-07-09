@@ -23,14 +23,18 @@ const connectDB = async ({
     if (!isOffline && !mongoDBURI)
       throw new Error("You are online! mongoDBURI is required");
 
-    if (!databaseName) throw new Error("databaseName is required");
+    if (!databaseName) databaseName = "default-db";
 
     setTimeout(() => {
       AppLog("loading", "db", "Connecting to mongodb...");
     }, 10);
 
     await mongoose.connect(`${mongoDBURI}/${databaseName}`);
-    AppLog("check", "db", "Connected successfully!");
+    AppLog(
+      "check",
+      "db",
+      `Connected successfully! Database name: ${databaseName}`,
+    );
   } catch (error) {
     AppLog("x", "db", "Error while connecting!");
     AppLog("x", "db", (error as Error).message);
