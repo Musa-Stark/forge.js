@@ -2,8 +2,19 @@ import createModel from "../../lib/model.factory.js";
 import type { OTPSchema } from "../../types/MongooseOTPSchemaObj.js";
 
 const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
+  // Make all fields from the original schema optional
+  const optionalSchema = Object.fromEntries(
+    Object.entries(mongooseSchemaObj).map(([key, value]) => [
+      key,
+      {
+        ...value,
+        required: false,
+      },
+    ])
+  ) as OTPSchema;
+
   return createModel(routeName, "otpUser", {
-    ...mongooseSchemaObj,
+    ...optionalSchema,
 
     otpCount: { type: Number, default: 0 },
     OTP: { type: String },

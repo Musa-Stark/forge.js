@@ -3,7 +3,6 @@ import type { ZodValidation } from "../lib/zod.fields.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { healthHandlers } from "./healthHandlers.ts";
 import type { RoutePath } from "./Routepath.js";
-import type { OTPSchema } from "./MongooseOTPSchemaObj.js";
 
 export type Handler = healthHandlers | authHandlers;
 

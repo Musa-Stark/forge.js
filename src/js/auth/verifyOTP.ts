@@ -5,6 +5,7 @@ import AppError from "../utils/AppError.js";
 import registerModel from "../lib/model.registry.js";
 import { verifyHash } from "../utils/libsodium.js";
 import createUser from "./utils/createUser.js";
+import authenticateUser from "./utils/authenticateUser.js";
 
 const verifyOTP = ({
   modelName,
@@ -14,7 +15,7 @@ const verifyOTP = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
-    const body = validate(validationsObj!.verifyOTP, req.body);
+    const body = validate(validationsObj.verifyOTP, req.body);
     const Model = registerModel["otpUser"];
 
     // if model not created
@@ -62,17 +63,15 @@ const verifyOTP = ({
       });
     }
 
+    await Model.updateOne({ _id: OTPData._id }, { $set: { isVerified: true } });
+
     // if for signup
-    if (OTPData.purpose === "signup") {
-      await Model.updateOne(
-        { _id: OTPData._id },
-        { $set: { isVerified: true } },
-      );
+    if (OTPData?.purpose === "signup") {
       // call create user
       createUser({ body: OTPData, res, modelName });
+    } else if (OTPData?.purpose) {
+      authenticateUser({ body: OTPData, res, modelName });
     }
-
-    await Model.updateOne({ _id: OTPData._id }, { $set: { isVerified: true } });
   };
 };
 

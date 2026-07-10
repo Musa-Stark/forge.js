@@ -17,12 +17,18 @@ const authCollection = collection({
       method: "post",
       handler: "signup",
       path: "/signup",
-      mode: "otp",
+      mode: "credentials",
     },
     {
       method: "post",
       handler: "verifyOTP",
       path: "/verify-otp",
+    },
+    {
+      method: "post",
+      handler: "login",
+      path: "/login",
+      mode: "otp",
     },
   ],
   validationsObj: {
@@ -34,6 +40,10 @@ const authCollection = collection({
     verifyOTP: {
       email: zodFields.email,
       otp: zodFields.requiredString,
+    },
+    login: {
+      email: zodFields.email,
+      password: zodFields.password,
     },
   },
 });

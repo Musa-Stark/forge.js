@@ -1,12 +1,11 @@
-import AppError from "../../utils/AppError.js";
 import registerModel from "../../lib/model.registry.js";
+import AppError from "../../utils/AppError.js";
 import type { Response } from "express";
 import appResponse from "../../utils/response.js";
+import { verifyHash } from "../../utils/libsodium.js";
 import { sanitizeItem } from "../../utils/sanitize.js";
-import mongoose from "mongoose";
-import { hash } from "../../utils/libsodium.js";
 
-const createUser = async ({
+const authenticateUser = async ({
   body,
   modelName,
   res,
@@ -16,10 +15,9 @@ const createUser = async ({
   res: Response;
 }) => {
   const Model = registerModel[modelName];
-  // if model not found
   if (!Model)
     throw new AppError({
-      message: `Model: ${modelName} not found to create user`,
+      message: `Model: ${modelName} not found to find user`,
       statusCode: 404,
     });
 
@@ -31,7 +29,7 @@ const createUser = async ({
       statusCode: 409,
     });
 
-  // if otpUser
+  // if otpUser - mode otp
   const isOTPUser = await OTPModel.findOne({ email: body.email });
   let isVerified = false;
   if (isOTPUser) {
@@ -47,22 +45,31 @@ const createUser = async ({
     }
   }
 
-  if (body instanceof mongoose.Document) {
-    body = body.toObject();
-    delete body._id;
-  } else {
-    body.password = await hash(body.password)
+  // foundUser
+  const foundUser = await Model?.findOne({ email: body.email }).select(
+    "+password",
+  );
+
+  //   user not found
+  if (!foundUser)
+    throw new AppError({ message: "User not found.", statusCode: 404 });
+
+  //   invalid password - not otpuser - mode credentials
+  if (!isOTPUser) {
+    const isValid = await verifyHash(body.password, foundUser.password);
+    if (!isValid)
+      throw new AppError({ message: "Invalid password", statusCode: 409 });
   }
 
-  const newUser = await Model.create(body);
-  if (isVerified) await OTPModel.deleteOne({ _id: isOTPUser._id });
+  //   remove from otpmodel
+  if (isVerified) await OTPModel!.deleteOne({ _id: body._id });
 
   appResponse({
     res,
-    message: "Your account has been created successfully!",
-    statusCode: 201,
-    data: sanitizeItem(newUser.toObject()),
+    message: "Authenticated successfully!",
+    statusCode: 200,
+    data: sanitizeItem(foundUser.toObject()),
   });
 };
 
-export default createUser;
+export default authenticateUser;

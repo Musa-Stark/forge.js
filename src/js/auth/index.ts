@@ -6,7 +6,6 @@ import asyncHandler from "../utils/AsyncHandler.js";
 import handlerMap from "../lib/handlerMap.js";
 import type { OTPSchema } from "../types/MongooseOTPSchemaObj.js";
 import registerModel from "../lib/model.registry.js";
-import createModel from "../lib/model.factory.js";
 import createOTPModel from "./utils/createOTPModel.js";
 
 const auth = (
@@ -19,7 +18,7 @@ const auth = (
 ) => {
   const { apiVersion } = getEnvs();
 
-  // create otp model
+  // === create otp model ===
   // const otpRoute = routes.some((r) => r.mode === "otp");
   // if (otpRoute) {
   const otpUserModel = createOTPModel(routeName, mongooseSchemaObj!);
