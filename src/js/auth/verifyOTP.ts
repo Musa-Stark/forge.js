@@ -37,7 +37,7 @@ const verifyOTP = ({
       });
 
     // if otp try limit reached
-    if (OTPData.otpCount > OTPData.maxOtpTries)
+    if (OTPData.otpCount > OTPData.maxOTPTries)
       throw new AppError({
         message:
           "The maximum number of OTP verification attempts has been exceeded. Please request a new OTP.",

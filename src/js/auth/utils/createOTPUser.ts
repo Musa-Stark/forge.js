@@ -38,7 +38,7 @@ const createOTPUser = async ({
     });
 
   // if login - check password - credentials mode
-  if (purpose && purpose === "login") {
+  if (purpose === "login") {
     const Model = registerModel[modelName];
     if (!Model)
       throw new AppError({

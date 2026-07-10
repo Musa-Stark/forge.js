@@ -32,6 +32,7 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
         "change_phone",
         "delete_account",
         "two_factor_auth",
+        "resend_OTP"
       ],
       required: true,
     },

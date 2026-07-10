@@ -1,5 +1,4 @@
-export type authHandlers = "signup" | "verifyOTP" | "login";
+export type authHandlers = "signup" | "verifyOTP" | "login" | "resendOTP";
 // | "forgotPassword"
 // | "resetPassword"
-// | "resendOTP"
 // | "logout";

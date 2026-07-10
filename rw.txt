@@ -16,3 +16,7 @@ sendOTP: true | false
 signup - CREATE_OTP_USER -> verifyOTP - CREATE_USER - SEND_COOKIE
 login - CREATE_OTP_USER -> verifyOTP - SEND_COOKIE
 forgot-password - CREATE_OTP_USER -> verifyOTP -> reset-password
+
+login:
+    authenticateUser
+    createOTPUser

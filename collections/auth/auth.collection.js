@@ -30,6 +30,11 @@ const authCollection = collection({
       path: "/login",
       mode: "otp",
     },
+    {
+      method: "post",
+      handler: "resendOTP",
+      path: "/resend-otp",
+    },
   ],
   validationsObj: {
     signup: {
@@ -44,6 +49,9 @@ const authCollection = collection({
     login: {
       email: zodFields.email,
       password: zodFields.password,
+    },
+    resendOTP: {
+      email: zodFields.email,
     },
   },
 });
