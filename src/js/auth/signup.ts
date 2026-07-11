@@ -14,11 +14,19 @@ const signup = ({
   modelName: string;
   route: Route;
   routeName: string;
-  validationsObj?: ValidationsObj;
+  validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // validation
-    const body = validate(validationsObj!.signup, req.body);
+    const body = validate(validationsObj.signup, req.body);
+
+    // if no email or password in validation
+    if (!req.body.email || !req.body.password)
+      throw new AppError({
+        message:
+          "collection error: email and password are required to signup in validationsObj",
+        statusCode: 409,
+      });
 
     // if existing user
     const Model = getModel({ modelName, routeName })!;
@@ -27,6 +35,9 @@ const signup = ({
       throw new AppError({
         message: `User with this email already exists`,
         statusCode: 409,
+        data: {
+          nextStep: "login or use another account",
+        },
       });
 
     await modeMap.signup[route.mode!]({

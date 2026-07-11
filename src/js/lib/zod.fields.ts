@@ -1,5 +1,5 @@
 import { z } from "zod";
-import "dotenv/config";
+import otpPurposes from "../utils/otpPurposes.js";
 
 /**
  * =========================
@@ -198,6 +198,8 @@ const object = (shape: Record<string, z.ZodTypeAny>) => {
   return z.object(shape);
 };
 
+const purposeOTP = z.enum(otpPurposes);
+
 /**
  * =========================
  * EXPORT ALL
@@ -226,6 +228,7 @@ export const zodValidations = {
   provider,
   requiredImage,
   object,
+  purposeOTP,
 } as const;
 
 export default zodValidations;

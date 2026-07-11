@@ -12,6 +12,7 @@ import {
   login,
   resendOTP,
   forgotPassword,
+  resetPassword,
 } from "../auth/bunch.auth.js";
 
 const handlerMap: Record<string, any> = {
@@ -25,6 +26,7 @@ const handlerMap: Record<string, any> = {
   login,
   resendOTP,
   forgotPassword,
+  resetPassword,
 };
 
 export default handlerMap;

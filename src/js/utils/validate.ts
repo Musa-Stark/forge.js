@@ -1,5 +1,6 @@
 import AppError from "./AppError.js";
 import z from "zod";
+import { closest, distance } from "fastest-levenshtein";
 
 const validate = (validationSchema: any, body: any) => {
   if (!validationSchema)
@@ -17,6 +18,7 @@ const validate = (validationSchema: any, body: any) => {
   const zodBodyObj = z.object(validationSchema);
 
   const isValid = zodBodyObj.safeParse(body);
+
   if (!isValid.success) {
     const issue = isValid.error.issues?.[0];
 
@@ -26,12 +28,38 @@ const validate = (validationSchema: any, body: any) => {
         return acc ? `${acc}.${String(part)}` : String(part);
       }, "") || "body";
 
+    let message = issue?.message ?? "Invalid input";
+
+    // Improve enum errors with typo suggestions
+    if (issue?.code === "invalid_value" && "values" in issue) {
+      const values = issue.values.map(String);
+
+      // Get the invalid value from the request body
+      const invalidValue = issue.path.reduce<any>(
+        (obj, key) => obj?.[key],
+        body
+      );
+
+      if (typeof invalidValue === "string") {
+        const nearest = closest(invalidValue, values);
+
+        if (distance(invalidValue, nearest) <= 3) {
+          message = `Invalid value ${invalidValue}. Did you mean ${nearest}?`;
+        } else {
+          message = `Expected one of: ${values.join(" | ")}`;
+        }
+      } else {
+        message = `Expected one of: ${values.join(" | ")}`;
+      }
+    }
+
     throw new AppError({
-      message: `${field}: ${issue?.message ?? "Invalid input"}`,
+      message: `${field}: ${message}`,
       statusCode: 409,
     });
   }
 
   return isValid.data;
 };
+
 export default validate;

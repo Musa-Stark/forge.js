@@ -3,6 +3,7 @@ import StarkNexus, {
   generateJWTSecret,
   generateMasterKey,
 } from "./dist/js/index.js";
+import "dotenv/config"
 
 import { healthCollection, authCollection } from "./collections/index.js";
 

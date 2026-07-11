@@ -1,5 +1,6 @@
 import createModel from "../../lib/model.factory.js";
 import type { OTPSchema } from "../../types/MongooseOTPSchemaObj.js";
+import otpPurposes from "../../utils/otpPurposes.js";
 
 const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
   // Make all fields from the original schema optional
@@ -9,8 +10,9 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
       {
         ...value,
         required: false,
+        unique: false,
       },
-    ])
+    ]),
   ) as OTPSchema;
 
   return createModel(routeName, "otpUser", {
@@ -23,17 +25,7 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
     maxOTPTries: { type: Number, default: 10 },
     purpose: {
       type: String,
-      enum: [
-        "signup",
-        "login",
-        "password_reset",
-        "email_verification",
-        "change_email",
-        "change_phone",
-        "delete_account",
-        "two_factor_auth",
-        "resend_OTP"
-      ],
+      enum: otpPurposes,
       required: true,
     },
   });

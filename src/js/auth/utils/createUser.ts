@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import { hash } from "../../utils/libsodium.js";
 import getModel from "./getModel.js";
 import getOTPModel from "./getOTPModel.js";
-import handleIsVerified from "./handleIsVerfieid.js";
+import handleIsVerified from "./handleIsVerified.js";
 
 const createUser = async ({
   body,
@@ -25,7 +25,10 @@ const createUser = async ({
   let isVerified: boolean = false;
   let isOTPUser: any = null;
   if ("isVerified" in body)
-    ({ isVerified, isOTPUser } = await handleIsVerified(body.email as string));
+    ({ isVerified, isOTPUser } = await handleIsVerified({
+      email: body.email as string,
+      purpose: "signup",
+    }));
 
   // delete body._id | hash password
   if (body instanceof mongoose.Document) {
@@ -37,6 +40,7 @@ const createUser = async ({
 
   // new user
   const newUser = await Model.create(body);
+
   // if from otp, remove it
   if (isVerified) await OTPModel.deleteOne({ _id: isOTPUser._id });
 

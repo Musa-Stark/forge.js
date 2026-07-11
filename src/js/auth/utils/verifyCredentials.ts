@@ -2,6 +2,7 @@ import registerModel from "../../lib/model.registry.js";
 import AppError from "../../utils/AppError.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import getModel from "./getModel.js";
+import getUser from "./getUser.js";
 
 const verifyCredentials = async ({
   modelName,
@@ -18,11 +19,13 @@ const verifyCredentials = async ({
       statusCode: 409,
     });
 
-  const Model = getModel({ modelName, routeName });
-
-  const user = await Model.findOne({ email: body.email }).select("+password");
-  if (!user)
-    throw new AppError({ message: "User not found.", statusCode: 404 });
+  // user
+  const user = await getUser({
+    modelName,
+    routeName,
+    email: body.email as string,
+    needPassword: true,
+  });
 
   const isValid = await verifyHash(body.password, user.password);
   if (!isValid)

@@ -3,6 +3,6 @@ export type authHandlers =
   | "verifyOTP"
   | "login"
   | "resendOTP"
-  | "forgotPassword";
-// | "resetPassword"
+  | "forgotPassword"
+  | "resetPassword";
 // | "logout";

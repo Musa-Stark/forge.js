@@ -1,3 +1,5 @@
+=== custom OTP timouts ===
+
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
 ├── crud/          // create, read, update, delete, bulk...
@@ -17,20 +19,6 @@ signup - CREATE_OTP_USER -> verifyOTP - CREATE_USER - SEND_COOKIE
 login - CREATE_OTP_USER -> verifyOTP - SEND_COOKIE
 forgot-password - CREATE_OTP_USER -> verifyOTP -> reset-password
 
-otp model not found ---
-otp request not found ---
-otp limit reached
-otp expired
-otp mismatch
 
-user already exists
-user not found
-
-model not found
-if otp user
-
-if already requested otp
-
-login:
-    otp: send otp -> verify otp => authenticateUser
-    credentials: authenticateUser
+forgotpassword -> get user with email -> send otp to user -> verifyOTP(purpose: forgotpassword) -> reset-password
+reset-password -> check in otpuser with purpose forgotpassword ::otp request not found -> ::verify your email before reseting password -> check the user in real model with this email :: user not found -> update hashed password

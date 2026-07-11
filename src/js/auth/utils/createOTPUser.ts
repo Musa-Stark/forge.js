@@ -30,12 +30,17 @@ const createOTPUser = async ({
     });
 
   // if already requested otp
-  const existing = await OTPModel?.findOne({ email: body.email });
-  if (existing)
-    throw new AppError({
-      message: "You have already requested an OTP",
-      statusCode: 409,
-    });
+  const existingOTPs = await OTPModel?.find({ email: body.email });
+  for (const el of existingOTPs) {
+    if (el.toObject().purpose === purpose)
+      throw new AppError({
+        message: "You have already requested an OTP",
+        statusCode: 409,
+        data: {
+          nextStep: "check your email spam folder or request another OTP",
+        },
+      });
+  }
 
   // if login - mode:otp
   if (purpose === "login")
@@ -44,7 +49,7 @@ const createOTPUser = async ({
   // send otp + handle hashing
   const { OTP, otpExpiry } = await sendOTP(body.email);
   const hashedOTP = await hash(OTP);
-  body.password = await hash(body.password);
+  if (body?.password) body.password = await hash(body.password);
 
   // create otp
   await OTPModel?.create({
@@ -59,6 +64,9 @@ const createOTPUser = async ({
     res,
     message: "OTP sent successfully!",
     statusCode: 200,
+    data: {
+      nextStep: "go to /verify-otp",
+    },
   });
 };
 

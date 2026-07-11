@@ -1,12 +1,12 @@
-import registerModel from "../../lib/model.registry.js";
 import AppError from "../../utils/AppError.js";
 import type { Response } from "express";
 import appResponse from "../../utils/response.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import { sanitizeItem } from "../../utils/sanitize.js";
-import handleIsVerified from "./handleIsVerfieid.js";
+import handleIsVerified from "./handleIsVerified.js";
 import getModel from "./getModel.js";
 import getOTPModel from "./getOTPModel.js";
+import getUser from "./getUser.js";
 
 const authenticateUser = async ({
   body,
@@ -19,35 +19,29 @@ const authenticateUser = async ({
   res: Response;
   routeName: string;
 }) => {
-  // model
-  const Model = getModel({ modelName, routeName })!;
-
+  // otp model
   const OTPModel = getOTPModel();
-  // if otp-model not created
-  if (!OTPModel)
-    throw new AppError({
-      message: "OTP verification service is currently unavailable.",
-      statusCode: 409,
-    });
 
   // handle is verified
   let isVerified: boolean = false;
   let isOTPUser: any = null;
   if ("isVerified" in body)
-    ({ isVerified, isOTPUser } = await handleIsVerified(body.email as string));
+    ({ isVerified, isOTPUser } = await handleIsVerified({
+      email: body.email as string,
+      purpose: "login",
+    }));
 
-  // foundUser
-  const foundUser = await Model?.findOne({ email: body.email }).select(
-    "+password",
-  );
-
-  // user not found
-  if (!foundUser)
-    throw new AppError({ message: "User not found.", statusCode: 404 });
+  // user
+  const user = await getUser({
+    modelName,
+    routeName,
+    email: body.email as string,
+    needPassword: true,
+  });
 
   //   invalid password - not otpuser - mode credentials
   if (!isOTPUser) {
-    const isValid = await verifyHash(body.password, foundUser.password);
+    const isValid = await verifyHash(body.password, user.password);
     if (!isValid)
       throw new AppError({ message: "Invalid password", statusCode: 409 });
   }
@@ -59,7 +53,7 @@ const authenticateUser = async ({
     res,
     message: "Authenticated successfully!",
     statusCode: 200,
-    data: sanitizeItem(foundUser.toObject()),
+    data: sanitizeItem(user.toObject()),
   });
 };
 

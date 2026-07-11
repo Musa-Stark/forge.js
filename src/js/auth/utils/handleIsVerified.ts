@@ -1,8 +1,14 @@
 import AppError from "../../utils/AppError.js";
 import getOTPUser from "./getOTPUser.js";
 
-const handleIsVerified = async (email: string) => {
-  const isOTPUser = await getOTPUser(email);
+const handleIsVerified = async ({
+  email,
+  purpose,
+}: {
+  email: string;
+  purpose: string;
+}) => {
+  const isOTPUser = await getOTPUser({ email, purpose });
 
   let isVerified = false;
   if (isOTPUser) {

@@ -5,8 +5,8 @@ import AppError from "../utils/AppError.js";
 import sendOTP from "./utils/sendOTP.js";
 import { hash } from "../utils/libsodium.js";
 import appResponse from "../utils/response.js";
-import getModel from "./utils/getModel.js";
 import getOTPUser from "./utils/getOTPUser.js";
+import getUser from "./utils/getUser.js";
 
 const resendOTP = ({
   modelName,
@@ -20,15 +20,37 @@ const resendOTP = ({
   return async (req: Request, res: Response) => {
     // validate
     const body = validate(validationsObj.resendOTP, req.body);
-    const Model = getModel({ modelName, routeName });
+
+    // if body.purpose not found
+    if (!req.body.purpose || !req.body.email)
+      throw new AppError({
+        message:
+          "collection error: email and purpose is required to resendOTP in validationsObj",
+        statusCode: 409,
+      });
 
     // if user not found
-    const user = await Model.findOne({ email: body.email });
-    if (!user)
-      throw new AppError({ message: "User not found.", statusCode: 404 });
+    await getUser({
+      modelName,
+      routeName,
+      email: body.email as string,
+    });
 
     // get otpuser
-    const OTPUser = await getOTPUser(body.email as string);
+    const OTPUser = await getOTPUser({
+      email: body.email as string,
+      purpose: body.purpose as string,
+    });
+
+    // if otp already verified
+    if (OTPUser.isVerified) {
+      appResponse({
+        res,
+        message: `${body.purpose}: OTP has already been verified.`,
+        data: undefined,
+      });
+      return;
+    }
 
     // sendOTP
     const { OTP, otpExpiry } = await sendOTP(body.email as string);
@@ -46,6 +68,9 @@ const resendOTP = ({
     appResponse({
       res,
       message: "OTP resent successfully!",
+      data: {
+        nextStep: "go to /verify-otp"
+      },
       statusCode: 200,
     });
   };

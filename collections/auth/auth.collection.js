@@ -28,7 +28,7 @@ const authCollection = collection({
       method: "post",
       handler: "login",
       path: "/login",
-      mode: "otp",
+      mode: "credentials",
     },
     {
       method: "post",
@@ -40,6 +40,11 @@ const authCollection = collection({
       handler: "forgotPassword",
       path: "/forgot-password",
     },
+    {
+      method: "post",
+      handler: "resetPassword",
+      path: "/reset-password",
+    },
   ],
   validationsObj: {
     signup: {
@@ -50,6 +55,7 @@ const authCollection = collection({
     verifyOTP: {
       email: zodFields.email,
       otp: zodFields.requiredString,
+      purpose: zodFields.purposeOTP,
     },
     login: {
       email: zodFields.email,
@@ -57,9 +63,14 @@ const authCollection = collection({
     },
     resendOTP: {
       email: zodFields.email,
+      purpose: zodFields.purposeOTP,
     },
     forgotPassword: {
       email: zodFields.email,
+    },
+    resetPassword: {
+      email: zodFields.email,
+      password: zodFields.password,
     },
   },
 });
