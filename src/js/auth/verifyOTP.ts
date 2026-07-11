@@ -2,28 +2,25 @@ import type { ValidationsObj } from "../types/ValidationsObj.js";
 import type { Request, Response } from "express";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
-import registerModel from "../lib/model.registry.js";
 import { verifyHash } from "../utils/libsodium.js";
 import createUser from "./utils/createUser.js";
 import authenticateUser from "./utils/authenticateUser.js";
+import getOTPModel from "./utils/getOTPModel.js";
 
 const verifyOTP = ({
   modelName,
   validationsObj,
+  routeName,
 }: {
   modelName: string;
   validationsObj: ValidationsObj;
+  routeName: string;
 }) => {
   return async (req: Request, res: Response) => {
     const body = validate(validationsObj.verifyOTP, req.body);
-    const Model = registerModel["otpUser"];
 
-    // if model not created
-    if (!Model)
-      throw new AppError({
-        message: "OTP verification service is currently unavailable.",
-        statusCode: 409,
-      });
+    // Model: otp model
+    const Model = getOTPModel()!;
 
     const OTPData = await Model?.findOne({ email: body.email }).select(
       "+password",
@@ -63,15 +60,22 @@ const verifyOTP = ({
       });
     }
 
+    // update - isVerified: true
     await Model.updateOne({ _id: OTPData._id }, { $set: { isVerified: true } });
 
-    // if for signup
-    if (OTPData?.purpose === "signup") {
-      // call create user
-      createUser({ body: OTPData, res, modelName });
-    } else if (OTPData?.purpose) {
-      authenticateUser({ body: OTPData, res, modelName });
-    }
+    // purpose: func - map
+    const purposeMap = {
+      signup: createUser,
+      login: authenticateUser,
+    };
+
+    // call func via map
+    purposeMap[OTPData.purpose as keyof typeof purposeMap]({
+      body: OTPData,
+      res,
+      routeName,
+      modelName,
+    });
   };
 };
 

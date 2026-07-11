@@ -4,24 +4,25 @@ import type { Response } from "express";
 import appResponse from "../../utils/response.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import { sanitizeItem } from "../../utils/sanitize.js";
+import handleIsVerified from "./handleIsVerfieid.js";
+import getModel from "./getModel.js";
+import getOTPModel from "./getOTPModel.js";
 
 const authenticateUser = async ({
   body,
   modelName,
   res,
+  routeName,
 }: {
   body: any;
   modelName: string;
   res: Response;
+  routeName: string;
 }) => {
-  const Model = registerModel[modelName];
-  if (!Model)
-    throw new AppError({
-      message: `Model: ${modelName} not found to find user`,
-      statusCode: 404,
-    });
+  // model
+  const Model = getModel({ modelName, routeName })!;
 
-  const OTPModel = registerModel["otpUser"];
+  const OTPModel = getOTPModel();
   // if otp-model not created
   if (!OTPModel)
     throw new AppError({
@@ -29,28 +30,18 @@ const authenticateUser = async ({
       statusCode: 409,
     });
 
-  // if otpUser - mode otp
-  const isOTPUser = await OTPModel.findOne({ email: body.email });
-  let isVerified = false;
-  if (isOTPUser) {
-    // if isVerfied
-    if (isOTPUser.isVerified) {
-      isVerified = true;
-    } else {
-      // if not verified
-      throw new AppError({
-        message: "Please verify your email address before creating an account.",
-        statusCode: 409,
-      });
-    }
-  }
+  // handle is verified
+  let isVerified: boolean = false;
+  let isOTPUser: any = null;
+  if ("isVerified" in body)
+    ({ isVerified, isOTPUser } = await handleIsVerified(body.email as string));
 
   // foundUser
   const foundUser = await Model?.findOne({ email: body.email }).select(
     "+password",
   );
 
-  //   user not found
+  // user not found
   if (!foundUser)
     throw new AppError({ message: "User not found.", statusCode: 404 });
 

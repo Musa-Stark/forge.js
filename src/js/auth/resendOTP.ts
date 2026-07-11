@@ -1,52 +1,34 @@
 import type { Request, Response } from "express";
-import type { Route, ValidationsObj } from "../types/Collection.ts";
+import type { ValidationsObj } from "../types/Collection.ts";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import sendOTP from "./utils/sendOTP.js";
-import registerModel from "../lib/model.registry.js";
 import { hash } from "../utils/libsodium.js";
 import appResponse from "../utils/response.js";
+import getModel from "./utils/getModel.js";
+import getOTPUser from "./utils/getOTPUser.js";
 
 const resendOTP = ({
   modelName,
-  route,
+  routeName,
   validationsObj,
 }: {
   modelName: string;
-  route: Route;
+  routeName: string;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
-    if (!modelName)
-      throw new AppError({
-        message: `modelName for ${route} route is required`,
-        statusCode: 404,
-      });
-
     // validate
     const body = validate(validationsObj.resendOTP, req.body);
-    const Model = registerModel[modelName]!;
+    const Model = getModel({ modelName, routeName });
 
     // if user not found
     const user = await Model.findOne({ email: body.email });
     if (!user)
       throw new AppError({ message: "User not found.", statusCode: 404 });
 
-    // if otp model not found
-    const OTPModel = registerModel["otpUser"];
-    if (!OTPModel)
-      throw new AppError({
-        message: "OTP verification service is currently unavailable.",
-        statusCode: 409,
-      });
-
-    // if otp user not found
-    const OTPUser = await OTPModel.findOne({ email: body.email });
-    if (!OTPUser)
-      throw new AppError({
-        message: "No OTP request was found for the provided email address.",
-        statusCode: 404,
-      });
+    // get otpuser
+    const OTPUser = await getOTPUser(body.email as string);
 
     // sendOTP
     const { OTP, otpExpiry } = await sendOTP(body.email as string);

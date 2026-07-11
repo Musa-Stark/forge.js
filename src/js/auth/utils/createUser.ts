@@ -1,62 +1,46 @@
-import AppError from "../../utils/AppError.js";
-import registerModel from "../../lib/model.registry.js";
 import type { Response } from "express";
 import appResponse from "../../utils/response.js";
 import { sanitizeItem } from "../../utils/sanitize.js";
 import mongoose from "mongoose";
 import { hash } from "../../utils/libsodium.js";
+import getModel from "./getModel.js";
+import getOTPModel from "./getOTPModel.js";
+import handleIsVerified from "./handleIsVerfieid.js";
 
 const createUser = async ({
   body,
   modelName,
   res,
+  routeName,
 }: {
   body: any;
   modelName: string;
   res: Response;
+  routeName: string;
 }) => {
-  const Model = registerModel[modelName];
-  // if model not found
-  if (!Model)
-    throw new AppError({
-      message: `Model: ${modelName} not found to create user`,
-      statusCode: 404,
-    });
+  const Model = getModel({ modelName, routeName });
+  const OTPModel = getOTPModel();
 
-  const OTPModel = registerModel["otpUser"];
-  // if otp-model not created
-  if (!OTPModel)
-    throw new AppError({
-      message: "OTP verification service is currently unavailable.",
-      statusCode: 409,
-    });
+  // isVerified - mode:otp
+  let isVerified: boolean = false;
+  let isOTPUser: any = null;
+  if ("isVerified" in body)
+    ({ isVerified, isOTPUser } = await handleIsVerified(body.email as string));
 
-  // if otpUser
-  const isOTPUser = await OTPModel.findOne({ email: body.email });
-  let isVerified = false;
-  if (isOTPUser) {
-    // if isVerfied
-    if (isOTPUser.isVerified) {
-      isVerified = true;
-    } else {
-      // if not verified
-      throw new AppError({
-        message: "Please verify your email address before creating an account.",
-        statusCode: 409,
-      });
-    }
-  }
-
+  // delete body._id | hash password
   if (body instanceof mongoose.Document) {
     body = body.toObject();
     delete body._id;
   } else {
-    body.password = await hash(body.password)
+    body.password = await hash(body.password);
   }
 
+  // new user
   const newUser = await Model.create(body);
+  // if from otp, remove it
   if (isVerified) await OTPModel.deleteOne({ _id: isOTPUser._id });
 
+  // send res
   appResponse({
     res,
     message: "Your account has been created successfully!",

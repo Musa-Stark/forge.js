@@ -30,7 +30,12 @@ const auth = (
       // /api/v1/auth/signup
       `/api/v${apiVersion}/${routeName}${route.path}`,
       asyncHandler(
-        handlerMap[route.handler]({ modelName, route, validationsObj }),
+        handlerMap[route.handler]({
+          modelName,
+          routeName,
+          route,
+          validationsObj,
+        }),
       ),
     );
   }

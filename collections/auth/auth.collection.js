@@ -17,7 +17,7 @@ const authCollection = collection({
       method: "post",
       handler: "signup",
       path: "/signup",
-      mode: "credentials",
+      mode: "otp",
     },
     {
       method: "post",
@@ -35,6 +35,11 @@ const authCollection = collection({
       handler: "resendOTP",
       path: "/resend-otp",
     },
+    {
+      method: "post",
+      handler: "forgotPassword",
+      path: "/forgot-password",
+    },
   ],
   validationsObj: {
     signup: {
@@ -51,6 +56,9 @@ const authCollection = collection({
       password: zodFields.password,
     },
     resendOTP: {
+      email: zodFields.email,
+    },
+    forgotPassword: {
       email: zodFields.email,
     },
   },

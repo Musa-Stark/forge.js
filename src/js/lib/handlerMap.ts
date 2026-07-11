@@ -6,7 +6,13 @@ import {
   healthPut,
 } from "../health/bunch.health.js";
 
-import { signup, verifyOTP, login, resendOTP } from "../auth/bunch.auth.js";
+import {
+  signup,
+  verifyOTP,
+  login,
+  resendOTP,
+  forgotPassword,
+} from "../auth/bunch.auth.js";
 
 const handlerMap: Record<string, any> = {
   healthDelete,
@@ -18,6 +24,7 @@ const handlerMap: Record<string, any> = {
   verifyOTP,
   login,
   resendOTP,
+  forgotPassword,
 };
 
 export default handlerMap;

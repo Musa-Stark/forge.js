@@ -3,29 +3,25 @@ import type { Route, ValidationsObj } from "../types/Collection.ts";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import modeMap from "./utils/modeMap.js";
-import registerModel from "../lib/model.registry.js";
+import getModel from "./utils/getModel.js";
 
 const signup = ({
   modelName,
   route,
+  routeName,
   validationsObj,
 }: {
   modelName: string;
   route: Route;
+  routeName: string;
   validationsObj?: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
-    if (!modelName)
-      throw new AppError({
-        message: `modelName for ${route} route is required`,
-        statusCode: 404,
-      });
-
     // validation
     const body = validate(validationsObj!.signup, req.body);
 
     // if existing user
-    const Model = registerModel[modelName];
+    const Model = getModel({ modelName, routeName })!;
     const existing = await Model?.findOne({ email: body.email });
     if (existing)
       throw new AppError({
@@ -36,6 +32,7 @@ const signup = ({
     await modeMap.signup[route.mode!]({
       body,
       res,
+      routeName,
       modelName,
       purpose: "signup",
     });

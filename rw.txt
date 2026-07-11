@@ -17,6 +17,20 @@ signup - CREATE_OTP_USER -> verifyOTP - CREATE_USER - SEND_COOKIE
 login - CREATE_OTP_USER -> verifyOTP - SEND_COOKIE
 forgot-password - CREATE_OTP_USER -> verifyOTP -> reset-password
 
+otp model not found ---
+otp request not found ---
+otp limit reached
+otp expired
+otp mismatch
+
+user already exists
+user not found
+
+model not found
+if otp user
+
+if already requested otp
+
 login:
-    authenticateUser
-    createOTPUser
+    otp: send otp -> verify otp => authenticateUser
+    credentials: authenticateUser
