@@ -8,10 +8,12 @@ import createModel from "./lib/model.factory.js";
 import registerModel from "./lib/model.registry.js";
 import connectDB from "./lib/db.js";
 import AppLog from "./utils/AppLog.js";
+import cookieParser from "cookie-parser";
 
 // body - middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // handle collection
 const handleCollection = (collections: Collection[]): void => {

@@ -11,14 +11,3 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
-
-- create a separate func for sending cookie
-sendOTP: true | false
-
-signup - CREATE_OTP_USER -> verifyOTP - CREATE_USER - SEND_COOKIE
-login - CREATE_OTP_USER -> verifyOTP - SEND_COOKIE
-forgot-password - CREATE_OTP_USER -> verifyOTP -> reset-password
-
-
-forgotpassword -> get user with email -> send otp to user -> verifyOTP(purpose: forgotpassword) -> reset-password
-reset-password -> check in otpuser with purpose forgotpassword ::otp request not found -> ::verify your email before reseting password -> check the user in real model with this email :: user not found -> update hashed password

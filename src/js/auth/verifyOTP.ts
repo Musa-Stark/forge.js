@@ -1,5 +1,5 @@
-import type { ValidationsObj } from "../types/ValidationsObj.js";
 import type { Request, Response } from "express";
+import type { ValidationsObj } from "../types/Collection.js";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import { verifyHash } from "../utils/libsodium.js";

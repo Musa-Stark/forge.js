@@ -1,4 +1,6 @@
 import type { MongooseField } from "../lib/mongoose.fields.ts";
+import type { OAuthProvider } from "../lib/OAuthProviders.js";
+import type { Role } from "../lib/roles.js";
 import type { ZodValidation } from "../lib/zod.fields.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { healthHandlers } from "./healthHandlers.ts";
@@ -37,13 +39,13 @@ export interface Route {
 
 export type MongooseSchema = {
   status: "pending" | "accepted" | "rejected";
+  provider: OAuthProvider;
+  role: Role;
 } & {
   [key: string]: MongooseField;
 };
 
-export type ValidationsObj = {
-  status: "pending" | "accepted" | "rejected";
-} & {
+export type ValidationsObj = {} & {
   [key: string]: ZodValidation;
 };
 

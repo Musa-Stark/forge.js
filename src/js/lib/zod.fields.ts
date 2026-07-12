@@ -1,5 +1,8 @@
 import { z } from "zod";
 import otpPurposes from "../utils/otpPurposes.js";
+import { OAUTH_PROVIDERS } from "./OAuthProviders.js";
+import { ROLES } from "./roles.js";
+
 
 /**
  * =========================
@@ -168,7 +171,8 @@ export const userRefArray = z.array(objectId).default([]);
  * =========================
  */
 
-export const provider = z.enum(["local", "google"]).default("local");
+export const provider = z.enum(OAUTH_PROVIDERS).default("local");
+export const role = z.enum(ROLES).default("user")
 
 /**
  * =========================
@@ -229,6 +233,7 @@ export const zodValidations = {
   requiredImage,
   object,
   purposeOTP,
+  role
 } as const;
 
 export default zodValidations;

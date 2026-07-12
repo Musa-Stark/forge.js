@@ -3,7 +3,7 @@ import StarkNexus, {
   generateJWTSecret,
   generateMasterKey,
 } from "./dist/js/index.js";
-import "dotenv/config"
+import "dotenv/config";
 
 import { healthCollection, authCollection } from "./collections/index.js";
 
@@ -15,6 +15,8 @@ new StarkNexus({
   mongoDBURI: process.env.MONGODB_URI,
   adminEmailSender: process.env.ADMIN_EMAIL_SENDER,
   resendAPIKey: process.env.RESEND_API_KEY,
+  domain: process.env.DOMAIN,
+  jwtSecret: process.env.JWT_SECRET
 });
 
 startServer();

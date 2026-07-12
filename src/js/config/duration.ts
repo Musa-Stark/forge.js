@@ -18,9 +18,9 @@ export const DURATIONS = {
   "30d": 30 * 24 * 60 * 60 * 1000,
 };
 
-export type Duration = keyof typeof DURATIONS;
+export type DurationType = keyof typeof DURATIONS;
 
-const getDuration = (key: Duration) => {
+const getDuration = (key: DurationType) => {
   if (!DURATIONS[key])
     throw new AppError({ message: "Invalid duration key", statusCode: 409 });
 

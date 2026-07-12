@@ -11,4 +11,4 @@ const getEnvs = (): Constructor => {
   return envs;
 };
 
-export { setEnvs, getEnvs };
+export { setEnvs, getEnvs, envs };

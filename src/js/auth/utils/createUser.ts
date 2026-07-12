@@ -6,6 +6,7 @@ import { hash } from "../../utils/libsodium.js";
 import getModel from "./getModel.js";
 import getOTPModel from "./getOTPModel.js";
 import handleIsVerified from "./handleIsVerified.js";
+import { sendCookie } from "./sendCookie.js";
 
 const createUser = async ({
   body,
@@ -33,9 +34,11 @@ const createUser = async ({
   // delete body._id | hash password
   if (body instanceof mongoose.Document) {
     body = body.toObject();
+    body.role = "user";
     delete body._id;
   } else {
     body.password = await hash(body.password);
+    body.role = "user";
   }
 
   // new user
@@ -43,6 +46,11 @@ const createUser = async ({
 
   // if from otp, remove it
   if (isVerified) await OTPModel.deleteOne({ _id: isOTPUser._id });
+
+  const { _id } = newUser.toObject();
+
+  // send cookied
+  sendCookie({ res, cookieName: "authToken", payload: { sub: _id } });
 
   // send res
   appResponse({

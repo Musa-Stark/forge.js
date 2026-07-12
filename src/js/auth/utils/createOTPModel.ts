@@ -23,6 +23,7 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
     otpExpiry: { type: Date },
     isVerified: { type: Boolean, default: false },
     maxOTPTries: { type: Number, default: 10 },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
     purpose: {
       type: String,
       enum: otpPurposes,

@@ -1,4 +1,5 @@
 import type { Collection } from "./Collection.ts";
+import type { DurationType } from "../config/duration.ts";
 
 export interface Constructor {
   apiVersion: number;
@@ -9,6 +10,7 @@ export interface Constructor {
   cloudinaryFolderName?: string;
   collections?: Collection[];
   databaseName?: string;
+  domain?: string;
   ENV: string;
   frontendURL?: string;
   frontendURLs?: string[];
@@ -23,5 +25,6 @@ export interface Constructor {
   rateLimitMsg: string;
   adminEmailSender?: string;
   resendAPIKey?: string;
-  tokenExpiry: string;
+  tokenExpiry: DurationType;
+  userModelName?: string
 }

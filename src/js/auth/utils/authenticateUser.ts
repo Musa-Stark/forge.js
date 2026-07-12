@@ -4,9 +4,9 @@ import appResponse from "../../utils/response.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import { sanitizeItem } from "../../utils/sanitize.js";
 import handleIsVerified from "./handleIsVerified.js";
-import getModel from "./getModel.js";
 import getOTPModel from "./getOTPModel.js";
 import getUser from "./getUser.js";
+import { sendCookie } from "./sendCookie.js";
 
 const authenticateUser = async ({
   body,
@@ -49,6 +49,12 @@ const authenticateUser = async ({
   //   remove from otpmodel
   if (isVerified) await OTPModel!.deleteOne({ _id: body._id });
 
+  const { _id } = user.toObject();
+
+  // send cookied
+  sendCookie({ res, cookieName: "authToken", payload: { sub: _id } });
+
+  // send response
   appResponse({
     res,
     message: "Authenticated successfully!",

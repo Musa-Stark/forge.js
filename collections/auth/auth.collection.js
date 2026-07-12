@@ -6,11 +6,11 @@ const authCollection = collection({
   modelName: "User",
   reqType: "auth",
   routeName: "auth",
-
   mongooseSchemaObj: {
     name: mongooseFields.requiredString,
     email: mongooseFields.email,
     password: mongooseFields.password,
+    role: mongooseFields.role,
   },
   routesArray: [
     {
@@ -28,7 +28,7 @@ const authCollection = collection({
       method: "post",
       handler: "login",
       path: "/login",
-      mode: "credentials",
+      mode: "otp",
     },
     {
       method: "post",
@@ -45,12 +45,18 @@ const authCollection = collection({
       handler: "resetPassword",
       path: "/reset-password",
     },
+    {
+      method: "get",
+      handler: "logout",
+      path: "/logout",
+    },
   ],
   validationsObj: {
     signup: {
       name: zodFields.requiredString,
       email: zodFields.email,
       password: zodFields.password,
+      provider: zodFields.provider,
     },
     verifyOTP: {
       email: zodFields.email,
