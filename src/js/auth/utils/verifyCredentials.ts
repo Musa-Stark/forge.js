@@ -1,7 +1,7 @@
 import registerModel from "../../lib/model.registry.js";
 import AppError from "../../utils/AppError.js";
 import { verifyHash } from "../../utils/libsodium.js";
-import getModel from "./getModel.js";
+import getModel from "../../utils/getModel.js";
 import getUser from "./getUser.js";
 
 const verifyCredentials = async ({

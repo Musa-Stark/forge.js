@@ -1,4 +1,4 @@
-import getModel from "./getModel.js";
+import getModel from "../../utils/getModel.js";
 import AppError from "../../utils/AppError.js";
 
 const getUser = async ({

@@ -1,9 +1,9 @@
 import type { Response } from "express";
 import appResponse from "../../utils/response.js";
-import { sanitizeItem } from "../../utils/sanitize.js";
+import { sanitizeOne } from "../../utils/sanitize.js";
 import mongoose from "mongoose";
 import { hash } from "../../utils/libsodium.js";
-import getModel from "./getModel.js";
+import getModel from "../../utils/getModel.js";
 import getOTPModel from "./getOTPModel.js";
 import handleIsVerified from "./handleIsVerified.js";
 import { sendCookie } from "./sendCookie.js";
@@ -57,7 +57,7 @@ const createUser = async ({
     res,
     message: "Your account has been created successfully!",
     statusCode: 201,
-    data: sanitizeItem(newUser.toObject()),
+    data: sanitizeOne(newUser.toObject()),
   });
 };
 

@@ -15,7 +15,7 @@ const findUser = async (id: string) => {
 
   const Model = registerModel[userModelName];
 
-  return await Model?.findById(id);
+  return await Model?.findById(id).select("+_id +email +role");
 };
 
 const protect = async (
@@ -56,14 +56,16 @@ const protect = async (
         }),
       );
     }
-
-    req.user = user;
+    req.user = { email: user.email, role: user.role, _id: user._id };
 
     next();
   } catch (err) {
     next(
       new AppError({
         message: "Unauthorized",
+        data: {
+          cause: (err as Error).message
+        },
         statusCode: 401,
       }),
     );

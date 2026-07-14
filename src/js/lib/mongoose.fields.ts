@@ -59,6 +59,10 @@ const optionalNumber: NumberField = {
   default: 0,
 };
 
+const boolean: BooleanField = {
+  type: Boolean,
+};
+
 const booleanTrue: BooleanField = {
   type: Boolean,
   default: true,
@@ -81,7 +85,7 @@ const stringArray: StringArrayField = {
 
 const objectArray: ObjectArrayField = {
   type: [Object],
-  default: [],
+  default: () => [{}],
 };
 
 const objectId: ObjectIdField = {
@@ -110,6 +114,27 @@ const userRefArray = [
     ref: "User",
   },
 ] as const;
+
+/*
+const customRef = (model: string): ObjectIdField => ({
+  type: ObjectId,
+  ref: model,
+});
+
+const customRequiredRef = (model: string): ObjectIdField => ({
+  type: ObjectId,
+  ref: model,
+  required: true,
+});
+
+const customRefArray = (model: string) =>
+  [
+    {
+      type: ObjectId,
+      ref: model,
+    },
+  ] as const;
+*/
 
 const timestamps = {
   createdAt: dateNow,
@@ -162,15 +187,19 @@ const recruitmentStatus: StringField = {
 const imageMetaData: ImageMetaDataField = {
   public_id: {
     type: String,
+    required: true,
   },
   secure_url: {
     type: String,
+    required: true,
   },
   width: {
     type: Number,
+    required: true,
   },
   height: {
     type: Number,
+    required: true,
   },
 };
 
@@ -182,6 +211,7 @@ const mongooseFields = {
   password,
   requiredNumber,
   optionalNumber,
+  boolean,
   booleanTrue,
   booleanFalse,
   dateNow,
@@ -203,6 +233,7 @@ const mongooseFields = {
   imageMetaData,
 } as const;
 
-export type MongooseField = (typeof mongooseFields)[keyof typeof mongooseFields];
+export type MongooseField =
+  (typeof mongooseFields)[keyof typeof mongooseFields];
 
 export default mongooseFields;

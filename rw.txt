@@ -1,4 +1,5 @@
 === custom OTP timouts ===
+requiredStringArray
 
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
@@ -11,3 +12,38 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
+
+crud:
+
+reqType: crud
+route: products
+modelName: Product
+mongooseschema = name, price, category, isAvailable, description (optional), image
+validations = //
+routes:
+    1. method: get, path: /:id, handler: read, authRole: both
+    2. method: get, path: /, handler: readAll
+    3. method: post, path: /, handler: create, authRole: public
+    4. method: patch, path: /:id, handler: update, authRole: both
+    5. method: delete, path: /:id, handler: remove, authRole: admin
+
+
+1: getModel, getItem, sanitizeOne, return it
+2. getModel, getItems, sanitizeOnes, return them
+3. getModel, createItem, sanitizeOne, return it
+4. getModel, getItem, updateWithBody, sanitizeOne, return it
+5. getModel, getItem, deleteIt, sanitizeOne, return it
+
+authrole: -> admin
+    call protect, authroizeAccess(authRole) : boolean
+
+get
+get /:id
+post /
+post /create/bulk
+update /:id
+delete /:id
+delete / removeAll
+
+if ar === admin, allow only admin
+if ar === adminOrOwner, allow both admin and owner

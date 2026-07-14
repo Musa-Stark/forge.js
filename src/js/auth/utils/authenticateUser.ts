@@ -2,7 +2,7 @@ import AppError from "../../utils/AppError.js";
 import type { Response } from "express";
 import appResponse from "../../utils/response.js";
 import { verifyHash } from "../../utils/libsodium.js";
-import { sanitizeItem } from "../../utils/sanitize.js";
+import { sanitizeOne } from "../../utils/sanitize.js";
 import handleIsVerified from "./handleIsVerified.js";
 import getOTPModel from "./getOTPModel.js";
 import getUser from "./getUser.js";
@@ -59,7 +59,7 @@ const authenticateUser = async ({
     res,
     message: "Authenticated successfully!",
     statusCode: 200,
-    data: sanitizeItem(user.toObject()),
+    data: sanitizeOne(user.toObject()),
   });
 };
 

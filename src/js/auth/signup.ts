@@ -3,7 +3,7 @@ import type { Route, ValidationsObj } from "../types/Collection.ts";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import modeMap from "./utils/modeMap.js";
-import getModel from "./utils/getModel.js";
+import getModel from "../utils/getModel.js";
 
 const signup = ({
   modelName,

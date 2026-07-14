@@ -1,3 +1,4 @@
+// health handlers
 import {
   healthDelete,
   healthGet,
@@ -6,6 +7,7 @@ import {
   healthPut,
 } from "../health/bunch.health.js";
 
+// auth handlers
 import {
   signup,
   verifyOTP,
@@ -15,6 +17,17 @@ import {
   resetPassword,
   logout,
 } from "../auth/bunch.auth.js";
+
+// crud handlers
+import {
+  read,
+  create,
+  readAll,
+  createBulk,
+  remove,
+  removeAll,
+  update,
+} from "../crud/bunch.crud.js";
 
 const handlerMap: Record<string, any> = {
   healthDelete,
@@ -29,6 +42,13 @@ const handlerMap: Record<string, any> = {
   forgotPassword,
   resetPassword,
   logout,
+  read,
+  create,
+  readAll,
+  createBulk,
+  remove,
+  removeAll,
+  update,
 };
 
 export default handlerMap;

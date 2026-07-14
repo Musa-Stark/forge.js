@@ -2,7 +2,7 @@ import type { ValidationsObj } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import validate from "../utils/validate.js";
 import type { Request, Response } from "express";
-import getModel from "./utils/getModel.js";
+import getModel from "../utils/getModel.js";
 import createOTPUser from "./utils/createOTPUser.js";
 import getUser from "./utils/getUser.js";
 

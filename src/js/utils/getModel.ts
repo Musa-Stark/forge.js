@@ -1,5 +1,5 @@
-import registerModel from "../../lib/model.registry.js";
-import AppError from "../../utils/AppError.js";
+import registerModel from "../lib/model.registry.js";
+import AppError from "./AppError.js";
 
 const getModel = ({
   modelName,

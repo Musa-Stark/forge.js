@@ -3,7 +3,11 @@ import AppLog from "../utils/AppLog.js";
 
 const connectLocally = async (databaseName = "offline-db-ts") => {
   await mongoose.connect(`mongodb://localhost:27017/${databaseName}`);
-  AppLog("check", "db", `Connected to OFFLINE-DB: '${databaseName}'`);
+  AppLog(
+    "check",
+    "db",
+    `Connected to OFFLINE-DB! Database name: '${databaseName}'`,
+  );
 };
 
 type connectDBParams = {
@@ -33,7 +37,7 @@ const connectDB = async ({
     AppLog(
       "check",
       "db",
-      `Connected successfully! Database name: ${databaseName}`,
+      `Connected successfully! Database name: '${databaseName}'`,
     );
   } catch (error) {
     AppLog("x", "db", "Error while connecting!");

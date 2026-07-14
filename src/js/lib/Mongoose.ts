@@ -39,7 +39,7 @@ export interface StringArrayField {
 
 export interface ObjectArrayField {
   type: [ObjectConstructor];
-  default?: object[];
+  default?: object[] | (() => object[]);
 }
 
 export interface ObjectIdField {

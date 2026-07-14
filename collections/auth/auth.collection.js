@@ -1,6 +1,4 @@
-import { collection } from "../../dist/js/index.js";
-import { mongooseFields } from "../../dist/js/index.js";
-import { zodFields } from "../../dist/js/index.js";
+import { zodFields, collection, mongooseFields } from "../../dist/js/index.js";
 
 const authCollection = collection({
   modelName: "User",
