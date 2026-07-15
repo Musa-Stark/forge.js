@@ -1,3 +1,5 @@
+=== custom OTP timouts ===
+
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
 ├── crud/          // create, read, update, delete, bulk...
@@ -9,6 +11,3 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
-
-- create a separate func for sending cookie
-sendOTP: true | false

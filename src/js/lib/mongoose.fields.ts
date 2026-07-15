@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ROLES, type Role } from "./roles.js";
 
 import type {
   BooleanField,
@@ -10,6 +11,7 @@ import type {
   StringArrayField,
   StringField,
 } from "./Mongoose.js";
+import { OAUTH_PROVIDERS } from "./OAuthProviders.js";
 
 const { ObjectId } = mongoose.Schema.Types;
 
@@ -116,7 +118,7 @@ const timestamps = {
 
 const provider: StringField = {
   type: String,
-  enum: ["local", "google"],
+  enum: OAUTH_PROVIDERS,
   default: "local",
 };
 
@@ -124,7 +126,7 @@ const role: StringField = {
   type: String,
   required: true,
   trim: true,
-  enum: ["user"],
+  enum: ROLES,
   default: "user",
 };
 

@@ -1,21 +1,30 @@
 import type { Collection } from "./Collection.ts";
+import type { DurationType } from "../config/duration.ts";
 
 export interface Constructor {
-  port: number;
-  collections?: Collection[];
   apiVersion: number;
-  jwtSecret?: string;
-  isOffline: boolean;
-  masterKey?: string;
-  ENV: string;
-  tokenExpiry: string;
-  internalRoles?: string[];
-  resendAPIKey?: string;
-  rateLimitDuration: string | number;
-  maxReqLimit: number;
-  rateLimitMsg: string;
+  backendURL: string;
   cloudinaryAPIKey?: string;
-  cloudinaryCloudName?: string;
   cloudinaryAPISecret?: string;
+  cloudinaryCloudName?: string;
   cloudinaryFolderName?: string;
+  collections?: Collection[];
+  databaseName?: string;
+  domain?: string;
+  ENV: string;
+  frontendURL?: string;
+  frontendURLs?: string[];
+  internalRoles?: string[];
+  isOffline: boolean;
+  jwtSecret?: string;
+  masterKey?: string;
+  maxReqLimit: number;
+  mongoDBURI?: string;
+  port: number;
+  rateLimitDuration: string | number;
+  rateLimitMsg: string;
+  adminEmailSender?: string;
+  resendAPIKey?: string;
+  tokenExpiry: DurationType;
+  userModelName?: string
 }

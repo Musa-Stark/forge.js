@@ -6,7 +6,79 @@ const authCollection = collection({
   modelName: "User",
   reqType: "auth",
   routeName: "auth",
-  routes: [{ method: "get", path: "/", authRole: "both", mode: "credentials" }],
+  mongooseSchemaObj: {
+    name: mongooseFields.requiredString,
+    email: mongooseFields.email,
+    password: mongooseFields.password,
+    role: mongooseFields.role,
+  },
+  routesArray: [
+    {
+      method: "post",
+      handler: "signup",
+      path: "/signup",
+      mode: "otp",
+    },
+    {
+      method: "post",
+      handler: "verifyOTP",
+      path: "/verify-otp",
+    },
+    {
+      method: "post",
+      handler: "login",
+      path: "/login",
+      mode: "otp",
+    },
+    {
+      method: "post",
+      handler: "resendOTP",
+      path: "/resend-otp",
+    },
+    {
+      method: "post",
+      handler: "forgotPassword",
+      path: "/forgot-password",
+    },
+    {
+      method: "post",
+      handler: "resetPassword",
+      path: "/reset-password",
+    },
+    {
+      method: "get",
+      handler: "logout",
+      path: "/logout",
+    },
+  ],
+  validationsObj: {
+    signup: {
+      name: zodFields.requiredString,
+      email: zodFields.email,
+      password: zodFields.password,
+      provider: zodFields.provider,
+    },
+    verifyOTP: {
+      email: zodFields.email,
+      otp: zodFields.requiredString,
+      purpose: zodFields.purposeOTP,
+    },
+    login: {
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+    resendOTP: {
+      email: zodFields.email,
+      purpose: zodFields.purposeOTP,
+    },
+    forgotPassword: {
+      email: zodFields.email,
+    },
+    resetPassword: {
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+  },
 });
 
 export default authCollection;

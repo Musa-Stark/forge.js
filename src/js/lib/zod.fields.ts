@@ -1,5 +1,8 @@
 import { z } from "zod";
-import "dotenv/config";
+import otpPurposes from "../utils/otpPurposes.js";
+import { OAUTH_PROVIDERS } from "./OAuthProviders.js";
+import { ROLES } from "./roles.js";
+
 
 /**
  * =========================
@@ -168,7 +171,8 @@ export const userRefArray = z.array(objectId).default([]);
  * =========================
  */
 
-export const provider = z.enum(["local", "google"]).default("local");
+export const provider = z.enum(OAUTH_PROVIDERS).default("local");
+export const role = z.enum(ROLES).default("user")
 
 /**
  * =========================
@@ -198,6 +202,8 @@ const object = (shape: Record<string, z.ZodTypeAny>) => {
   return z.object(shape);
 };
 
+const purposeOTP = z.enum(otpPurposes);
+
 /**
  * =========================
  * EXPORT ALL
@@ -226,6 +232,8 @@ export const zodValidations = {
   provider,
   requiredImage,
   object,
+  purposeOTP,
+  role
 } as const;
 
 export default zodValidations;

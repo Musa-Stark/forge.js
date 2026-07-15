@@ -1,19 +1,17 @@
 import type { MongooseField } from "../lib/mongoose.fields.ts";
+import type { OAuthProvider } from "../lib/OAuthProviders.js";
+import type { Role } from "../lib/roles.js";
 import type { ZodValidation } from "../lib/zod.fields.ts";
+import type { authHandlers } from "./authHandlers.ts";
+import type { healthHandlers } from "./healthHandlers.ts";
+import type { RoutePath } from "./Routepath.js";
 
-type healthHandlers =
-  | "healthGet"
-  | "healthPost"
-  | "healthPut"
-  | "healthPatch"
-  | "healthDelete";
-
-export type Handler = healthHandlers;
+export type Handler = healthHandlers | authHandlers;
 
 export type Middleware = "upload" | "protect";
 export type MiddlewareInput = Middleware | Middleware[];
 
-export type AuthRole = "admin" | "owner" | "both";
+export type AuthRole = "admin" | "owner" | "both" | "public";
 export type AuthInput = false | AuthRole | AuthRole[];
 
 export type Upload = false | "image" | "images" | "file" | "files";
@@ -25,8 +23,8 @@ export interface Email {
 }
 
 export type RouteMethod = "get" | "post" | "put" | "patch" | "delete";
-export type RoutePath = "/" | "/:id";
 export type AuthMode = "credentials" | "otp";
+// | "magic-link" | "oauth";
 
 export interface Route {
   method: RouteMethod;
@@ -39,24 +37,29 @@ export interface Route {
   mode?: AuthMode;
 }
 
-export type ReqType =
-  // | "admin"
-  "auth" | "crud" | "health";
+export type MongooseSchema = {
+  status: "pending" | "accepted" | "rejected";
+  provider: OAuthProvider;
+  role: Role;
+} & {
+  [key: string]: MongooseField;
+};
+
+export type ValidationsObj = {} & {
+  [key: string]: ZodValidation;
+};
+
+export type ReqType = "auth" | "health";
+// | "admin"
 // | "realtime"
 // | "upload";
 
 export interface Collection {
   routeName: string;
-  modelName: string;
-  routes: Route[];
+  modelName?: string;
+  routesArray: Route[];
   reqType: ReqType;
-  mongooseSchema: {
-    [key: string]: MongooseField;
-  };
-  mongooseOTPSchema: {
-    [key: string]: MongooseField;
-  };
-  validations: {
-    [key: string]: ZodValidation;
-  };
+  mongooseSchemaObj?: MongooseSchema;
+
+  validationsObj?: ValidationsObj;
 }
