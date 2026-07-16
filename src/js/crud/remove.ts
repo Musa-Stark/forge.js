@@ -39,7 +39,7 @@ const remove = ({
     appResponse({
       res,
       message: "Item deleted successfully!",
-      statusCode: 204
+      statusCode: 202
     });
   };
 };
