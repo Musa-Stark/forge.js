@@ -3,7 +3,6 @@ import otpPurposes from "../utils/otpPurposes.js";
 import { OAUTH_PROVIDERS } from "./OAuthProviders.js";
 import { ROLES } from "./roles.js";
 
-
 /**
  * =========================
  * STRING HELPERS
@@ -56,7 +55,7 @@ export const optionalNumber = z.coerce.number().default(0);
  * BOOLEAN HELPERS
  * =========================
  */
-
+export const boolean = z.boolean();
 export const booleanTrue = z.boolean().default(true);
 export const booleanFalse = z.boolean().default(false);
 
@@ -118,16 +117,16 @@ export const objectArray = z.preprocess(
         const parsed = JSON.parse(val);
         if (Array.isArray(parsed)) return parsed;
       } catch (e) {
-        return [];
+        return [{}];
       }
     }
 
-    return [];
+    return [{}];
   },
-  z.array(z.object({})).default([]),
+  z.array(z.object({})).default([{}]),
 );
 
-export const requiredObjectArray = (objSchema: z.ZodTypeAny, arrayName = "") =>
+export const requiredObjectArray = (objSchema: z.ZodTypeAny) =>
   z.preprocess(
     (val) => {
       if (val === undefined || val === null) return undefined;
@@ -145,7 +144,7 @@ export const requiredObjectArray = (objSchema: z.ZodTypeAny, arrayName = "") =>
 
       return val;
     },
-    z.array(objSchema).min(1, `${arrayName} array is required`),
+    z.array(objSchema).min(1, `expected array of objects \`[{}]\``),
   );
 
 /**
@@ -172,7 +171,7 @@ export const userRefArray = z.array(objectId).default([]);
  */
 
 export const provider = z.enum(OAUTH_PROVIDERS).default("local");
-export const role = z.enum(ROLES).default("user")
+export const role = z.enum(ROLES).default("user");
 
 /**
  * =========================
@@ -216,6 +215,7 @@ export const zodValidations = {
   password,
   requiredNumber,
   optionalNumber,
+  boolean,
   booleanTrue,
   booleanFalse,
   dateNow,
@@ -233,7 +233,7 @@ export const zodValidations = {
   requiredImage,
   object,
   purposeOTP,
-  role
+  role,
 } as const;
 
 export default zodValidations;

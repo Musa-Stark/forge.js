@@ -7,6 +7,7 @@ export type RoutePath =
 
   // CRUD
   | "/create"
+  | "/create/bulk"
   | "/new"
   | "/edit/:id"
   | "/update/:id"

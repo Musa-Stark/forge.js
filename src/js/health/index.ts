@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import { getEnvs } from "../config/envs.js";
-import handlerMap from "../lib/handlerMap.js";
+import handlerMap from "../config/handlerMap.js";
 
 const health = (
   app: Express,
@@ -12,7 +12,7 @@ const health = (
 
   for (const route of routes) {
     app[route.method](
-      `/api/v${apiVersion}/${routeName}`,
+      `/api/v${apiVersion}/${routeName}${route.path}`,
       handlerMap[route.handler],
     );
   }

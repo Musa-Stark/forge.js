@@ -1,6 +1,4 @@
-import { zodFields } from "../../dist/js/index.js";
-import { collection } from "../../dist/js/index.js";
-import { mongooseFields } from "../../dist/js/index.js";
+import { mongooseFields, zodFields, collection } from "../../dist/js/index.js";
 
 const healthCollection = collection({
   routeName: "health",

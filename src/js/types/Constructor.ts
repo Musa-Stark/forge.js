@@ -21,7 +21,7 @@ export interface Constructor {
   maxReqLimit: number;
   mongoDBURI?: string;
   port: number;
-  rateLimitDuration: string | number;
+  rateLimitDuration: DurationType;
   rateLimitMsg: string;
   adminEmailSender?: string;
   resendAPIKey?: string;

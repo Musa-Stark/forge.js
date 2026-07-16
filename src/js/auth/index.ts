@@ -1,9 +1,12 @@
 import type { Express } from "express";
-import type { Route, ValidationsObj } from "../types/Collection.ts";
+import type {
+  Route,
+  ValidationsObj,
+  MongooseSchema,
+} from "../types/Collection.ts";
 import { getEnvs } from "../config/envs.js";
 import asyncHandler from "../utils/AsyncHandler.js";
-import handlerMap from "../lib/handlerMap.js";
-import type { OTPSchema } from "../types/MongooseOTPSchemaObj.js";
+import handlerMap from "../config/handlerMap.js";
 import registerModel from "../lib/model.registry.js";
 import createOTPModel from "./utils/createOTPModel.js";
 import { envs } from "../config/envs.js";
@@ -15,7 +18,7 @@ const auth = (
   routes: Route[],
   modelName: string | undefined,
   validationsObj?: ValidationsObj,
-  mongooseSchemaObj?: OTPSchema,
+  mongooseSchemaObj?: MongooseSchema,
 ) => {
   const { apiVersion } = getEnvs();
 

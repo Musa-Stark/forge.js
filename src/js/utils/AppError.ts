@@ -3,7 +3,8 @@ export interface AppErrorConstructor {
   statusCode: number;
   isOperational?: boolean;
   data?: {
-    nextStep: string;
+    nextStep?: string;
+    cause?: string;
   };
 }
 

@@ -7,7 +7,7 @@ export const defaultConfig: Constructor = {
   backendURL: "http://localhost:5000/api/v1",
   ENV: "development",
   tokenExpiry: "7d",
-  rateLimitDuration: "15min",
+  rateLimitDuration: "15m",
   maxReqLimit: 100,
   rateLimitMsg: "RLM: Too many requests, please try again later.",
 };

@@ -9,11 +9,15 @@ import registerModel from "./lib/model.registry.js";
 import connectDB from "./lib/db.js";
 import AppLog from "./utils/AppLog.js";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { rateLimiter } from "./middleware/rateLimit.middleware.js";
 
 // body - middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(helmet());
+app.use(rateLimiter());
 
 // handle collection
 const handleCollection = (collections: Collection[]): void => {
