@@ -3,12 +3,16 @@ import getParam from "./utils/getParam.js";
 import getItem from "./utils/getItem.js";
 import getModel from "../utils/getModel.js";
 import appResponse from "../utils/response.js";
+import authorizeAccess from "./utils/authroizeAccess.js";
+import type { Route } from "../types/Collection.ts"; 
 
 const remove = ({
   modelName,
   routeName,
+  route,
 }: {
   modelName: string;
+  route: Route,
   routeName: string;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -16,11 +20,14 @@ const remove = ({
     const id = getParam({ req, routeName, handler: "remove" });
 
     // ensure item exists
-    await getItem({
+    const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
     });
+
+    // authorize access
+    authorizeAccess({ route, routeName, item, req });
 
     // model
     const Model = getModel({ modelName, routeName });
@@ -32,6 +39,7 @@ const remove = ({
     appResponse({
       res,
       message: "Item deleted successfully!",
+      statusCode: 204
     });
   };
 };

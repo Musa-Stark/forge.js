@@ -6,7 +6,7 @@ import validate from "../utils/validate.js";
 import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
-import AppError from "../utils/AppError.js";
+import authorizeAccess from "./utils/authroizeAccess.js";
 
 const update = ({
   modelName,
@@ -33,34 +33,8 @@ const update = ({
       _id: id as string,
     });
 
-    // if authRole !== admin or adminOrOwner
-    if (route.authRole !== "admin" && route.authRole !== "adminOrOwner")
-      throw new AppError({
-        message: `authRole should only be 'admin' or 'adminOrOwner' for route: '/${routeName}', method: '${route.method}' and path: '${route.path}'`,
-        statusCode: 409,
-      });
-
-    // vars
-    const isOwner = item.owner._id.equals(req.user?._id);
-    const isAdmin = req.user.role === "admin";
-
-    // allow only admin
-    if (route.authRole === "admin") {
-      if (!isAdmin)
-        throw new AppError({
-          message: "Unauthorized",
-          statusCode: 403,
-        });
-    }
-
-    // if allow both admin or owner
-    if (route.authRole === "adminOrOwner") {
-      if (!isAdmin && !isOwner)
-        throw new AppError({
-          message: "Unauthorized",
-          statusCode: 403,
-        });
-    }
+    // authorize access
+    authorizeAccess({ item, req, route, routeName });
 
     // model
     const Model = getModel({ modelName, routeName });

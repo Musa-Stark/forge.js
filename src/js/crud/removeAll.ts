@@ -1,15 +1,22 @@
-import type { Request, Response } from "express";
+import type { Request, Response, Router } from "express";
 import getModel from "../utils/getModel.js";
 import appResponse from "../utils/response.js";
+import authorizeAccess from "./utils/authroizeAccess.js";
+import type { Route } from "../types/Collection.ts";
 
 const removeAll = ({
   modelName,
   routeName,
+  route,
 }: {
   modelName: string;
   routeName: string;
+  route: Route
 }) => {
-  return async (_req: Request, res: Response): Promise<void> => {
+  return async (req: Request, res: Response): Promise<void> => {
+    // authorize access
+    authorizeAccess({route, routeName, req})
+
     // model
     const Model = getModel({ modelName, routeName });
 
@@ -23,6 +30,7 @@ const removeAll = ({
         deletedCount: result.deletedCount,
       },
       message: "Items deleted successfully!",
+      statusCode: 204
     });
   };
 };

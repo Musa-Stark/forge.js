@@ -1,5 +1,13 @@
 === custom OTP timouts ===
-requiredStringArray
+=== ?q= in /get
+✓ Pagination
+✓ Sorting
+✓ Filtering
+✓ Search
+✓ Field selection
+✓ Invalid query params
+✓ Large dataset
+===
 
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
