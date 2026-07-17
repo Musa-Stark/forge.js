@@ -7,6 +7,8 @@ import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
+import { handleUpdateFile } from "../upload/index.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const update = ({
   modelName,
@@ -20,11 +22,14 @@ const update = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // get /:parameter
     const id = getParam({ req, routeName, handler: "update" });
 
     // validate
-    const body = validate(validationsObj.update, req.body);
+    const body = validate(validationObj, req.body);
 
     // ensure item exists
     const item = await getItem({
@@ -32,6 +37,9 @@ const update = ({
       routeName,
       _id: id as string,
     });
+
+    // handle image update
+    const updatedAvatar = await handleUpdateFile(req.file!, id as string);
 
     // authorize access
     authorizeAccess({ item, req, route, routeName });

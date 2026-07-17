@@ -1,22 +1,28 @@
 import type { Request, Response } from "express";
-import type { ValidationsObj } from "../types/Collection.js";
+import type { ValidationsObj, Route } from "../types/Collection.js";
 import validate from "../utils/validate.js";
 import getModel from "../utils/getModel.js";
 import { sanitizeMany } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const createBulk = ({
   modelName,
   routeName,
   validationsObj,
+  route,
 }: {
   modelName: string;
   routeName: string;
+  route: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validate
-    const body = validate(validationsObj.createBulk, req.body);
+    const body = validate(validationObj, req.body);
 
     // model
     const Model = getModel({ modelName, routeName });

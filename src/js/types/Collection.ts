@@ -25,8 +25,9 @@ export interface Route {
   method: RouteMethod;
   path: RoutePath;
   handler: Handler;
-  middlewareArray?: MiddlewareInput;
+  validationKey: string | boolean;
   authRole: AuthInput;
+  middlewareArray?: MiddlewareInput;
   uploadArray?: Upload[];
   emailsArray?: Email | Email[];
   mode?: AuthMode;

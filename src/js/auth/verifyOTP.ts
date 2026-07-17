@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { ValidationsObj } from "../types/Collection.js";
+import type { Route, ValidationsObj } from "../types/Collection.js";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import { verifyHash } from "../utils/libsodium.js";
@@ -8,18 +8,25 @@ import authenticateUser from "./utils/authenticateUser.js";
 import getOTPModel from "./utils/getOTPModel.js";
 import otpVerifiedResponse from "./utils/otpVerifiedResponse.js";
 import appResponse from "../utils/response.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const verifyOTP = ({
   modelName,
   validationsObj,
   routeName,
+  route,
 }: {
   modelName: string;
   validationsObj: ValidationsObj;
   routeName: string;
+  route: Route;
 }) => {
   return async (req: Request, res: Response) => {
-    const body = validate(validationsObj.verifyOTP, req.body);
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
+    // validate
+    const body = validate(validationObj, req.body);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email || !req.body.otp)

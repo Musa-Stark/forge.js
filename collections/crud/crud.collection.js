@@ -19,26 +19,29 @@ const crudCollection = collection({
       path: "/",
       handler: "readAll",
       authRole: "public",
+      validationKey: false,
     },
     {
       method: "get",
       path: "/:id",
       handler: "read",
       authRole: "public",
+      validationKey: false,
     },
     {
       method: "post",
       path: "/",
       handler: "create",
       authRole: "authenticated",
-      uploadArray: [
-        {
-          fieldName: "avatar",
-          provider: "cloudinary",
-          type: "image",
-          multiple: true,
-        },
-      ],
+      validationKey: false,
+      // uploadArray: [
+      //   {
+      //     fieldName: "avatar",
+      //     provider: "cloudinary",
+      //     type: "image",
+      //     multiple: true,
+      //   },
+      // ],
     },
     {
       method: "post",
@@ -51,6 +54,21 @@ const crudCollection = collection({
       path: "/:id",
       handler: "update",
       authRole: "adminOrOwner",
+    },
+    {
+      method: "patch",
+      path: "/:id/file",
+      handler: "update",
+      authRole: "adminOrOwner",
+      validationKey: "updateAvatar",
+      uploadArray: [
+        {
+          fieldName: "avatar",
+          provider: "cloudinary",
+          type: "image",
+          multiple: true,
+        },
+      ],
     },
     {
       method: "delete",
@@ -66,7 +84,7 @@ const crudCollection = collection({
     },
   ],
   validationsObj: {
-    create: {
+    createProduct: {
       name: zodFields.requiredString,
       price: zodFields.requiredNumber,
       category: zodFields.objectArray,
@@ -74,6 +92,13 @@ const crudCollection = collection({
       description: zodFields.optionalString,
     },
     update: {
+      name: zodFields.requiredString,
+      price: zodFields.requiredNumber,
+      category: zodFields.objectArray,
+      isAvailable: zodFields.boolean,
+      description: zodFields.optionalString,
+    },
+    updateAvatar: {
       name: zodFields.requiredString,
       price: zodFields.requiredNumber,
       category: zodFields.objectArray,

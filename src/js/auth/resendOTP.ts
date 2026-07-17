@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import type { ValidationsObj } from "../types/Collection.ts";
+import type { Route, ValidationsObj } from "../types/Collection.ts";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import sendOTP from "./utils/sendOTP.js";
@@ -7,19 +7,25 @@ import { hash } from "../utils/libsodium.js";
 import appResponse from "../utils/response.js";
 import getOTPUser from "./utils/getOTPUser.js";
 import getUser from "./utils/getUser.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const resendOTP = ({
   modelName,
   routeName,
   validationsObj,
+  route
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
+  route: Route
 }) => {
   return async (req: Request, res: Response) => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validate
-    const body = validate(validationsObj.resendOTP, req.body);
+    const body = validate(validationObj, req.body);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email)
@@ -69,7 +75,7 @@ const resendOTP = ({
       res,
       message: "OTP resent successfully!",
       data: {
-        nextStep: "go to /verify-otp"
+        nextStep: "go to /verify-otp",
       },
       statusCode: 200,
     });
