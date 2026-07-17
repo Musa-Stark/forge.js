@@ -27,6 +27,7 @@ import {
   remove,
   removeAll,
   update,
+  updateFile,
 } from "../crud/bunch.crud.js";
 
 const handlerMap: Record<string, any> = {
@@ -49,6 +50,7 @@ const handlerMap: Record<string, any> = {
   remove,
   removeAll,
   update,
+  updateFile,
 };
 
 export default handlerMap;

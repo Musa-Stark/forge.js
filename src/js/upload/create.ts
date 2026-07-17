@@ -42,6 +42,15 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
   // if uploadArray = undefined, [], false, length = 0
   if (!route?.uploadArray?.length) return;
 
+  // if mongooseFieldName is missing
+  for (const el of route.uploadArray) {
+    if (!el.mongooseSchemaFieldName)
+      throw new AppError({
+        message: `mongooseSchemaFieldName is missing in handler: '${route.handler}', method: '${route.method}', path: '${route.path}'`,
+        statusCode: 400,
+      });
+  }
+
   // if files not found
   if (!Object.keys(req.files ?? {}).length)
     throw new AppError({
@@ -51,7 +60,10 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
 
   const files = Object.values(req.files!).flat();
 
-  return await Promise.all(files.map(uploadFile));
+  const metaData = await Promise.all(files.map(uploadFile));
+  const mongooseFieldName = route.uploadArray[0]!.mongooseSchemaFieldName;
+
+  return { [mongooseFieldName as string]: metaData };
 };
 
 export default handleUploadFiles;

@@ -62,3 +62,14 @@ delete / removeAll
 
 if ar === admin, allow only admin
 if ar === adminOrOwner, allow both admin and owner
+===================================================================
+
+updateFile:
+/products/134567819238/updateFile
+
+requirements: req.files, /:id/updateFile
+operation:
+- getItem
+- handleUpdateFile
+- getModel
+- findByIdAndUpdate

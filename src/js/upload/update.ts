@@ -40,19 +40,10 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
 };
 
 const handleUpdateFile = async (
-  file: Express.Multer.File,
+  req: Request,
+  route: Route,
   oldPublicId: string,
-): Promise<StoreFile> => {
-  const uploaded = await uploadFile(file);
-
-  await cloudinary.uploader.destroy(oldPublicId);
-
-  return uploaded;
-};
-
-export default handleUpdateFile;
-
-const updateFile = async (req: Request, route: Route) => {
+) => {
   // if uploadArray = undefined, [], false, length = 0
   if (!route?.uploadArray?.length) return;
 
@@ -63,7 +54,13 @@ const updateFile = async (req: Request, route: Route) => {
       statusCode: 400,
     });
 
-  const files = Object.values(req.files!).flat();
+  const file = Object.values(req.files!)[0];
 
-  return await Promise.all(files.map(uploadFile));
+  const uploaded = await uploadFile(file);
+
+  await cloudinary.uploader.destroy(oldPublicId);
+
+  return uploaded;
 };
+
+export default handleUpdateFile;

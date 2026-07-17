@@ -7,7 +7,6 @@ import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
-import { handleUpdateFile } from "../upload/index.js";
 import getValidationKey from "../utils/validationKeyError.js";
 
 const update = ({
@@ -37,9 +36,6 @@ const update = ({
       routeName,
       _id: id as string,
     });
-
-    // handle image update
-    const updatedAvatar = await handleUpdateFile(req.file!, id as string);
 
     // authorize access
     authorizeAccess({ item, req, route, routeName });

@@ -11,7 +11,7 @@ const crudCollection = collection({
     isAvailable: mongooseFields.boolean,
     description: mongooseFields.optionalString,
     owner: mongooseFields.userRef,
-    avatar: mongooseFields.imageMetaData,
+    profileImage: mongooseFields.imageMetaData,
   },
   routesArray: [
     {
@@ -33,15 +33,14 @@ const crudCollection = collection({
       path: "/",
       handler: "create",
       authRole: "authenticated",
-      validationKey: false,
-      // uploadArray: [
-      //   {
-      //     fieldName: "avatar",
-      //     provider: "cloudinary",
-      //     type: "image",
-      //     multiple: true,
-      //   },
-      // ],
+      validationKey: "createProduct",
+      uploadArray: [
+        {
+          fieldName: "avatar",
+          multiple: true,
+          mongooseSchemaFieldName: "profileImage",
+        },
+      ],
     },
     {
       method: "post",
@@ -57,16 +56,13 @@ const crudCollection = collection({
     },
     {
       method: "patch",
-      path: "/:id/file",
-      handler: "update",
+      path: "/:id/updateFile",
+      handler: "updateFile",
       authRole: "adminOrOwner",
       validationKey: "updateAvatar",
       uploadArray: [
         {
           fieldName: "avatar",
-          provider: "cloudinary",
-          type: "image",
-          multiple: true,
         },
       ],
     },
@@ -75,12 +71,14 @@ const crudCollection = collection({
       path: "/:id",
       handler: "remove",
       authRole: "adminOrOwner",
+      validationKey: false,
     },
     {
       method: "delete",
       path: "/",
       handler: "removeAll",
       authRole: "admin",
+      validationKey: false,
     },
   ],
   validationsObj: {
@@ -99,11 +97,7 @@ const crudCollection = collection({
       description: zodFields.optionalString,
     },
     updateAvatar: {
-      name: zodFields.requiredString,
-      price: zodFields.requiredNumber,
-      category: zodFields.objectArray,
-      isAvailable: zodFields.boolean,
-      description: zodFields.optionalString,
+      avatarId: zodFields.requiredString,
     },
   },
 });

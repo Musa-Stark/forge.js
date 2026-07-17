@@ -5,8 +5,7 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   const key = route.validationKey;
 
   // if false
-  if (typeof key === "boolean") if (!key) return;
-  if (key)
+  if (typeof key === "boolean" && key)
     throw new AppError({
       message: `validationKey as boolean can only be 'false' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}'`,
       statusCode: 400,

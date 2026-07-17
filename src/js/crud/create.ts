@@ -28,7 +28,7 @@ const create = ({
     const body = validate(validationObj, req.body);
 
     // if files
-    const avatar = await handleUploadFiles(req, route);
+    const fileMetaData = await handleUploadFiles(req, route);
 
     // model
     const Model = getModel({ modelName, routeName });
@@ -44,7 +44,11 @@ const create = ({
     // create
     let newItem = null;
     try {
-      newItem = await Model.create({ owner: req.user._id, avatar, ...body });
+      newItem = await Model.create({
+        owner: req.user._id,
+        ...fileMetaData,
+        ...body,
+      });
     } catch (err) {
       // err as Error
       const e = err as Error;
