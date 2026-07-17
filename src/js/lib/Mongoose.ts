@@ -49,8 +49,11 @@ export interface ObjectIdField {
 }
 
 export interface ImageMetaDataField {
-  public_id: StringField;
-  secure_url: StringField;
+  publicId: StringField;
+  url: StringField;
   width: NumberField;
   height: NumberField;
+  bytes: NumberField;
+  format: StringField;
+  resourceType: StringField;
 }

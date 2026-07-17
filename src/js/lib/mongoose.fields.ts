@@ -184,25 +184,38 @@ const recruitmentStatus: StringField = {
   default: "new",
 };
 
-const imageMetaData: ImageMetaDataField = {
-  public_id: {
-    type: String,
-    required: true,
+const imageMetaData: ImageMetaDataField[] = [
+  {
+    publicId: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    width: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
+    bytes: {
+      type: Number,
+      default: NaN,
+    },
+    format: {
+      type: String,
+      default: "",
+    },
+    resourceType: {
+      type: String,
+      default: "",
+    },
   },
-  secure_url: {
-    type: String,
-    required: true,
-  },
-  width: {
-    type: Number,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
-};
-
+];
 const mongooseFields = {
   requiredString,
   optionalString,

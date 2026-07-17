@@ -1,11 +1,13 @@
 import type { MongooseField } from "../lib/mongoose.fields.ts";
-import type { OAuthProvider } from "../lib/OAuthProviders.js";
-import type { Role } from "../lib/roles.js";
+import type { OAuthProvider } from "../lib/OAuthProviders.ts";
+import type { Role } from "../lib/roles.ts";
 import type { ZodValidation } from "../lib/zod.fields.ts";
-import type { RoutePath } from "./Routepath.js";
+import type { RoutePath } from "./Routepath.ts";
 import type { healthHandlers } from "./healthHandlers.ts";
 import type { authHandlers } from "./authHandlers.ts";
-import type { crudHandlers } from "./crudHandlers.js";
+import type { crudHandlers } from "./crudHandlers.ts";
+import type { Email } from "./email.ts";
+import type { Upload } from "./upload.ts";
 
 export type Handler = healthHandlers | authHandlers | crudHandlers;
 
@@ -14,14 +16,6 @@ export type MiddlewareInput = Middleware | Middleware[];
 
 export type AuthRole = "admin" | "adminOrOwner" | "authenticated" | "public";
 export type AuthInput = AuthRole;
-
-export type Upload = "image" | "images" | "file" | "files";
-
-export interface Email {
-  to: string;
-  subject: string;
-  body: string;
-}
 
 export type RouteMethod = "get" | "post" | "patch" | "delete";
 export type AuthMode = "credentials" | "otp";
@@ -33,8 +27,8 @@ export interface Route {
   handler: Handler;
   middlewareArray?: MiddlewareInput;
   authRole: AuthInput;
-  upload?: Upload;
-  emails?: Email[];
+  uploadArray?: Upload[];
+  emailsArray?: Email | Email[];
   mode?: AuthMode;
 }
 

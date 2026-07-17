@@ -10,7 +10,8 @@ const crudCollection = collection({
     category: mongooseFields.objectArray,
     isAvailable: mongooseFields.boolean,
     description: mongooseFields.optionalString,
-    owner: mongooseFields.userRef
+    owner: mongooseFields.userRef,
+    avatar: mongooseFields.imageMetaData,
   },
   routesArray: [
     {
@@ -30,6 +31,14 @@ const crudCollection = collection({
       path: "/",
       handler: "create",
       authRole: "authenticated",
+      uploadArray: [
+        {
+          fieldName: "avatar",
+          provider: "cloudinary",
+          type: "image",
+          multiple: true,
+        },
+      ],
     },
     {
       method: "post",
@@ -61,7 +70,7 @@ const crudCollection = collection({
       name: zodFields.requiredString,
       price: zodFields.requiredNumber,
       category: zodFields.objectArray,
-      isAvailable: zodFields.boolean,
+      isAvailable: zodFields.booleanFalse,
       description: zodFields.optionalString,
     },
     update: {

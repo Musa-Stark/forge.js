@@ -6,6 +6,7 @@ import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
 import { MongoServerError } from "mongodb";
+import handleUploadFiles from "../upload/index.js";
 
 const create = ({
   modelName,
@@ -22,6 +23,9 @@ const create = ({
     // validate
     const body = validate(validationsObj.create, req.body);
 
+    // if files
+    const avatar = await handleUploadFiles(req, route);
+
     // model
     const Model = getModel({ modelName, routeName });
 
@@ -36,7 +40,7 @@ const create = ({
     // create
     let newItem = null;
     try {
-      newItem = await Model.create({ owner: req.user._id, ...body });
+      newItem = await Model.create({ owner: req.user._id, avatar, ...body });
     } catch (err) {
       // err as Error
       const e = err as Error;

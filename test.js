@@ -21,6 +21,10 @@ new StarkNexus({
   resendAPIKey: process.env.RESEND_API_KEY,
   domain: process.env.DOMAIN,
   jwtSecret: process.env.JWT_SECRET,
+  cloudinaryAPIKey: process.env.CLOUDINARY_API_KEY,
+  cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET,
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryFolderName: process.env.CLOUDINARY_FOLDER_NAME,
 });
 
 startServer();

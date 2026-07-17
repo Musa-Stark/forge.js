@@ -9,6 +9,13 @@
 ✓ Large dataset
 ===
 
+=== emails: [
+  {
+    event: "productCreated",
+    to: "{{owner.email}}",
+  },
+]; ===
+
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
 ├── crud/          // create, read, update, delete, bulk...
