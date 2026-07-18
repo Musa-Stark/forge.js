@@ -5,15 +5,19 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   const key = route.validationKey;
 
   // if false
-  if (typeof key === "boolean" && key)
-    throw new AppError({
-      message: `validationKey as boolean can only be 'false' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}'`,
-      statusCode: 400,
-      data: {
-        nextStep:
-          "Provide it or make it false if this route doesn't need validation",
-      },
-    });
+  if (typeof key === "boolean")
+    if (key) {
+      throw new AppError({
+        message: `validationKey as boolean can only be 'false' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}'`,
+        statusCode: 400,
+        data: {
+          nextStep:
+            "Provide it or make it false if this route doesn't need validation",
+        },
+      });
+    } else {
+      return;
+    }
 
   // if validationKey not provided
   if (key == null)
