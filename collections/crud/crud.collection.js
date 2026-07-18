@@ -40,6 +40,12 @@ const crudCollection = collection({
           multiple: true,
           mongooseSchemaFieldName: "profileImage",
         },
+        {
+          fieldName: "stark",
+          mongooseSchemaFieldName: "profileImage",
+          identifierKey: "profileImageId",
+          multiple: true,
+        },
       ],
     },
     {
@@ -64,6 +70,7 @@ const crudCollection = collection({
         {
           fieldName: "avatar",
           mongooseSchemaFieldName: "profileImage",
+          identifierKey: "avatar",
         },
       ],
     },
@@ -98,7 +105,7 @@ const crudCollection = collection({
       description: zodFields.optionalString,
     },
     updateAvatar: {
-      publicId: zodFields.requiredString,
+      avatar: zodFields.requiredString,
       name: zodFields.requiredString,
     },
   },

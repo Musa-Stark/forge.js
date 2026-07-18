@@ -4,4 +4,5 @@ export interface Upload {
   type: "image" | "video" | "raw";
   provider: "cloudinary" | "aws-s3";
   multiple?: boolean;
+  identifierKey?: string;
 }

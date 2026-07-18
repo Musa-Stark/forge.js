@@ -5,7 +5,6 @@ import type { StoreFile } from "../types/StoreFile.js";
 import type { Route } from "../types/Collection.ts";
 import type { Request } from "express";
 import AppLog from "../utils/AppLog.js";
-import { STATUS_CODES } from "node:http";
 
 const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
   setupCloudinary();
@@ -27,7 +26,7 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
 
         resolve({
           url: result.secure_url,
-          publicId: result.public_id,
+          storageKey: result.public_id,
           width: result.width,
           height: result.height,
           bytes: result.bytes,
@@ -47,65 +46,91 @@ const handleUpdateFile = async (
   body: any,
   item: any,
 ) => {
+  // reqFilesArray
+  const reqFilesArray = Object.keys(req.files!);
+
   // if uploadArray = undefined, [], false, length = 0
-  if (!Array.isArray(route.uploadArray) || route.uploadArray.length === 0)
+  const uploadArray = route.uploadArray;
+  if (!Array.isArray(uploadArray) || uploadArray.length === 0)
     throw new AppError({
-      message: `uploadArray is required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update`,
+      message: `uploadArray is required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
+  // if more than 1 file
+  if (uploadArray.length > 1)
+    AppLog(
+      "warn",
+      "updateFile",
+      `uploadArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+    );
+
   // if mongooseSchemaFieldName not found
-  const mongooseField = route.uploadArray[0]?.mongooseSchemaFieldName;
+  const mongooseField = uploadArray[0]?.mongooseSchemaFieldName;
   if (typeof mongooseField !== "string" || mongooseField.trim() === "")
     throw new AppError({
-      message: `mongooseSchemaFieldName is required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update`,
+      message: `mongooseSchemaFieldName is required in collection uploadArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
   // if files not found
-  if (!Object.keys(req.files!).length)
+  if (!reqFilesArray.length)
     throw new AppError({
-      message: `Files are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update`,
+      message: `Files are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
-  // files array
-  const files = Object.values(req.files!).flat();
-
-  // if more than 1 file
-  if (files.length > 1)
+  // if req.files have more than 1 files
+  if (reqFilesArray.length > 1)
     AppLog(
       "warn",
       "updateFile",
-      "uploadArray has more than 1 items. Using the first one for updating purpose. uploadArray[0].",
+      `req.files has more than 1 fieldNames: '${reqFilesArray.join(", ")}' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
     );
 
   // if mongooseField not found in body
-  const filesArray = item[mongooseField]
-  if (!filesArray)
+  const mongooseFilesArray = item[mongooseField];
+  if (!mongooseFilesArray)
     throw new AppError({
-      message: `${mongooseField} is not found in item (mongodb) of handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update`,
+      message: `'${mongooseField}' is not found in item (mongodb) as mongooseSchemaFieldName of handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
-  console.log(filesArray)
-  console.log(body)
+  const identifierKey = uploadArray[0]!.identifierKey;
+  // if identifierKey not found
+  if (typeof identifierKey !== "string" || identifierKey.trim() === "")
+    throw new AppError({
+      message: `identifierKey is required in collection uploadArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      statusCode: 400,
+    });
 
-  for (const el of filesArray) {
-    console.log()
-  }
+  // targetItem - oldItem
+  const oldItem = mongooseFilesArray.find(
+    (el: any) => el._id.toString() === body[identifierKey],
+  );
 
-  // const oldPublicId = item[mongooseField][0].publicId;
-  // console.log(oldPublicId);
+  if (!body[identifierKey])
+    throw new AppError({
+      message: `identifierKey: '${identifierKey}' is required in collection validationsObj or req.body for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      statusCode: 404,
+    });
+
+  // if target item not found
+  if (!oldItem)
+    throw new AppError({
+      message: `File with _id: ${body[identifierKey]} not found in array: ${mongooseField} for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      statusCode: 400,
+    });
 
   // uploadFile
-  // const uploaded = await uploadFile(files[0]);
+  if (!Array.isArray(req.files)) {
+    const updated = await uploadFile(req.files![reqFilesArray![0]!]![0]!);
 
-  // remove old from cloudinary
-  // await cloudinary.uploader.destroy(oldPublicId);
+    // remove old from cloudinary
+    await cloudinary.uploader.destroy(oldItem.storageKey);
 
-  // return uploaded
-  // return uploaded;
+    return { updated, mongooseField, _id: body[identifierKey] };
+  }
 };
 
 export default handleUpdateFile;
