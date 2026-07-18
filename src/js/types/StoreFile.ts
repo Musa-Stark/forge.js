@@ -1,6 +1,6 @@
 export interface StoreFile {
   url: string;
-  publicId: string;
+  storageKey: string;
   width?: number;
   height?: number;
   bytes: number;

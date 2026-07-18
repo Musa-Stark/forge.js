@@ -25,7 +25,7 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
 
         resolve({
           url: result.secure_url,
-          publicId: result.public_id,
+          storageKey: result.public_id,
           width: result.width,
           height: result.height,
           bytes: result.bytes,

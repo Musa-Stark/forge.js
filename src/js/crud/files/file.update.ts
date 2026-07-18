@@ -22,13 +22,15 @@ const updateFile = ({
     // validationObj
     const validationObj = getValidationKey(route, validationsObj);
 
-    // validatoin
+    // console.log("Route: ", route)
+
+    // validation
     const body = validate(validationObj, req.body);
-    console.log(body);
+    // console.log(body);
 
     // get param
     const param = getParam({ req, routeName, handler: route.handler });
-    console.log("Param: ", param);
+    // console.log("Param: ", param);
 
     // get item
     const item = await getItem({
@@ -38,10 +40,10 @@ const updateFile = ({
       path: route.path,
     });
 
-    console.log("item: ", item);
+    // console.log("item: ", item);
 
     // update file
-    // const updated = await handleUpdateFile(req, route);
+    const updated = await handleUpdateFile(req, route, body, item);
     // console.log("updated: ", updated);
 
     // item.save()

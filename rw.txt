@@ -71,7 +71,7 @@ requirements: req.files, /:id/updateFile
 operation:
 - getItem
 - handleUpdateFile
-- getModel
-- findByIdAndUpdate
+
+/// req.files (new image) - /:id/updateFile (doc id) - image._id (doc.image._id)
 
 === testing signed commit ===

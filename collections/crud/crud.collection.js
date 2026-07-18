@@ -11,7 +11,7 @@ const crudCollection = collection({
     isAvailable: mongooseFields.boolean,
     description: mongooseFields.optionalString,
     owner: mongooseFields.userRef,
-    profileImage: mongooseFields.imageMetaData,
+    profileImage: mongooseFields.fileMetaData,
   },
   routesArray: [
     {
@@ -63,6 +63,7 @@ const crudCollection = collection({
       uploadArray: [
         {
           fieldName: "avatar",
+          mongooseSchemaFieldName: "profileImage",
         },
       ],
     },
@@ -97,7 +98,8 @@ const crudCollection = collection({
       description: zodFields.optionalString,
     },
     updateAvatar: {
-      avatarId: zodFields.requiredString,
+      publicId: zodFields.requiredString,
+      name: zodFields.requiredString,
     },
   },
 });
