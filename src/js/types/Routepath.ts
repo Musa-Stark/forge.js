@@ -60,6 +60,7 @@ export type RoutePath =
   | "/download/:id"
 
   // Files
+  | "/:id/addFile"
   | "/:id/updateFile"
   | "/:id/deleteFile"
 

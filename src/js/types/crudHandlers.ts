@@ -6,4 +6,3 @@ export type crudHandlers =
   | "update"
   | "remove"
   | "removeAll"
-  | "updateFile";

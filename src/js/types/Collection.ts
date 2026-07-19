@@ -6,10 +6,11 @@ import type { RoutePath } from "./Routepath.ts";
 import type { healthHandlers } from "./healthHandlers.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { crudHandlers } from "./crudHandlers.ts";
+import type { uploadHandlers } from "./uploadHandlers.js";
 import type { Email } from "./email.ts";
 import type { Upload } from "./upload.ts";
 
-export type Handler = healthHandlers | authHandlers | crudHandlers;
+export type Handler = healthHandlers | authHandlers | crudHandlers | uploadHandlers;
 
 export type Middleware = "upload";
 export type MiddlewareInput = Middleware | Middleware[];
@@ -28,7 +29,7 @@ export interface Route {
   validationKey: string | boolean;
   authRole: AuthInput;
   middlewareArray?: MiddlewareInput;
-  uploadArray?: Upload[];
+  fileArray?: Upload[];
   emailsArray?: Email | Email[];
   mode?: AuthMode;
 }

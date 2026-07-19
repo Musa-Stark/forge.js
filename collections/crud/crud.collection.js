@@ -34,7 +34,7 @@ const crudCollection = collection({
       handler: "create",
       authRole: "authenticated",
       validationKey: "createProduct",
-      uploadArray: [
+      fileArray: [
         {
           fieldName: "avatar",
           multiple: true,
@@ -43,7 +43,7 @@ const crudCollection = collection({
         {
           fieldName: "stark",
           mongooseSchemaFieldName: "profileImage",
-          identifierKey: "profileImageId",
+          validationIdentifierKey: "profileImageId",
           multiple: true,
         },
       ],
@@ -55,10 +55,21 @@ const crudCollection = collection({
       authRole: "admin",
     },
     {
+      method: "post",
+      path: "/:id/addFile",
+      handler: "addFile",
+      authRole: "authenticated",
+      fileArray: [{
+        mongooseSchemaFieldName: "profileImage",
+        fieldName: "backgroundImage"
+      }]
+    },
+    {
       method: "patch",
       path: "/:id",
       handler: "update",
       authRole: "adminOrOwner",
+      validationKey: "update"
     },
     {
       method: "patch",
@@ -66,11 +77,11 @@ const crudCollection = collection({
       handler: "updateFile",
       authRole: "adminOrOwner",
       validationKey: "updateAvatar",
-      uploadArray: [
+      fileArray: [
         {
-          fieldName: "avatar",
+          fieldName: "backgroundImage",
           mongooseSchemaFieldName: "profileImage",
-          identifierKey: "avatar",
+          validationIdentifierKey: "avatar",
         },
       ],
     },
@@ -87,6 +98,17 @@ const crudCollection = collection({
       handler: "removeAll",
       authRole: "admin",
       validationKey: false,
+    },
+    {
+      method: "delete",
+      path: "/:id/deleteFile",
+      handler: "deleteFile",
+      authRole: "adminOrOwner",
+      validationKey: "deleteAvatar",
+      fileArray: [{
+        mongooseSchemaFieldName: "profileImage",
+        validationIdentifierKey: "stark"
+      }]
     },
   ],
   validationsObj: {
@@ -108,6 +130,9 @@ const crudCollection = collection({
       avatar: zodFields.requiredString,
       name: zodFields.requiredString,
     },
+    deleteAvatar: {
+      stark: zodFields.requiredString
+    }
   },
 });
 

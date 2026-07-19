@@ -31,8 +31,8 @@ const crud = (
     if (route.authRole !== "public") middlewares.push(protect);
 
     // upload in route
-    if (route?.uploadArray)
-      middlewares.push(handleMulterMiddleware(route.uploadArray));
+    if (route?.fileArray)
+      middlewares.push(handleMulterMiddleware(route.fileArray));
     
     // app.get("/", (req, res) => {})
     app[route.method](

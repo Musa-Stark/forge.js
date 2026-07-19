@@ -16,6 +16,11 @@
   },
 ]; ===
 
+=== cloudinary custom folder name ===
+=== Unexpected file field: backgroundImage. File field must match collection's fileArray -> fieldName | When formdata/... is sent instead of app/json and it is not needed. ===
+
+=== getting file, should also check if it is the owner of it if item's authRole is admin || adminOrOwner ===
+
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
 ├── crud/          // create, read, update, delete, bulk...
@@ -74,4 +79,9 @@ operation:
 
 /// req.files (new image) - /:id/updateFile (doc id) - image._id (doc.image._id)
 
-=== testing signed commit ===
+deleteFile:
+/products/23456789123/deleteFile
+
+requirements:
+- /:id/deletFile - doc id to access among the table
+- 

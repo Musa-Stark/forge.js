@@ -17,7 +17,7 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
         if (error || !result) {
           return reject(
             new AppError({
-              message: "Cloudinary upload failed.",
+              message: "Cloudinary upload failed. Please try later",
               statusCode: 500,
             }),
           );
@@ -38,15 +38,16 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
     streamifier.createReadStream(file.buffer).pipe(stream);
   });
 };
+
 export const handleUploadFiles = async (req: Request, route: Route) => {
-  // if uploadArray = undefined, [], false, length = 0
-  if (!route?.uploadArray?.length) return;
+  // if fileArray = undefined, [], false, length = 0
+  if (!route?.fileArray?.length) return;
 
   // if mongooseFieldName is missing
-  for (const el of route.uploadArray) {
+  for (const el of route.fileArray) {
     if (!el.mongooseSchemaFieldName)
       throw new AppError({
-        message: `mongooseSchemaFieldName is missing in handler: '${route.handler}', method: '${route.method}', path: '${route.path}'`,
+        message: `mongooseSchemaFieldName is missing in handler: '${route.handler}', method: '${route.method}', path: '${route.path} to upload'`,
         statusCode: 400,
       });
   }
@@ -54,14 +55,14 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
   // if files not found
   if (!Object.keys(req.files ?? {}).length)
     throw new AppError({
-      message: `Files are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to upload`,
+      message: `File(s) are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to upload`,
       statusCode: 400,
     });
 
   const files = Object.values(req.files!).flat();
 
   const metaData = await Promise.all(files.map(uploadFile));
-  const mongooseFieldName = route.uploadArray[0]!.mongooseSchemaFieldName;
+  const mongooseFieldName = route.fileArray[0]!.mongooseSchemaFieldName;
 
   return { [mongooseFieldName as string]: metaData };
 };

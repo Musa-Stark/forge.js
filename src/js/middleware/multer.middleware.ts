@@ -25,8 +25,15 @@ const multerMiddleware = multer({
   },
 });
 
-export const handleMulterMiddleware = (uploadArray: Upload[]) => {
-  const fields = uploadArray.map((upload) => ({
+export const handleMulterMiddleware = (fileArray: Upload[]) => {
+  // if fileArray is not Array
+  if (!Array.isArray(fileArray))
+    throw new AppError({
+      message: "fileArray must be of type Array [] in collection",
+      statusCode: 400,
+    });
+
+  const fields = fileArray.map((upload) => ({
     name: upload.fieldName,
     maxCount: upload.multiple ? 10 : 1,
   }));
@@ -56,7 +63,7 @@ export const handleMulterMiddleware = (uploadArray: Upload[]) => {
             break;
 
           case "LIMIT_UNEXPECTED_FILE":
-            message = `Unexpected file field: ${err.field}`;
+            message = `Unexpected file field: ${err.field}. File field must match collection's fileArray -> fieldName`;
             break;
 
           case "LIMIT_PART_COUNT":

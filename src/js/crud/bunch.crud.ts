@@ -8,4 +8,6 @@ export { default as remove } from "./remove.js";
 export { default as removeAll } from "./removeAll.js";
 
 // ./files
-export { default as updateFile } from "./files/file.update.js";
+export { default as updateFile } from "./handleUploads/file.update.js";
+export { default as deleteFile } from "./handleUploads/file.delete.js";
+export { default as addFile } from "./handleUploads/file.add.js";

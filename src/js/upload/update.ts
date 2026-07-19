@@ -18,7 +18,7 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
         if (error || !result) {
           return reject(
             new AppError({
-              message: "Cloudinary upload failed.",
+              message: "Cloudinary upload failed. Please try later",
               statusCode: 500,
             }),
           );
@@ -49,34 +49,34 @@ const handleUpdateFile = async (
   // reqFilesArray
   const reqFilesArray = Object.keys(req.files!);
 
-  // if uploadArray = undefined, [], false, length = 0
-  const uploadArray = route.uploadArray;
-  if (!Array.isArray(uploadArray) || uploadArray.length === 0)
+  // if fileArray = undefined, [], false, length = 0
+  const fileArray = route.fileArray;
+  if (!Array.isArray(fileArray) || fileArray.length === 0)
     throw new AppError({
-      message: `uploadArray is required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `fileArray is missing or empty in handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
   // if more than 1 file
-  if (uploadArray.length > 1)
+  if (fileArray.length > 1)
     AppLog(
       "warn",
       "updateFile",
-      `uploadArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      `fileArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
     );
 
   // if mongooseSchemaFieldName not found
-  const mongooseField = uploadArray[0]?.mongooseSchemaFieldName;
+  const mongooseField = fileArray[0]?.mongooseSchemaFieldName;
   if (typeof mongooseField !== "string" || mongooseField.trim() === "")
     throw new AppError({
-      message: `mongooseSchemaFieldName is required in collection uploadArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `mongooseSchemaFieldName is required in collection fileArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
   // if files not found
   if (!reqFilesArray.length)
     throw new AppError({
-      message: `Files are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `File(s) are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
@@ -96,29 +96,29 @@ const handleUpdateFile = async (
       statusCode: 400,
     });
 
-  const identifierKey = uploadArray[0]!.identifierKey;
-  // if identifierKey not found
-  if (typeof identifierKey !== "string" || identifierKey.trim() === "")
+  const validationIdentifierKey = fileArray[0]!.validationIdentifierKey;
+  // if validationIdentifierKey not found
+  if (typeof validationIdentifierKey !== "string" || validationIdentifierKey.trim() === "")
     throw new AppError({
-      message: `identifierKey is required in collection uploadArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `validationIdentifierKey is required in collection fileArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
   // targetItem - oldItem
   const oldItem = mongooseFilesArray.find(
-    (el: any) => el._id.toString() === body[identifierKey],
+    (el: any) => el._id.toString() === body[validationIdentifierKey],
   );
 
-  if (!body[identifierKey])
+  if (!body[validationIdentifierKey])
     throw new AppError({
-      message: `identifierKey: '${identifierKey}' is required in collection validationsObj or req.body for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `validationIdentifierKey: '${validationIdentifierKey}' is required in collection validationsObj or req.body for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 404,
     });
 
   // if target item not found
   if (!oldItem)
     throw new AppError({
-      message: `File with _id: ${body[identifierKey]} not found in array: ${mongooseField} for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      message: `File with _id: ${body[validationIdentifierKey]} not found in array: ${mongooseField} for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
       statusCode: 400,
     });
 
@@ -129,7 +129,7 @@ const handleUpdateFile = async (
     // remove old from cloudinary
     await cloudinary.uploader.destroy(oldItem.storageKey);
 
-    return { updated, mongooseField, _id: body[identifierKey] };
+    return { updated, mongooseField, _id: body[validationIdentifierKey] };
   }
 };
 

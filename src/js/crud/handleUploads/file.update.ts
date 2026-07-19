@@ -6,7 +6,6 @@ import getParam from "../utils/getParam.js";
 import appResponse from "../../utils/response.js";
 import getValidationKey from "../../utils/validationKeyError.js";
 import validate from "../../utils/validate.js";
-import mongoose from "mongoose";
 
 const updateFile = ({
   modelName,
@@ -23,15 +22,11 @@ const updateFile = ({
     // validationObj
     const validationObj = getValidationKey(route, validationsObj);
 
-    // console.log("Route: ", route)
-
     // validation
     const body = validate(validationObj, req.body);
-    // console.log(body);
 
     // get param
     const param = getParam({ req, routeName, handler: route.handler });
-    // console.log("Param: ", param);
 
     // get item
     let item = await getItem({
@@ -41,7 +36,6 @@ const updateFile = ({
       path: route.path,
       clean: false,
     });
-    // console.log("item: ", item);
 
     // update file
     const { updated, _id, mongooseField } =
