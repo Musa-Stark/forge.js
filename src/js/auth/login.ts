@@ -3,6 +3,7 @@ import type { Route, ValidationsObj } from "../types/Collection.ts";
 import modeMap from "./utils/modeMap.js";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const login = ({
   modelName,
@@ -16,8 +17,11 @@ const login = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validate
-    const body = validate(validationsObj.login, req.body);
+    const body = validate(validationObj, req.body);
 
     // if no email or password in validation
     if (!req.body.email || !req.body.password)

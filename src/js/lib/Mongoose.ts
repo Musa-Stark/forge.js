@@ -48,9 +48,13 @@ export interface ObjectIdField {
   ref?: string;
 }
 
-export interface ImageMetaDataField {
-  public_id: StringField;
-  secure_url: StringField;
-  width: NumberField;
-  height: NumberField;
+export interface FileMetaDataField {
+  storageKey: StringField;
+  url: StringField;
+  bytes?: NumberField;
+  format?: StringField;
+  mimeType?: StringField;
+  resourceType?: StringField;
+  width?: NumberField;
+  height?: NumberField;
 }

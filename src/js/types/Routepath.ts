@@ -60,9 +60,9 @@ export type RoutePath =
   | "/download/:id"
 
   // Files
-  | "/image/:id"
-  | "/avatar"
-  | "/cover"
+  | "/:id/addFile"
+  | "/:id/updateFile"
+  | "/:id/deleteFile"
 
   // Admin
   | "/dashboard"

@@ -7,6 +7,7 @@ import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const update = ({
   modelName,
@@ -20,11 +21,14 @@ const update = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // get /:parameter
     const id = getParam({ req, routeName, handler: "update" });
 
     // validate
-    const body = validate(validationsObj.update, req.body);
+    const body = validate(validationObj, req.body);
 
     // ensure item exists
     const item = await getItem({

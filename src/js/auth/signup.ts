@@ -4,6 +4,7 @@ import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import modeMap from "./utils/modeMap.js";
 import getModel from "../utils/getModel.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const signup = ({
   modelName,
@@ -17,8 +18,11 @@ const signup = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validation
-    const body = validate(validationsObj.signup, req.body);
+    const body = validate(validationObj, req.body);
 
     // if no email or password in validation
     if (!req.body.email || !req.body.password)

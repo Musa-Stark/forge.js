@@ -5,4 +5,4 @@ export type crudHandlers =
   | "readAll"
   | "update"
   | "remove"
-  | "removeAll";
+  | "removeAll"

@@ -4,7 +4,7 @@ import { ROLES, type Role } from "./roles.js";
 import type {
   BooleanField,
   DateField,
-  ImageMetaDataField,
+  FileMetaDataField,
   NumberField,
   ObjectArrayField,
   ObjectIdField,
@@ -184,24 +184,36 @@ const recruitmentStatus: StringField = {
   default: "new",
 };
 
-const imageMetaData: ImageMetaDataField = {
-  public_id: {
-    type: String,
-    required: true,
+const fileMetaData: FileMetaDataField[] = [
+  {
+    storageKey: {
+      type: String,
+      required: true,
+    },
+    url: {
+      type: String,
+      required: true,
+    },
+    bytes: {
+      type: Number,
+    },
+    format: {
+      type: String,
+    },
+    mimeType: {
+      type: String,
+    },
+    resourceType: {
+      type: String,
+    },
+    width: {
+      type: Number,
+    },
+    height: {
+      type: Number,
+    },
   },
-  secure_url: {
-    type: String,
-    required: true,
-  },
-  width: {
-    type: Number,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
-};
+];
 
 const mongooseFields = {
   requiredString,
@@ -230,7 +242,7 @@ const mongooseFields = {
   otpCount,
   otpStatus,
   recruitmentStatus,
-  imageMetaData,
+  fileMetaData,
 } as const;
 
 export type MongooseField =

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Email template preview index</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="margin:0;background:#F8FAFC;padding:40px 20px;">
+  <div style="max-width:640px;margin:0 auto;">
+    <h1 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:24px;color:#0F172A;margin:0 0 4px 0;">Email templates</h1>
+    <p style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#64748B;margin:0 0 32px 0;">45 templates &middot; click any row to preview (placeholders shown raw)</p>
+    
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Authentication</h2>
+        
+        <a href="welcome.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0EA5E9;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">welcome</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Welcome to {{companyName}}, {{userName}}!</span>
+        </a>
+        <a href="verify-email.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">verify-email</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Confirm your email address</span>
+        </a>
+        <a href="password-reset.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">password-reset</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Reset your password</span>
+        </a>
+        <a href="password-changed.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">password-changed</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your password was changed</span>
+        </a>
+        <a href="login-alert.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#D97706;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">login-alert</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New login to your account</span>
+        </a>
+        <a href="two-factor-code.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">two-factor-code</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your verification code is {{otpCode}}</span>
+        </a>
+        <a href="magic-link.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">magic-link</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your sign-in link for {{companyName}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Account</h2>
+        
+        <a href="account-created.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0EA5E9;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">account-created</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your account has been created</span>
+        </a>
+        <a href="account-updated.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0EA5E9;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">account-updated</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your account details were updated</span>
+        </a>
+        <a href="account-deleted.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#475569;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">account-deleted</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your account has been deleted</span>
+        </a>
+        <a href="email-changed.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0EA5E9;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">email-changed</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your email address was changed</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Team & Organization</h2>
+        
+        <a href="team-invitation.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#7C3AED;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">team-invitation</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{inviterName}} invited you to join {{teamNa</span>
+        </a>
+        <a href="organization-invitation.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#7C3AED;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">organization-invitation</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">You're invited to join {{organizationName}} </span>
+        </a>
+        <a href="member-added.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#7C3AED;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">member-added</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{memberName}} joined {{teamName}}</span>
+        </a>
+        <a href="member-removed.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#64748B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">member-removed</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{memberName}} was removed from {{teamName}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Social & Notifications</h2>
+        
+        <a href="new-message.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">new-message</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New message from {{senderName}}</span>
+        </a>
+        <a href="new-comment.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">new-comment</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{commentAuthor}} commented on {{postTitle}}</span>
+        </a>
+        <a href="mention.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">mention</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{mentionAuthor}} mentioned you</span>
+        </a>
+        <a href="notification.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">notification</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{notificationTitle}}</span>
+        </a>
+        <a href="reminder.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#F59E0B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">reminder</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Reminder: {{reminderTitle}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Billing & Payments</h2>
+        
+        <a href="invoice.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2563EB;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">invoice</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Invoice {{invoiceNumber}} from {{companyName</span>
+        </a>
+        <a href="receipt.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">receipt</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Receipt for your payment — {{receiptNumber}}</span>
+        </a>
+        <a href="payment-success.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">payment-success</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Payment successful</span>
+        </a>
+        <a href="payment-failed.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#DC2626;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">payment-failed</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Payment failed — action needed</span>
+        </a>
+        <a href="subscription-created.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">subscription-created</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">You're subscribed to {{planName}}</span>
+        </a>
+        <a href="subscription-renewed.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">subscription-renewed</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your {{planName}} subscription renewed</span>
+        </a>
+        <a href="subscription-cancelled.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#64748B;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">subscription-cancelled</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your {{planName}} subscription was cancelled</span>
+        </a>
+        <a href="trial-ending.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#D97706;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">trial-ending</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your trial ends in {{daysRemaining}} days</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Orders & Commerce</h2>
+        
+        <a href="order-confirmation.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#9333EA;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">order-confirmation</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Order confirmed — {{orderNumber}}</span>
+        </a>
+        <a href="order-shipped.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#9333EA;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">order-shipped</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your order has shipped — {{orderNumber}}</span>
+        </a>
+        <a href="order-delivered.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#16A34A;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">order-delivered</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your order was delivered — {{orderNumber}}</span>
+        </a>
+        <a href="order-cancelled.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#DC2626;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">order-cancelled</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Order cancelled — {{orderNumber}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Security</h2>
+        
+        <a href="password-expiring.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#D97706;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">password-expiring</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your password expires in {{daysRemaining}} d</span>
+        </a>
+        <a href="security-alert.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#DC2626;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">security-alert</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Security alert on your account</span>
+        </a>
+        <a href="new-device-login.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#D97706;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">new-device-login</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New device signed in to your account</span>
+        </a>
+        <a href="api-key-created.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">api-key-created</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New API key created — {{apiKeyName}}</span>
+        </a>
+        <a href="api-key-revoked.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#DC2626;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">api-key-revoked</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">API key revoked — {{apiKeyName}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Support</h2>
+        
+        <a href="contact-form.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0D9488;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">contact-form</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New contact form submission from {{contactNa</span>
+        </a>
+        <a href="support-ticket.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0D9488;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">support-ticket</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Support ticket {{ticketId}} — {{ticketSubjec</span>
+        </a>
+        <a href="feedback.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#0D9488;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">feedback</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">New feedback from {{userName}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">Reports</h2>
+        
+        <a href="daily-report.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2563EB;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">daily-report</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your daily report — {{reportDate}}</span>
+        </a>
+        <a href="weekly-report.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2563EB;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">weekly-report</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your weekly report — {{reportPeriod}}</span>
+        </a>
+        <a href="monthly-report.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#2563EB;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">monthly-report</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Your monthly report — {{reportPeriod}}</span>
+        </a>
+      </div>
+      <div style="margin-bottom:28px;">
+        <h2 style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:0.06em;color:#64748B;margin:0 0 10px 0;">System</h2>
+        
+        <a href="maintenance.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#475569;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">maintenance</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">Scheduled maintenance — {{maintenanceWindow}</span>
+        </a>
+        <a href="announcement.html" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;margin-bottom:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#4F46E5;display:inline-block;flex-shrink:0;"></span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;color:#0F172A;font-weight:600;">announcement</span>
+          <span style="font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-size:12.5px;color:#94A3B8;margin-left:auto;">{{announcementTitle}}</span>
+        </a>
+      </div>
+  </div>
+</body>
+</html>

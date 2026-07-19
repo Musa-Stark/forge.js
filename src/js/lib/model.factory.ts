@@ -52,19 +52,11 @@ const createModel = (
   name: string,
   definition: ModelDefinition,
 ) => {
-  if (!name) {
-    throw new AppError({
-      message: `modelName for ${routeName} route is required`,
-      statusCode: 409,
-    });
-  }
-
-  if (!definition) {
+  if (!definition)
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
       statusCode: 409,
     });
-  }
 
   const schema = buildSchema(normalizeDefinition(definition));
 

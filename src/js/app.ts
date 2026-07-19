@@ -13,11 +13,24 @@ import helmet from "helmet";
 import { rateLimiter } from "./middleware/rateLimit.middleware.js";
 
 // body - middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const jsonParser = express.json()
+const urlencodedParser = express.urlencoded({ extended: true })
 app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimiter());
+
+// parse body - based on situation
+app.use((req, res, next) => {
+  if (req.is("multipart/form-data")) {
+    return next();
+  }
+
+  jsonParser(req, res, (err) => {
+    if (err) return next(err);
+
+    urlencodedParser(req, res, next);
+  });
+});
 
 // handle collection
 const handleCollection = (collections: Collection[]): void => {

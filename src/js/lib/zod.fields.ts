@@ -185,18 +185,6 @@ export const timestamps = {
 };
 
 // files
-const requiredImage = z
-  .object({
-    fieldname: z.string(),
-    originalname: z.string(),
-    mimetype: z.string(),
-    size: z.number(),
-  })
-  .passthrough()
-  .refine((file) => file.mimetype.startsWith("image/"), {
-    message: "Only image files are allowed",
-  });
-
 const object = (shape: Record<string, z.ZodTypeAny>) => {
   return z.object(shape);
 };
@@ -230,7 +218,6 @@ export const zodValidations = {
   userRefArray,
   timestamps,
   provider,
-  requiredImage,
   object,
   purposeOTP,
   role,

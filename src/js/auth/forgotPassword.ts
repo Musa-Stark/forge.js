@@ -1,23 +1,28 @@
-import type { ValidationsObj } from "../types/Collection.ts";
+import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import validate from "../utils/validate.js";
 import type { Request, Response } from "express";
-import getModel from "../utils/getModel.js";
 import createOTPUser from "./utils/createOTPUser.js";
 import getUser from "./utils/getUser.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const forgotPassword = ({
   modelName,
   routeName,
   validationsObj,
+  route,
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
+  route: Route;
 }) => {
   return async (req: Request, res: Response) => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validate
-    const body = validate(validationsObj.forgotPassword!, req.body);
+    const body = validate(validationObj, req.body);
 
     if (!req.body.email)
       throw new AppError({

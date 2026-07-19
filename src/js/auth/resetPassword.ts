@@ -8,6 +8,7 @@ import getUser from "./utils/getUser.js";
 import { hash } from "../utils/libsodium.js";
 import getOTPModel from "./utils/getOTPModel.js";
 import appResponse from "../utils/response.js";
+import getValidationKey from "../utils/validationKeyError.js";
 
 const resetPassword = ({
   modelName,
@@ -21,8 +22,11 @@ const resetPassword = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // validationObj
+    const validationObj = getValidationKey(route, validationsObj);
+
     // validate
-    const body = validate(validationsObj.resetPassword, req.body);
+    const body = validate(validationObj, req.body);
 
     // if no email or password in validation
     if (!req.body.email || !req.body.password)
