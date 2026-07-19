@@ -13,7 +13,7 @@ const errorMiddleware = (
   const data = err.data;
 
   AppLog("x", "error.middleware", message);
-  console.error(err);
+  // console.error(err);
 
   if (err.isOperational) {
     return res.status(statusCode).json({ success: false, message, data });
