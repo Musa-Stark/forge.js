@@ -21,6 +21,19 @@
 
 === getting file, should also check if it is the owner of it if item's authRole is admin || adminOrOwner ===
 
+=== COLLECTION ===
+Skips:
+Route:
+  1. middlewareArray
+  2. emailsArray
+
+MongooseSchema:
+  1. provider
+
+ReqType:
+  1. realtime
+-----------------------------------------------------------------------------
+
 handlers/
 ├── auth/          // login, signup, logout, refresh, 2FA...
 ├── crud/          // create, read, update, delete, bulk...

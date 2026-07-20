@@ -25,7 +25,7 @@ const crudCollection = collection({
       method: "get",
       path: "/:id",
       handler: "read",
-      authRole: "public",
+      authRole: "adminOrOwner",
       validationKey: false,
     },
     {

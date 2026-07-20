@@ -15,7 +15,6 @@ const authorizeAccess = ({
   item?: any;
   req: Request;
 }) => {
-  console.log("working");
   // if authRole !== admin or adminOrOwner
   if (route.authRole !== "admin" && route.authRole !== "adminOrOwner")
     throw new AppError({
