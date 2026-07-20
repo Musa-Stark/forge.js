@@ -7,19 +7,22 @@ import getModel from "../../utils/getModel.js";
 import getOTPModel from "./getOTPModel.js";
 import handleIsVerified from "./handleIsVerified.js";
 import { sendCookie } from "./sendCookie.js";
+import type { Route } from "../../types/Collection.js";
 
 const createUser = async ({
   body,
   modelName,
   res,
   routeName,
+  route,
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
+  route: Route;
 }) => {
-  const Model = getModel({ modelName, routeName });
+  const Model = getModel({ modelName, routeName, route });
   const OTPModel = getOTPModel();
 
   // isVerified - mode:otp
@@ -37,7 +40,7 @@ const createUser = async ({
     body.role = "user";
     delete body._id;
   } else {
-    body.password = await hash(body.password);
+    body.password = await hash(body.password, route);
     body.role = "user";
   }
 
@@ -50,7 +53,7 @@ const createUser = async ({
   const { _id } = newUser.toObject();
 
   // send cookied
-  sendCookie({ res, cookieName: "authToken", payload: { sub: _id } });
+  sendCookie({ res, cookieName: "authToken", payload: { sub: _id }, route });
 
   // send res
   appResponse({

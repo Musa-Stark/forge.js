@@ -20,7 +20,7 @@ const read = ({
     getValidationKey(route, validationsObj);
 
     // find items
-    const items = await getItem({ modelName, routeName, path: route.path });
+    const items = await getItem({ modelName, routeName, path: route.path, route });
 
     // return response
     appResponse({

@@ -45,6 +45,7 @@ const forgotPassword = ({
       purpose: "password_reset",
       routeName,
       modelName,
+      route
     });
   };
 };

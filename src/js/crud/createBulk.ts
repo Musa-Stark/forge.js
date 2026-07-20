@@ -25,7 +25,7 @@ const createBulk = ({
     const body = validate(validationObj, req.body);
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // create
     const newItems = await Model.insertMany(body);

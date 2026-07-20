@@ -10,12 +10,17 @@ const validate = (validationSchema: any, body: any, route: Route) => {
       message: "validationSchema is required to validate",
       statusCode: 409,
       code: "VALIDATION_SCHEMA_REQUIRED",
+      details: getErrorDetail(route),
+      hint: "Provide validation in validationsObj. Use same name as key as provided in route configuration",
     });
 
   if (!body)
     throw new AppError({
       message: "body is required to validate",
       statusCode: 409,
+      code: "BODY_MISSING",
+      details: getErrorDetail(route),
+      hint: "Provide body (Data from frontend or postman etc.)",
     });
 
   const zodBodyObj = z.object(validationSchema);
@@ -59,6 +64,9 @@ const validate = (validationSchema: any, body: any, route: Route) => {
     throw new AppError({
       message: `${field}: ${message}`,
       statusCode: 409,
+      code: "VALIDATION_FAILED",
+      details: getErrorDetail(route),
+      hint: "Check the keys you provided in collection -> valdiationsObj -> validationSchema. It should be similar to body -> item key"
     });
   }
 

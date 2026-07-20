@@ -31,7 +31,7 @@ const create = ({
     const fileMetaData = await handleUploadFiles(req, route);
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // owner
     const owner = req.user?._id;

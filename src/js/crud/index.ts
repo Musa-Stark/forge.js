@@ -28,7 +28,7 @@ const crud = (
     const middlewares = [];
 
     // protect
-    if (route.authRole !== "public") middlewares.push(protect);
+    if (route.authRole !== "public") middlewares.push(protect(route));
 
     // upload in route
     if (route?.fileArray)

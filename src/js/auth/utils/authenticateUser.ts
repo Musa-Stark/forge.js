@@ -7,17 +7,20 @@ import handleIsVerified from "./handleIsVerified.js";
 import getOTPModel from "./getOTPModel.js";
 import getUser from "./getUser.js";
 import { sendCookie } from "./sendCookie.js";
+import type { Route } from "../../types/Collection.js";
 
 const authenticateUser = async ({
   body,
   modelName,
   res,
   routeName,
+  route
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
+  route: Route
 }) => {
   // otp model
   const OTPModel = getOTPModel();
@@ -41,7 +44,7 @@ const authenticateUser = async ({
 
   //   invalid password - not otpuser - mode credentials
   if (!isOTPUser) {
-    const isValid = await verifyHash(body.password, user.password);
+    const isValid = await verifyHash(body.password, user.password, route);
     if (!isValid)
       throw new AppError({ message: "Invalid password", statusCode: 409 });
   }
@@ -52,7 +55,7 @@ const authenticateUser = async ({
   const { _id } = user.toObject();
 
   // send cookied
-  sendCookie({ res, cookieName: "authToken", payload: { sub: _id } });
+  sendCookie({ res, cookieName: "authToken", payload: { sub: _id }, route });
 
   // send response
   appResponse({

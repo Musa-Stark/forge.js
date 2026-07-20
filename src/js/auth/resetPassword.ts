@@ -56,7 +56,7 @@ const resetPassword = ({
     });
 
     // update password
-    user.password = await hash(body.password as string);
+    user.password = await hash(body.password as string, route);
     // save user
     user.save();
 

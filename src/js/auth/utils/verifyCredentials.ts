@@ -1,17 +1,18 @@
-import registerModel from "../../lib/model.registry.js";
 import AppError from "../../utils/AppError.js";
 import { verifyHash } from "../../utils/libsodium.js";
-import getModel from "../../utils/getModel.js";
 import getUser from "./getUser.js";
+import type { Route } from "../../types/Collection.js";
 
 const verifyCredentials = async ({
   modelName,
   body,
   routeName,
+  route
 }: {
   modelName: string;
   body: any;
   routeName: string;
+  route: Route
 }) => {
   if (!modelName || !body)
     throw new AppError({
@@ -27,7 +28,7 @@ const verifyCredentials = async ({
     needPassword: true,
   });
 
-  const isValid = await verifyHash(body.password, user.password);
+  const isValid = await verifyHash(body.password, user.password, route);
   if (!isValid)
     throw new AppError({ message: "Invalid password", statusCode: 409 });
 };

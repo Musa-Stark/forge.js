@@ -60,7 +60,7 @@ const resendOTP = ({
 
     // sendOTP
     const { OTP, otpExpiry } = await sendOTP(body.email as string);
-    const hashedOTP = await hash(OTP);
+    const hashedOTP = await hash(OTP, route);
 
     OTPUser.otpCount = 0;
     OTPUser.OTP = hashedOTP;

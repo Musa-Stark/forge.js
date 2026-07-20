@@ -3,15 +3,18 @@ import getDuration from "../../config/duration.js";
 import { getEnvs } from "../../config/envs.js";
 import AppError from "../../utils/AppError.js";
 import { signJWT } from "../../utils/handleJWT.js";
+import type { Route } from "../../types/Collection.js";
 
 export const sendCookie = ({
   res,
   cookieName,
   payload,
+  route
 }: {
   res: Response;
   cookieName: string;
   payload: string | object;
+  route: Route
 }) => {
   // tokenExpiry + ENV + domain
   const { tokenExpiry, ENV, domain } = getEnvs();
@@ -29,7 +32,7 @@ export const sendCookie = ({
     });
 
   // token
-  const token = signJWT({ payload });
+  const token = signJWT({ payload, route });
 
   // send cookie
   res.cookie(cookieName, token, {

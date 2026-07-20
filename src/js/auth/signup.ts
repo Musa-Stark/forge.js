@@ -33,7 +33,7 @@ const signup = ({
       });
 
     // if existing user
-    const Model = getModel({ modelName, routeName })!;
+    const Model = getModel({ modelName, routeName, route })!;
     const existing = await Model?.findOne({ email: body.email });
     if (existing)
       throw new AppError({

@@ -25,7 +25,7 @@ const removeAll = ({
     authorizeAccess({ route, routeName, req });
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // delete all
     const result = await Model.deleteMany({});

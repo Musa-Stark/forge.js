@@ -39,6 +39,7 @@ const addFile = ({
       _id: param as string,
       path: route.path,
       clean: false,
+      route
     });
 
     // authorizeAccess

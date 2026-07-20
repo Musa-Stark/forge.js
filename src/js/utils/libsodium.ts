@@ -1,5 +1,7 @@
 import sodium from "libsodium-wrappers-sumo";
 import AppError from "./AppError.js";
+import getErrorDetail from "./getErrorDetail.js";
+import type { Route } from "../types/Collection.js";
 
 interface SealResult {
   str: string;
@@ -9,11 +11,14 @@ interface SealResult {
 }
 
 // Hash password
-export const hash = async (str: string): Promise<string> => {
+export const hash = async (str: string, route: Route): Promise<string> => {
   if (!str) {
     throw new AppError({
       message: "string is required to hash",
       statusCode: 404,
+      code: "LIBSODIUM_HASH_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 
@@ -37,18 +42,25 @@ export const hash = async (str: string): Promise<string> => {
 export const verifyHash = async (
   password: string,
   storedHash: string,
+  route: Route,
 ): Promise<boolean> => {
   if (!password) {
     throw new AppError({
       message: "string is required to verify",
-      statusCode: 409,
+      statusCode: 404,
+      code: "LIBSODIUM_HASH_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 
   if (!storedHash) {
     throw new AppError({
       message: "storedHash is required to verify",
-      statusCode: 409,
+      statusCode: 404,
+      code: "LIBSODIUM_HASH_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 
@@ -58,8 +70,11 @@ export const verifyHash = async (
 
   if (!saltB64 || !hashB64) {
     throw new AppError({
-      message: "Invalid stored hash format",
-      statusCode: 400,
+      message: "Invalid stored has format",
+      statusCode: 404,
+      code: "LIBSODIUM_HASH_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 
@@ -84,10 +99,7 @@ export const generateMasterKey = async (): Promise<string> => {
 
   const key = sodium.crypto_secretbox_keygen();
 
-  const base64Key = sodium.to_base64(
-    key,
-    sodium.base64_variants.ORIGINAL,
-  );
+  const base64Key = sodium.to_base64(key, sodium.base64_variants.ORIGINAL);
 
   console.log(base64Key);
   return base64Key;
@@ -112,19 +124,26 @@ export const generateJWTSecret = async (): Promise<string> => {
 export const seal = async (
   input: string,
   masterKey: string,
+  route: Route,
 ): Promise<SealResult> => {
   try {
     if (!input) {
       throw new AppError({
-        message: "String is required to encrypt.",
-        statusCode: 400,
+        message: "string is required to encrypt",
+        statusCode: 404,
+        code: "LIBSODIUM_HASH_ERROR",
+        hint: "Provide a string to encrypt it.",
+        details: getErrorDetail(route),
       });
     }
 
     if (!masterKey) {
       throw new AppError({
-        message: "masterKey is required for encryption.",
-        statusCode: 400,
+        message: "Master key is required for encryption",
+        statusCode: 404,
+        code: "LIBSODIUM_HASH_ERROR",
+        hint: "Provide masterkey in StarkForge({}) - initializing class",
+        details: getErrorDetail(route),
       });
     }
 
@@ -133,19 +152,14 @@ export const seal = async (
     const keyPair = sodium.crypto_box_keypair();
     const strBytes = sodium.from_string(input);
 
-    const encrypted = sodium.crypto_box_seal(
-      strBytes,
-      keyPair.publicKey,
-    );
+    const encrypted = sodium.crypto_box_seal(strBytes, keyPair.publicKey);
 
     const masterKeyBytes = sodium.from_base64(
       masterKey,
       sodium.base64_variants.ORIGINAL,
     );
 
-    const nonce = sodium.randombytes_buf(
-      sodium.crypto_secretbox_NONCEBYTES,
-    );
+    const nonce = sodium.randombytes_buf(sodium.crypto_secretbox_NONCEBYTES);
 
     const encryptedPrivateKey = sodium.crypto_secretbox_easy(
       keyPair.privateKey,
@@ -166,7 +180,10 @@ export const seal = async (
 
     throw new AppError({
       message: "Error while encrypting",
-      statusCode: 500,
+      statusCode: 404,
+      code: "LIBSODIUM_HASH_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 };
@@ -178,19 +195,56 @@ export const unSeal = async (
   publicKey: string,
   securedPrivateKey: string,
   masterKey: string,
+  route: Route,
 ): Promise<string> => {
   try {
-    if (
-      !str ||
-      !nonce ||
-      !publicKey ||
-      !securedPrivateKey ||
-      !masterKey
-    ) {
+    if (!str) {
       throw new AppError({
-        message:
-          "Str, nonce, public key, secured private key and master key are required",
+        message: "Encrypted string is required for decryption",
         statusCode: 400,
+        code: "LIBSODIUM_DECRYPT_ERROR",
+        hint: "Provide the encrypted string returned by seal().",
+        details: getErrorDetail(route),
+      });
+    }
+
+    if (!nonce) {
+      throw new AppError({
+        message: "Nonce is required for decryption",
+        statusCode: 400,
+        code: "LIBSODIUM_DECRYPT_ERROR",
+        hint: "Provide the nonce returned by seal().",
+        details: getErrorDetail(route),
+      });
+    }
+
+    if (!publicKey) {
+      throw new AppError({
+        message: "Public key is required for decryption",
+        statusCode: 400,
+        code: "LIBSODIUM_DECRYPT_ERROR",
+        hint: "Provide the public key returned by seal().",
+        details: getErrorDetail(route),
+      });
+    }
+
+    if (!securedPrivateKey) {
+      throw new AppError({
+        message: "Secured private key is required for decryption",
+        statusCode: 400,
+        code: "LIBSODIUM_DECRYPT_ERROR",
+        hint: "Provide the secured private key returned by seal().",
+        details: getErrorDetail(route),
+      });
+    }
+
+    if (!masterKey) {
+      throw new AppError({
+        message: "Master key is required for decryption",
+        statusCode: 400,
+        code: "LIBSODIUM_DECRYPT_ERROR",
+        hint: "Provide the master key used during encryption.",
+        details: getErrorDetail(route),
       });
     }
 
@@ -227,6 +281,9 @@ export const unSeal = async (
     throw new AppError({
       message: "Error while decrypting",
       statusCode: 500,
+      code: "LIBSODIUM_DECRYPT_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: getErrorDetail(route),
     });
   }
 };

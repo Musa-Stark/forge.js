@@ -1,3 +1,4 @@
+import type { Route } from "../../types/Collection.js";
 import AppError from "../../utils/AppError.js";
 import getModel from "../../utils/getModel.js";
 import { sanitizeMany, sanitizeOne } from "../../utils/sanitize.js";
@@ -8,15 +9,17 @@ const getItem = async ({
   path,
   _id,
   clean = true,
+  route
 }: {
   modelName: string;
   routeName: string;
   path?: string;
   _id?: string;
   clean?: boolean;
+  route: Route
 }) => {
   // get model
-  const Model = getModel({ modelName, routeName });
+  const Model = getModel({ modelName, routeName, route });
 
   // initialize data
   let data: any = null;

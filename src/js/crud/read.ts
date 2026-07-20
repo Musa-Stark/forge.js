@@ -29,6 +29,7 @@ const read = ({
       routeName,
       _id: id as string,
       path: route.path,
+      route
     });
 
     // return response

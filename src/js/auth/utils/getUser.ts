@@ -13,7 +13,7 @@ const getUser = async ({
   needPassword?: boolean;
 }) => {
   // model
-  const Model = getModel({ modelName, routeName });
+  const Model = getModel({ modelName, routeName, route });
 
   // user
   let user: any = null;

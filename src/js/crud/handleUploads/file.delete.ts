@@ -21,10 +21,10 @@ const deleteFile = ({
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj, route);
+    const validationObj = getValidationKey(route, validationsObj);
 
     // validation
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // get param
     const param = getParam({
@@ -40,6 +40,7 @@ const deleteFile = ({
       _id: param as string,
       path: route.path,
       clean: false,
+      route
     });
 
      // authorizeAccess

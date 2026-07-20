@@ -91,7 +91,7 @@ const verifyOTP = ({
       });
 
     // if otp didn't matched
-    const isValid = await verifyHash(body.otp as string, OTPData.OTP);
+    const isValid = await verifyHash(body.otp as string, OTPData.OTP, route);
     if (!isValid) {
       // increment otpCount
       await OTPModel.updateOne({ _id: OTPData._id }, { $inc: { otpCount: 1 } });
@@ -121,6 +121,7 @@ const verifyOTP = ({
       res,
       routeName,
       modelName,
+      route
     });
   };
 };

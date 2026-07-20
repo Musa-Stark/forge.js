@@ -35,7 +35,7 @@ const auth = (
   for (const route of routes) {
     // auth.middleware.ts
     const middleware = [];
-    if (route.path === "/logout") middleware.push(protect);
+    if (route.path === "/logout") middleware.push(protect(route));
 
     app[route.method](
       // /api/v1/auth/signup

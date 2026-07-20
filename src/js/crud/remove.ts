@@ -30,13 +30,14 @@ const remove = ({
       modelName,
       routeName,
       _id: id as string,
+      route
     });
 
     // authorize access
     authorizeAccess({ route, routeName, item, req });
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // delete
     await Model.findByIdAndDelete(id);

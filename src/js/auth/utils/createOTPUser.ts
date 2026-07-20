@@ -5,6 +5,7 @@ import appResponse from "../../utils/response.js";
 import { hash } from "../../utils/libsodium.js";
 import getOTPModel from "./getOTPModel.js";
 import verifyCredentials from "./verifyCredentials.js";
+import type { Route } from "../../types/Collection.js";
 
 const createOTPUser = async ({
   body,
@@ -12,12 +13,14 @@ const createOTPUser = async ({
   purpose,
   routeName,
   modelName,
+  route,
 }: {
   body: any;
   res: Response;
   purpose: string;
   routeName: string;
   modelName: string;
+  route: Route
 }) => {
   // otp model
   const OTPModel = getOTPModel()!;
@@ -44,12 +47,12 @@ const createOTPUser = async ({
 
   // if login - mode:otp
   if (purpose === "login")
-    await verifyCredentials({ modelName, body, routeName });
+    await verifyCredentials({ modelName, body, routeName, route });
 
   // send otp + handle hashing
   const { OTP, otpExpiry } = await sendOTP(body.email);
-  const hashedOTP = await hash(OTP);
-  if (body?.password) body.password = await hash(body.password);
+  const hashedOTP = await hash(OTP, route);
+  if (body?.password) body.password = await hash(body.password, route);
 
   // create otp
   await OTPModel?.create({
