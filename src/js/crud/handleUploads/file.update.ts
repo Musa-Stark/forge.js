@@ -6,6 +6,7 @@ import getParam from "../utils/getParam.js";
 import appResponse from "../../utils/response.js";
 import getValidationKey from "../../utils/validationKeyError.js";
 import validate from "../../utils/validate.js";
+import authorizeAccess from "../utils/authroizeAccess.js";
 
 const updateFile = ({
   modelName,
@@ -36,6 +37,9 @@ const updateFile = ({
       path: route.path,
       clean: false,
     });
+
+    // authorizeAccess
+    authorizeAccess({ route, routeName, item, req });
 
     // update file
     const { updated, _id, mongooseField } =

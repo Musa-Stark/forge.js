@@ -85,3 +85,14 @@ deleteFile:
 requirements:
 - /:id/deletFile - doc id to access among the table
 - 
+
+========================================================================
+
+feature/fixes
+
+1. getItem - authroizeAccess
+
+req: authRole + req
+pro:
+
+import authroizeAccess.

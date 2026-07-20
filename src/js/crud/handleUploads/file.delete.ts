@@ -6,6 +6,7 @@ import getParam from "../utils/getParam.js";
 import appResponse from "../../utils/response.js";
 import getValidationKey from "../../utils/validationKeyError.js";
 import validate from "../../utils/validate.js";
+import authorizeAccess from "../utils/authroizeAccess.js";
 
 const deleteFile = ({
   modelName,
@@ -40,6 +41,9 @@ const deleteFile = ({
       path: route.path,
       clean: false,
     });
+
+     // authorizeAccess
+    authorizeAccess({ route, routeName, item, req });
 
     // delete file from cloudinary
     const { _id, mongooseField } =

@@ -5,6 +5,7 @@ import getParam from "../utils/getParam.js";
 import appResponse from "../../utils/response.js";
 import { handleUploadFiles } from "../../upload/index.js";
 import AppError from "../../utils/AppError.js";
+import authorizeAccess from "../utils/authroizeAccess.js";
 
 const addFile = ({
   modelName,
@@ -40,12 +41,14 @@ const addFile = ({
       clean: false,
     });
 
+    // authorizeAccess
+    authorizeAccess({ route, routeName, item, req });
+
     // upload files
     const fileMetaData = await handleUploadFiles(req, route);
 
     if (fileMetaData) {
       for (const [field, files] of Object.entries(fileMetaData)) {
-
         const mongooseSchemaField = item[field];
 
         if (!mongooseSchemaField)
