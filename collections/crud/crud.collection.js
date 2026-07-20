@@ -25,7 +25,7 @@ const crudCollection = collection({
       method: "get",
       path: "/:id",
       handler: "read",
-      authRole: "public",
+      authRole: "adminOrOwner",
       validationKey: false,
     },
     {
@@ -34,19 +34,19 @@ const crudCollection = collection({
       handler: "create",
       authRole: "authenticated",
       validationKey: "createProduct",
-      fileArray: [
-        {
-          fieldName: "avatar",
-          multiple: true,
-          mongooseSchemaFieldName: "profileImage",
-        },
-        {
-          fieldName: "stark",
-          mongooseSchemaFieldName: "profileImage",
-          validationIdentifierKey: "profileImageId",
-          multiple: true,
-        },
-      ],
+      // fileArray: [
+      //   {
+      //     fieldName: "avatar",
+      //     multiple: true,
+      //     mongooseSchemaFieldName: "profileImage",
+      //   },
+      //   {
+      //     fieldName: "stark",
+      //     mongooseSchemaFieldName: "profileImage",
+      //     validationIdentifierKey: "profileImageId",
+      //     multiple: true,
+      //   },
+      // ],
     },
     {
       method: "post",
@@ -58,7 +58,7 @@ const crudCollection = collection({
       method: "post",
       path: "/:id/addFile",
       handler: "addFile",
-      authRole: "authenticated",
+      authRole: "adminOrOwner",
       fileArray: [{
         mongooseSchemaFieldName: "profileImage",
         fieldName: "backgroundImage"

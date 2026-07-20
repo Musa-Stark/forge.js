@@ -2,16 +2,29 @@ import { randomInt } from "crypto";
 import { getEnvs } from "../../config/envs.js";
 import sendEmail from "../../config/sendEmail.js";
 import AppError from "../../utils/AppError.js";
+import type { Route } from "../../types/Collection.js";
 
 const sendOTP = async (
   email: string,
+  route: Route,
 ): Promise<{ OTP: string; otpExpiry: number }> => {
   const OTP = randomInt(100000, 1000000).toString();
   const otpExpiry = Date.now() + 1000 * 60 * 5;
 
   const { isOffline, adminEmailSender } = getEnvs();
+
   if (!isOffline && isOffline !== false)
-    throw new AppError({ message: "isOffline is required", statusCode: 404 });
+    throw new AppError({
+      message: "isOffline is required.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define isOffline in your environment configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
+    });
 
   if (isOffline) {
     console.log(`OTP: ${OTP}`);
@@ -22,8 +35,15 @@ const sendOTP = async (
 
   if (!adminEmailSender)
     throw new AppError({
-      message: "adminEmailSender is required",
-      statusCode: 404,
+      message: "adminEmailSender is required.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define adminEmailSender in your environment configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   await sendEmail({
@@ -31,6 +51,7 @@ const sendOTP = async (
     htmlBody,
     subject: "OTP Verification",
     to: email,
+    route,
   });
 
   return { OTP, otpExpiry };

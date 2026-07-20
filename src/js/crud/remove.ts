@@ -23,20 +23,21 @@ const remove = ({
     getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "remove" });
+    const id = getParam({ req, route });
 
     // ensure item exists
     const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
+      route
     });
 
     // authorize access
     authorizeAccess({ route, routeName, item, req });
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // delete
     await Model.findByIdAndDelete(id);

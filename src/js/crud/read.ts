@@ -4,6 +4,7 @@ import appResponse from "../utils/response.js";
 import getParam from "./utils/getParam.js";
 import type { Route, ValidationsObj } from "../types/Collection.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import authorizeAccess from "./utils/authroizeAccess.js";
 
 const read = ({
   modelName,
@@ -21,7 +22,7 @@ const read = ({
     getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "read" });
+    const id = getParam({ req, route });
 
     // findById item
     const item = await getItem({
@@ -29,7 +30,11 @@ const read = ({
       routeName,
       _id: id as string,
       path: route.path,
+      route,
     });
+
+    if (route.authRole !== "public")
+      authorizeAccess({ route, routeName, item, req });
 
     // return response
     appResponse({

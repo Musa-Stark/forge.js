@@ -5,6 +5,7 @@ import appResponse from "../../utils/response.js";
 import { hash } from "../../utils/libsodium.js";
 import getOTPModel from "./getOTPModel.js";
 import verifyCredentials from "./verifyCredentials.js";
+import type { Route } from "../../types/Collection.js";
 
 const createOTPUser = async ({
   body,
@@ -12,47 +13,69 @@ const createOTPUser = async ({
   purpose,
   routeName,
   modelName,
+  route,
 }: {
   body: any;
   res: Response;
   purpose: string;
   routeName: string;
   modelName: string;
+  route: Route;
 }) => {
   // otp model
-  const OTPModel = getOTPModel()!;
+  const OTPModel = getOTPModel(route)!;
 
-  // if not purpose
+  // if no purpose
   if (!purpose)
     throw new AppError({
-      message: "Purpose is required for OTP model",
-      statusCode: 409,
+      message: "purpose is required.",
+      statusCode: 400,
+      code: "MISSING_PARAMETER",
+      hint: "Provide purpose before creating an OTP request.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   // if already requested otp
-  const existingOTPs = await OTPModel?.find({ email: body.email });
+  const existingOTPs = await OTPModel.find({ email: body.email });
+
   for (const el of existingOTPs) {
     if (el.toObject().purpose === purpose)
       throw new AppError({
-        message: "You have already requested an OTP",
+        message: "OTP has already been requested.",
         statusCode: 409,
-        data: {
-          nextStep: "check your email spam folder or request another OTP",
+        code: "RESOURCE_ALREADY_EXISTS",
+        hint: "Check your email, including the spam folder, or request another OTP after the current one expires.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
   }
 
-  // if login - mode:otp
+  // if login - mode: otp
   if (purpose === "login")
-    await verifyCredentials({ modelName, body, routeName });
+    await verifyCredentials({
+      modelName,
+      body,
+      routeName,
+      route,
+    });
 
   // send otp + handle hashing
-  const { OTP, otpExpiry } = await sendOTP(body.email);
-  const hashedOTP = await hash(OTP);
-  if (body?.password) body.password = await hash(body.password);
+  const { OTP, otpExpiry } = await sendOTP(body.email, route);
+
+  const hashedOTP = await hash(OTP, route);
+
+  if (body?.password)
+    body.password = await hash(body.password, route);
 
   // create otp
-  await OTPModel?.create({
+  await OTPModel.create({
     ...body,
     OTP: hashedOTP,
     otpExpiry,

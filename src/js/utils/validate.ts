@@ -1,18 +1,26 @@
 import AppError from "./AppError.js";
 import z from "zod";
 import { closest, distance } from "fastest-levenshtein";
+import getErrorDetail from "./getErrorDetail.js";
+import type { Route } from "../types/Collection.js";
 
-const validate = (validationSchema: any, body: any) => {
+const validate = (validationSchema: any, body: any, route: Route) => {
   if (!validationSchema)
     throw new AppError({
       message: "validationSchema is required to validate",
       statusCode: 409,
+      code: "VALIDATION_SCHEMA_REQUIRED",
+      details: getErrorDetail(route),
+      hint: "Provide validation in validationsObj. Use same name as key as provided in route configuration",
     });
 
   if (!body)
     throw new AppError({
       message: "body is required to validate",
       statusCode: 409,
+      code: "BODY_MISSING",
+      details: getErrorDetail(route),
+      hint: "Provide body (Data from frontend or postman etc.)",
     });
 
   const zodBodyObj = z.object(validationSchema);
@@ -37,7 +45,7 @@ const validate = (validationSchema: any, body: any) => {
       // Get the invalid value from the request body
       const invalidValue = issue.path.reduce<any>(
         (obj, key) => obj?.[key],
-        body
+        body,
       );
 
       if (typeof invalidValue === "string") {
@@ -56,6 +64,9 @@ const validate = (validationSchema: any, body: any) => {
     throw new AppError({
       message: `${field}: ${message}`,
       statusCode: 409,
+      code: "VALIDATION_FAILED",
+      details: getErrorDetail(route),
+      hint: "Check the keys you provided in collection -> valdiationsObj -> validationSchema. It should be similar to body -> item key"
     });
   }
 

@@ -1,22 +1,26 @@
 import getModel from "../../utils/getModel.js";
 import AppError from "../../utils/AppError.js";
+import type { Route } from "../../types/Collection.js";
 
 const getUser = async ({
   modelName,
   routeName,
   email,
   needPassword,
+  route,
 }: {
   modelName: string;
   routeName: string;
   email: string;
   needPassword?: boolean;
+  route: Route;
 }) => {
   // model
-  const Model = getModel({ modelName, routeName });
+  const Model = getModel({ modelName, routeName, route });
 
   // user
   let user: any = null;
+
   if (needPassword) {
     user = await Model.findOne({ email }).select("+password");
   } else {
@@ -25,7 +29,17 @@ const getUser = async ({
 
   // if user not found
   if (!user)
-    throw new AppError({ message: "User not found.", statusCode: 404 });
+    throw new AppError({
+      message: "User not found.",
+      statusCode: 404,
+      code: "AUTH_USER_NOT_FOUND",
+      hint: "Verify the provided email address or create a new account.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
+    });
 
   return user;
 };

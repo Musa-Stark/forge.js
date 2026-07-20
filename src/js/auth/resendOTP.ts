@@ -13,26 +13,32 @@ const resendOTP = ({
   modelName,
   routeName,
   validationsObj,
-  route
+  route,
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
-  route: Route
+  route: Route;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
     const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email)
       throw new AppError({
-        message:
-          "collection error: email and purpose is required to resendOTP in validationsObj",
-        statusCode: 409,
+        message: "email and purpose are required.",
+        statusCode: 400,
+        code: "VALIDATION_REQUIRED_FIELD_MISSING",
+        hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // if user not found
@@ -40,12 +46,14 @@ const resendOTP = ({
       modelName,
       routeName,
       email: body.email as string,
+      route
     });
 
-    // get otpuser
+    // get otp user
     const OTPUser = await getOTPUser({
       email: body.email as string,
       purpose: body.purpose as string,
+      route,
     });
 
     // if otp already verified
@@ -58,9 +66,9 @@ const resendOTP = ({
       return;
     }
 
-    // sendOTP
-    const { OTP, otpExpiry } = await sendOTP(body.email as string);
-    const hashedOTP = await hash(OTP);
+    // send OTP
+    const { OTP, otpExpiry } = await sendOTP(body.email as string, route);
+    const hashedOTP = await hash(OTP, route);
 
     OTPUser.otpCount = 0;
     OTPUser.OTP = hashedOTP;
@@ -68,16 +76,16 @@ const resendOTP = ({
     OTPUser.isVerified = false;
 
     // save updated otp
-    OTPUser.save();
+    await OTPUser.save();
 
     // send response
     appResponse({
       res,
       message: "OTP resent successfully!",
+      statusCode: 200,
       data: {
         nextStep: "go to /verify-otp",
       },
-      statusCode: 200,
     });
   };
 };

@@ -12,12 +12,10 @@ import type { Upload } from "./upload.ts";
 
 export type Handler = healthHandlers | authHandlers | crudHandlers | uploadHandlers;
 
-export type Middleware = "upload";
-export type MiddlewareInput = Middleware | Middleware[];
+// export type Middleware = "upload";
+// export type MiddlewareInput = Middleware | Middleware[];
 
 export type AuthRole = "admin" | "adminOrOwner" | "authenticated" | "public";
-export type AuthInput = AuthRole;
-
 export type RouteMethod = "get" | "post" | "patch" | "delete";
 export type AuthMode = "credentials" | "otp";
 // | "magic-link" | "oauth";
@@ -27,16 +25,16 @@ export interface Route {
   path: RoutePath;
   handler: Handler;
   validationKey: string | boolean;
-  authRole: AuthInput;
-  middlewareArray?: MiddlewareInput;
+  authRole: AuthRole;
+  // middlewareArray?: MiddlewareInput;
   fileArray?: Upload[];
-  emailsArray?: Email | Email[];
+  // emailsArray?: Email | Email[];
   mode?: AuthMode;
 }
 
 export type MongooseSchema = {
   status: "pending" | "accepted" | "rejected";
-  provider: OAuthProvider;
+  // provider: OAuthProvider;
   role: Role;
 } & {
   [key: string]: MongooseField;
@@ -47,16 +45,13 @@ export type ValidationsObj = {} & {
 };
 
 export type ReqType = "auth" | "health" | "crud";
-// | "admin"
 // | "realtime"
-// | "upload";
 
 export interface Collection {
-  routeName: string;
-  modelName?: string;
-  routesArray: Route[];
   reqType: ReqType;
+  routeName: string;
+  routesArray: Route[];
+  modelName?: string;
   mongooseSchemaObj?: MongooseSchema;
-
   validationsObj?: ValidationsObj;
 }

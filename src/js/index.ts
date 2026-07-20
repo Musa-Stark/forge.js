@@ -3,25 +3,25 @@ import type { Collection } from "./types/Collection.ts";
 import { defaultConfig } from "./config/defaultConfig.js";
 import { setEnvs } from "./config/envs.js";
 
-class StarkCore {
+class StarkForge {
   config: Constructor;
-  constructor(config: Partial<Constructor>) {
+  constructor(object: Partial<Constructor>) {
     this.config = {
       ...defaultConfig,
-      ...config,
+      ...object,
     };
 
     setEnvs(this.config);
   }
 }
 
-export default StarkCore;
+export default StarkForge;
 export { default as startServer } from "./app.js";
 export { default as mongooseFields } from "./lib/mongoose.fields.js";
 export { default as zodFields } from "./lib/zod.fields.js";
 
-export const collection = (values: Collection): Collection => {
-  return values;
+export const collection = (object: Collection): Collection => {
+  return object;
 };
 
 export { generateJWTSecret, generateMasterKey } from "./utils/libsodium.js";

@@ -26,18 +26,24 @@ const verifyOTP = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email || !req.body.otp)
       throw new AppError({
-        message:
-          "collection error: email, otp and purpose are required to verify otp in validationsObj",
-        statusCode: 409,
+        message: "email, otp and purpose are required.",
+        statusCode: 400,
+        code: "VALIDATION_REQUIRED_FIELD_MISSING",
+        hint: "Provide email, otp and purpose in the request body.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // OTPModel: otp model
-    const OTPModel = getOTPModel()!;
+    const OTPModel = getOTPModel(route)!;
 
     const OTPData = await OTPModel?.findOne({
       email: body.email,
@@ -47,10 +53,14 @@ const verifyOTP = ({
     // if otp request not found
     if (!OTPData)
       throw new AppError({
-        message: "No OTP request was found for the provided email address.",
-        statusCode: 409,
-        data: {
-          nextStep: "login or signup",
+        message: "OTP request not found.",
+        statusCode: 404,
+        code: "CRUD_ITEM_NOT_FOUND",
+        hint: "Request a new OTP or verify the provided email and purpose.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
 
@@ -72,33 +82,46 @@ const verifyOTP = ({
     // if otp try limit reached
     if (OTPData.otpCount > OTPData.maxOTPTries)
       throw new AppError({
-        message:
-          "The maximum number of OTP verification attempts has been exceeded. Please request a new OTP.",
+        message: "Maximum OTP verification attempts exceeded.",
         statusCode: 429,
-        data: {
-          nextStep: "request another OTP",
+        code: "AUTH_FORBIDDEN",
+        hint: "Request a new OTP before trying again.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
 
     // if otp expired
     if (new Date() > OTPData.otpExpiry)
       throw new AppError({
-        message: "The OTP has expired. Please request a new one.",
+        message: "OTP has expired.",
         statusCode: 409,
-        data: {
-          nextStep: "request another OTP",
+        code: "AUTH_TOKEN_EXPIRED",
+        hint: "Request a new OTP and try again.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
 
     // if otp didn't matched
-    const isValid = await verifyHash(body.otp as string, OTPData.OTP);
+    const isValid = await verifyHash(body.otp as string, OTPData.OTP, route);
     if (!isValid) {
-      // increment otpCount
       await OTPModel.updateOne({ _id: OTPData._id }, { $inc: { otpCount: 1 } });
 
       throw new AppError({
-        message: "Invalid OTP. Please try again.",
+        message: "Invalid OTP.",
         statusCode: 409,
+        code: "AUTH_TOKEN_INVALID",
+        hint: "Verify the OTP and try again.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
     }
 
@@ -121,6 +144,7 @@ const verifyOTP = ({
       res,
       routeName,
       modelName,
+      route,
     });
   };
 };

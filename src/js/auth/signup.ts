@@ -22,25 +22,37 @@ const signup = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // validation
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
-    // if no email or password in validation
+    // if no email or password
     if (!req.body.email || !req.body.password)
       throw new AppError({
-        message:
-          "collection error: email and password are required to signup in validationsObj",
-        statusCode: 409,
+        message: "email and password are required.",
+        statusCode: 400,
+        code: "VALIDATION_REQUIRED_FIELD_MISSING",
+        hint: "Provide email and password in the request body.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // if existing user
-    const Model = getModel({ modelName, routeName })!;
-    const existing = await Model?.findOne({ email: body.email });
+    const Model = getModel({ modelName, routeName, route })!;
+
+    const existing = await Model.findOne({ email: body.email });
+
     if (existing)
       throw new AppError({
-        message: `User with this email already exists`,
+        message: "User with this email already exists.",
         statusCode: 409,
-        data: {
-          nextStep: "login or use another account",
+        code: "AUTH_EMAIL_ALREADY_EXISTS",
+        hint: "Login with the existing account or use a different email address.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
 
@@ -50,6 +62,7 @@ const signup = ({
       routeName,
       modelName,
       purpose: "signup",
+      route
     });
   };
 };

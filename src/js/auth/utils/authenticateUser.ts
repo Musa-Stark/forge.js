@@ -7,28 +7,33 @@ import handleIsVerified from "./handleIsVerified.js";
 import getOTPModel from "./getOTPModel.js";
 import getUser from "./getUser.js";
 import { sendCookie } from "./sendCookie.js";
+import type { Route } from "../../types/Collection.js";
 
 const authenticateUser = async ({
   body,
   modelName,
   res,
   routeName,
+  route,
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
+  route: Route;
 }) => {
   // otp model
-  const OTPModel = getOTPModel();
+  const OTPModel = getOTPModel(route);
 
   // handle is verified
-  let isVerified: boolean = false;
+  let isVerified = false;
   let isOTPUser: any = null;
+
   if ("isVerified" in body)
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "login",
+      route
     }));
 
   // user
@@ -37,22 +42,42 @@ const authenticateUser = async ({
     routeName,
     email: body.email as string,
     needPassword: true,
+    route
   });
 
-  //   invalid password - not otpuser - mode credentials
+  // invalid password - credentials mode
   if (!isOTPUser) {
-    const isValid = await verifyHash(body.password, user.password);
+    const isValid = await verifyHash(body.password, user.password, route);
+
     if (!isValid)
-      throw new AppError({ message: "Invalid password", statusCode: 409 });
+      throw new AppError({
+        message: "Invalid password.",
+        statusCode: 401,
+        code: "AUTH_PASSWORD_INCORRECT",
+        hint: "Verify your password and try again.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
+      });
   }
 
-  //   remove from otpmodel
-  if (isVerified) await OTPModel!.deleteOne({ _id: body._id });
+  // remove from otp model
+  if (isVerified)
+    await OTPModel!.deleteOne({
+      _id: body._id,
+    });
 
   const { _id } = user.toObject();
 
-  // send cookied
-  sendCookie({ res, cookieName: "authToken", payload: { sub: _id } });
+  // send cookie
+  sendCookie({
+    res,
+    cookieName: "authToken",
+    payload: { sub: _id },
+    route,
+  });
 
   // send response
   appResponse({

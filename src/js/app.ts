@@ -11,10 +11,11 @@ import AppLog from "./utils/AppLog.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { rateLimiter } from "./middleware/rateLimit.middleware.js";
+import healthCollection from "./health/health.collection.js";
 
 // body - middlewares
-const jsonParser = express.json()
-const urlencodedParser = express.urlencoded({ extended: true })
+const jsonParser = express.json();
+const urlencodedParser = express.urlencoded({ extended: true });
 app.use(cookieParser());
 app.use(helmet());
 app.use(rateLimiter());
@@ -60,7 +61,11 @@ const startServer = async (): Promise<void> => {
   await connectDB({ isOffline, mongoDBURI, databaseName });
 
   // call - handleCollection
-  handleCollection(collections!);
+  if (collections) {
+    handleCollection([healthCollection, ...collections!]);
+  } else {
+    handleCollection([healthCollection]);
+  }
 
   // route not found
   app.use((req, res) => {

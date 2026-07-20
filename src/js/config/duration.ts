@@ -1,3 +1,4 @@
+import type { Route } from "../types/Collection.js";
 import AppError from "../utils/AppError.js";
 
 export const DURATIONS = {
@@ -20,9 +21,19 @@ export const DURATIONS = {
 
 export type DurationType = keyof typeof DURATIONS;
 
-const getDuration = (key: DurationType) => {
+const getDuration = (key: DurationType, route: Route) => {
   if (!DURATIONS[key])
-    throw new AppError({ message: "Invalid duration key", statusCode: 409 });
+    throw new AppError({
+      message: "Invalid duration key",
+      statusCode: 409,
+      code: "FRAMEWORK_CONFIGURATION_INVALID",
+      hint: 'Write duration like "1m", "1h" or "1d"',
+      details: {
+        handler: route.handler || "",
+        method: route.method || "",
+        path: route.path || "",
+      },
+    });
 
   return DURATIONS[key];
 };

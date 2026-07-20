@@ -21,14 +21,20 @@ const login = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // if no email or password in validation
     if (!req.body.email || !req.body.password)
       throw new AppError({
-        message:
-          "collection error: email and password are required to login in validationsObj",
+         message: "Email and password are required",
         statusCode: 409,
+        code: "AUTH_CONFIGURATION_INVALID",
+        hint: 'Provide email and password to login',
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     await modeMap.login[route.mode!]({
@@ -37,6 +43,7 @@ const login = ({
       purpose: "login",
       routeName,
       modelName,
+      route
     });
   };
 };

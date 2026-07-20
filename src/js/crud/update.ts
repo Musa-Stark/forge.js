@@ -25,23 +25,24 @@ const update = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "update" });
+    const id = getParam({ req, route });
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // ensure item exists
     const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
+      route
     });
 
     // authorize access
     authorizeAccess({ item, req, route, routeName });
 
     // model
-    const Model = getModel({ modelName, routeName });
+    const Model = getModel({ modelName, routeName, route });
 
     // update
     const updatedItem = await Model.findByIdAndUpdate(id, body, {

@@ -2,22 +2,29 @@ export interface AppErrorConstructor {
   message: string;
   statusCode: number;
   isOperational?: boolean;
-  data?: {
-    nextStep?: string;
-    cause?: string;
+  code: string;
+  details: {
+    handler: string;
+    method: string;
+    path: string;
   };
+  hint: string;
 }
 
 class AppError extends Error {
   statusCode;
   isOperational;
-  data;
+  code;
+  details;
+  hint;
   constructor(values: AppErrorConstructor) {
     super(values.message);
     this.message = values.message;
     this.statusCode = values.statusCode;
     this.isOperational = values.isOperational ?? true;
-    this.data = values.data ?? undefined;
+    this.code = values.code;
+    this.details = values.details;
+    this.hint = values.hint;
   }
 }
 

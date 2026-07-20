@@ -22,13 +22,19 @@ const forgotPassword = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     if (!req.body.email)
       throw new AppError({
-        message:
-          "collection error: email is required for forget password in validationsObj",
+        message: "Email is required",
         statusCode: 409,
+        code: "AUTH_CONFIGURATION_INVALID",
+        hint: 'Provide email your email for resetting password',
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // user
@@ -36,6 +42,7 @@ const forgotPassword = ({
       modelName,
       routeName,
       email: body.email as string,
+      route
     });
 
     // send + create otp user
@@ -45,6 +52,7 @@ const forgotPassword = ({
       purpose: "password_reset",
       routeName,
       modelName,
+      route,
     });
   };
 };

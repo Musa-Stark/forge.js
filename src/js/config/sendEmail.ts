@@ -2,12 +2,14 @@ import { Resend } from "resend";
 
 import { getEnvs } from "./envs.js";
 import AppError from "../utils/AppError.js";
+import type { Route } from "../types/Collection.js";
 
 export interface Email {
   from: string;
   subject: string;
   htmlBody: string;
   to: string | string[];
+  route: Route;
 }
 
 const sendEmail = async ({
@@ -15,17 +17,32 @@ const sendEmail = async ({
   subject,
   htmlBody,
   to,
+  route,
 }: Email): Promise<boolean> => {
   if (!from)
     throw new AppError({
       message: "Email sender is required",
       statusCode: 404,
+      code: "EMAIL_CONFIGURATION_INVALID",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   if (!to) {
     throw new AppError({
       message: "Email receiver is required",
       statusCode: 404,
+      code: "EMAIL_INVALID_RECIPIENT",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
   }
 
@@ -33,11 +50,28 @@ const sendEmail = async ({
     throw new AppError({
       message: "Email subject is required",
       statusCode: 404,
+      code: "EMAIL_INVALID_SUBJECT",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
   }
 
   if (!htmlBody) {
-    throw new AppError({ message: "Email body is required", statusCode: 404 });
+    throw new AppError({
+      message: "Email body is required",
+      statusCode: 404,
+      code: "EMAIL_INVALID_BODY",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
+    });
   }
 
   // email didin't sent, mongoose timeout error
@@ -47,6 +81,13 @@ const sendEmail = async ({
     throw new AppError({
       message: "resendAPIKey is required",
       statusCode: 404,
+      code: "EMAIL_CONFIGURATION_INVALID",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
   }
 
@@ -60,9 +101,19 @@ const sendEmail = async ({
   });
 
   if (error) {
-    console.log("Email error: ")
+    console.log("Email error: ");
     console.dir(error, { depth: null });
-    throw new AppError({ message: error.message, statusCode: 409 });
+    throw new AppError({
+      message: error.message,
+      statusCode: 409,
+      code: "EMAIL_CONFIGURATION_INVALID",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
+    });
   }
 
   return true;

@@ -1,9 +1,10 @@
 import { v2 as cloudinary } from "cloudinary";
 import { getEnvs } from "./envs.js";
 import AppError from "../utils/AppError.js";
+import type { Route } from "../types/Collection.js";
 
 // setup cloudinary
-const setupCloudinary = () => {
+const setupCloudinary = (route: Route) => {
   const { cloudinaryAPIKey, cloudinaryCloudName, cloudinaryAPISecret } =
     getEnvs();
 
@@ -12,6 +13,13 @@ const setupCloudinary = () => {
       message:
         "cloudinaryAPIKey, cloudinaryCloudName and cloudinaryAPISecret are required",
       statusCode: 409,
+      code: "CLOUDINARY_CONFIGURATION_INVALID",
+      hint: "Make sure you have provided all these 3 in order to use cloudinary as a file storage service",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   cloudinary.config({
