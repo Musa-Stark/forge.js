@@ -56,6 +56,13 @@ const createModel = (
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
       statusCode: 409,
+      code: "MODEL_FACTORY_ERROR",
+      hint: "This issue requires a fix from the framework developer.",
+      details: {
+        handler: "",
+        method: "",
+        path: "",
+      },
     });
 
   const schema = buildSchema(normalizeDefinition(definition));

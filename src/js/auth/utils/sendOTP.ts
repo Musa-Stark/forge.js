@@ -2,9 +2,11 @@ import { randomInt } from "crypto";
 import { getEnvs } from "../../config/envs.js";
 import sendEmail from "../../config/sendEmail.js";
 import AppError from "../../utils/AppError.js";
+import type { Route } from "../../types/Collection.js";
 
 const sendOTP = async (
   email: string,
+  route: Route
 ): Promise<{ OTP: string; otpExpiry: number }> => {
   const OTP = randomInt(100000, 1000000).toString();
   const otpExpiry = Date.now() + 1000 * 60 * 5;
@@ -31,6 +33,7 @@ const sendOTP = async (
     htmlBody,
     subject: "OTP Verification",
     to: email,
+    route,
   });
 
   return { OTP, otpExpiry };

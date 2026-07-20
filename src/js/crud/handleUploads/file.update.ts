@@ -27,7 +27,7 @@ const updateFile = ({
     const body = validate(validationObj, req.body, route);
 
     // get param
-    const param = getParam({ req, routeName, handler: route.handler });
+    const param = getParam({ req, route });
 
     // get item
     let item = await getItem({

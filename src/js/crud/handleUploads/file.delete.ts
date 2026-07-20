@@ -29,8 +29,7 @@ const deleteFile = ({
     // get param
     const param = getParam({
       req,
-      routeName,
-      handler: route.handler,
+      route
     });
 
     // get item

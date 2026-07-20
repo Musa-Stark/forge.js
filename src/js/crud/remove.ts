@@ -23,7 +23,7 @@ const remove = ({
     getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "remove" });
+    const id = getParam({ req, route });
 
     // ensure item exists
     const item = await getItem({

@@ -16,12 +16,18 @@ const crud = (
 ) => {
   const { apiVersion } = getEnvs();
   for (const route of routes) {
-
     // push middleware to middlewares
     if (!route.authRole)
       throw new AppError({
-        message: `authRole is required in REQUEST_TYPE: 'crud', METHOD: '${route.method}', PATH: '${route.path}', HANDLER: '${route.handler}'`,
+        message: "authRole is required",
         statusCode: 409,
+        code: "CRUD_AUTHROLE_NOT_FOUND",
+        hint: "Write authRole in collections -> routes -> authRole. Make it public if this route doesn't need authentication or authorization",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // middlewares array
@@ -33,7 +39,7 @@ const crud = (
     // upload in route
     if (route?.fileArray)
       middlewares.push(handleMulterMiddleware(route.fileArray));
-    
+
     // app.get("/", (req, res) => {})
     app[route.method](
       `/api/v${apiVersion}/${routeName}${route.path}`,

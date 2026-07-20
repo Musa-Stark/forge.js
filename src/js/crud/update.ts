@@ -25,7 +25,7 @@ const update = ({
     const validationObj = getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "update" });
+    const id = getParam({ req, route });
 
     // validate
     const body = validate(validationObj, req.body, route);

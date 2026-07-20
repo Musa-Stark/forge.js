@@ -13,26 +13,32 @@ const resendOTP = ({
   modelName,
   routeName,
   validationsObj,
-  route
+  route,
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
-  route: Route
+  route: Route;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj, route);
+    const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email)
       throw new AppError({
-        message:
-          "collection error: email and purpose is required to resendOTP in validationsObj",
+        message: "Email and purpose are required",
         statusCode: 409,
+        code: "AUTH_CONFIGURATION_INVALID",
+        hint: 'Provide email and purpose of resending OTP like "login", "signup" etc.',
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // if user not found
@@ -59,7 +65,7 @@ const resendOTP = ({
     }
 
     // sendOTP
-    const { OTP, otpExpiry } = await sendOTP(body.email as string);
+    const { OTP, otpExpiry } = await sendOTP(body.email as string, route);
     const hashedOTP = await hash(OTP, route);
 
     OTPUser.otpCount = 0;

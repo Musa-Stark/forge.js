@@ -19,10 +19,10 @@ const createBulk = ({
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj, route);
+    const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // model
     const Model = getModel({ modelName, routeName, route });

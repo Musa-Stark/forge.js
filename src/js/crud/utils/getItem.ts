@@ -9,14 +9,14 @@ const getItem = async ({
   path,
   _id,
   clean = true,
-  route
+  route,
 }: {
   modelName: string;
   routeName: string;
   path?: string;
   _id?: string;
   clean?: boolean;
-  route: Route
+  route: Route;
 }) => {
   // get model
   const Model = getModel({ modelName, routeName, route });
@@ -39,14 +39,28 @@ const getItem = async ({
     // if _id is wrong
     if (msg.includes("Cast to ObjectId failed")) {
       throw new AppError({
-        message: `Invalid mongoose _id | route: /${routeName}`,
+        message: `Invalid mongoose _id`,
         statusCode: 409,
+        code: "CRUD_ITEM_NOT_FOUND",
+        hint: "Check the /:id you provided in URL. It doesn't match any document's _id in database",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
     } else {
       // general purpose error
       throw new AppError({
-        message: `Error while finding item for the id: ${_id} | route: /${routeName}`,
+        message: `Error while finding item for the id: ${_id}`,
         statusCode: 409,
+        code: "CRUD_ITEM_NOT_FOUND",
+        hint: "Check the /:id you provided in URL.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
     }
   }
@@ -56,12 +70,16 @@ const getItem = async ({
 
   if (notFound) {
     throw new AppError({
-      message: `${_id ? "Item" : "Data"} not found for route: /${routeName}`,
+      message: `${_id ? "Item" : "Data"} not found`,
       statusCode: 404,
-      data: {
-        nextStep: _id
-          ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
-          : "Hit a POST request and insert an item",
+      code: "CRUD_ITEM_NOT_FOUND",
+      hint: _id
+        ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
+        : "Hit a POST request and create an item",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
       },
     });
   }

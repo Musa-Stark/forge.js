@@ -50,7 +50,7 @@ const createOTPUser = async ({
     await verifyCredentials({ modelName, body, routeName, route });
 
   // send otp + handle hashing
-  const { OTP, otpExpiry } = await sendOTP(body.email);
+  const { OTP, otpExpiry } = await sendOTP(body.email, route);
   const hashedOTP = await hash(OTP, route);
   if (body?.password) body.password = await hash(body.password, route);
 

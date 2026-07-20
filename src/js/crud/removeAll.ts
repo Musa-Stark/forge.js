@@ -35,10 +35,14 @@ const removeAll = ({
 
     if (notFound) {
       throw new AppError({
-        message: `Data not found for route: /${routeName}`,
+        message: `Data not found to delete`,
         statusCode: 404,
-        data: {
-          nextStep: "Hit a POST request and insert an item",
+        code: "CRUD_ITEM_NOT_FOUND",
+        hint: "Hit a POST request to insert an item",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
         },
       });
     }

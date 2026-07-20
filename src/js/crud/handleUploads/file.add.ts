@@ -21,15 +21,21 @@ const addFile = ({
     // if fileArray is missing
     if (!route?.fileArray?.length)
       throw new AppError({
-        message: `fileArray is missing or empty in handler: '${route.handler}', method: '${route.method}', path: '${route.path}' to add file`,
+        message: "fileArray is missing or empty",
         statusCode: 400,
+        code: "INVALID_CONFIGURATION",
+        hint: "Checkout the collection configuration if fileArray is missing or empty",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // get param
     const param = getParam({
       req,
-      routeName,
-      handler: route.handler,
+      route
     });
 
     // get item
@@ -39,7 +45,7 @@ const addFile = ({
       _id: param as string,
       path: route.path,
       clean: false,
-      route
+      route,
     });
 
     // authorizeAccess
@@ -56,9 +62,12 @@ const addFile = ({
           throw new AppError({
             message: `mongooseSchemaFieldName: '${field}' not found in mongodb document.`,
             statusCode: 400,
-            data: {
-              nextStep:
-                "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document.",
+            code: "INVALID_CONFIGURATION",
+            hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document.",
+            details: {
+              handler: route.handler,
+              method: route.method,
+              path: route.path,
             },
           });
         item[field].push(...files);

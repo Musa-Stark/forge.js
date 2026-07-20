@@ -22,10 +22,10 @@ const create = ({
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj, route);
+    const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
     // if files
     const fileMetaData = await handleUploadFiles(req, route);
@@ -37,8 +37,15 @@ const create = ({
     const owner = req.user?._id;
     if (!owner)
       throw new AppError({
-        message: `authRole should'nt be public for route: '/${routeName}', method: '${route.method}' and path: '${route.path}'`,
+        message: "authRole should'nt be public",
         statusCode: 409,
+        code: "CRUD_INVALIDT_AUTHROLE",
+        hint: "Make the authRole admin or adminOrOwner",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // create
@@ -59,11 +66,28 @@ const create = ({
         throw new AppError({
           message: `Item with this '${field}' already exists`,
           statusCode: 409,
+          code: "CRUD_ITEM_ALREADY_EXISTS",
+          hint: `'${field}' is declared as unique in collection -> mongooseSchemaObj`,
+          details: {
+            handler: route.handler,
+            method: route.method,
+            path: route.path,
+          },
         });
       }
 
       // throw e.message
-      throw new AppError({ message: e.message, statusCode: 409 });
+      throw new AppError({
+        message: e.message,
+        statusCode: 409,
+        code: "CRUD_ERROR",
+        hint: "This issue may requires a fix from the framework developer.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
+      });
     }
 
     // appresponse

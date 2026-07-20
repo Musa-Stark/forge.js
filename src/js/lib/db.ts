@@ -42,6 +42,7 @@ const connectDB = async ({
   } catch (error) {
     AppLog("x", "db", "Error while connecting!");
     AppLog("x", "db", (error as Error).message);
+    process.exit(1);
   }
 };
 

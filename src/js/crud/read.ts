@@ -21,7 +21,7 @@ const read = ({
     getValidationKey(route, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, routeName, handler: "read" });
+    const id = getParam({ req, route });
 
     // findById item
     const item = await getItem({

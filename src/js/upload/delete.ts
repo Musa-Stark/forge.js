@@ -4,17 +4,24 @@ import type { Route } from "../types/Collection.ts";
 import AppLog from "../utils/AppLog.js";
 
 const handleDeleteFile = async (route: Route, body: any, item: any) => {
-  setupCloudinary();
+  setupCloudinary(route);
 
-  // if fileArray = undefined, [], false, length = 0
   const fileArray = route.fileArray;
+
   if (!Array.isArray(fileArray) || fileArray.length === 0)
     throw new AppError({
-      message: `fileArray is missing or empty for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      message: "fileArray is required.",
       statusCode: 400,
+      code: "UPLOAD_ARRAY_REQUIRED",
+      hint:
+        "Provide fileArray in the collection route configuration for delete handlers.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // if more than 1 file
   if (fileArray.length > 1)
     AppLog(
       "warn",
@@ -22,62 +29,105 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       `fileArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
     );
 
-  // if mongooseSchemaFieldName not found
   const mongooseField = fileArray[0]?.mongooseSchemaFieldName;
+
   if (typeof mongooseField !== "string" || mongooseField.trim() === "")
     throw new AppError({
-      message: `mongooseSchemaFieldName is required in collection fileArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      message: "mongooseSchemaFieldName is required.",
       statusCode: 400,
+      code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
+      hint:
+        "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // if mongoose field not found in stored document
   const mongooseFilesArray = item[mongooseField];
+
   if (!mongooseFilesArray)
     throw new AppError({
-      message: `'${mongooseField}' is not found in item (mongodb) as mongooseSchemaFieldName of handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      message: `'${mongooseField}' field not found.`,
       statusCode: 400,
+      code: "SCHEMA_FIELD_REQUIRED",
+      hint:
+        "Ensure mongooseSchemaFieldName matches an existing schema field.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // validationIdentifierKey
   const validationIdentifierKey = fileArray[0]?.validationIdentifierKey;
+
   if (
     typeof validationIdentifierKey !== "string" ||
     validationIdentifierKey.trim() === ""
   )
     throw new AppError({
-      message: `validationIdentifierKey is required in collection fileArray for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      message: "validationIdentifierKey is required.",
       statusCode: 400,
+      code: "VALIDATION_KEY_REQUIRED",
+      hint:
+        "Provide validationIdentifierKey in collection -> fileArray configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // if identifier not provided in req.body
   if (!body[validationIdentifierKey])
     throw new AppError({
-      message: `validationIdentifierKey: '${validationIdentifierKey}' is required in collection validationsObj or req.body for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      message: `'${validationIdentifierKey}' is required.`,
       statusCode: 400,
+      code: "VALIDATION_REQUIRED_FIELD_MISSING",
+      hint: `Provide '${validationIdentifierKey}' in the request body.`,
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // find target file
   const targetItem = mongooseFilesArray.find(
     (el: any) => el._id.toString() === body[validationIdentifierKey],
   );
 
   if (!targetItem)
     throw new AppError({
-      message: `File with _id: ${body[validationIdentifierKey]} not found in array: ${mongooseField} for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
-      statusCode: 400,
+      message: `File with id '${body[validationIdentifierKey]}' not found.`,
+      statusCode: 404,
+      code: "CRUD_ITEM_NOT_FOUND",
+      hint:
+        "Verify the provided file identifier exists in the stored file array.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // if storageKey missing
   if (
     typeof targetItem.storageKey !== "string" ||
     targetItem.storageKey.trim() === ""
   )
     throw new AppError({
-      message: `storageKey not found for file with _id: ${body[validationIdentifierKey]}.`,
+      message: "storageKey is required.",
       statusCode: 400,
+      code: "UPLOAD_STORAGE_KEY_REQUIRED",
+      hint:
+        "Ensure the stored file contains a valid storageKey before deletion.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // delete from Cloudinary only
   await cloudinary.uploader.destroy(targetItem.storageKey);
 
   return {

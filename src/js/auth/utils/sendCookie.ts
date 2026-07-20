@@ -37,7 +37,7 @@ export const sendCookie = ({
   // send cookie
   res.cookie(cookieName, token, {
     httpOnly: true,
-    maxAge: getDuration(tokenExpiry),
+    maxAge: getDuration(tokenExpiry, route),
     sameSite: ENV === "production" ? "none" : "lax",
     secure: ENV === "production" ? true : false,
     domain: ENV === "production" ? domain : undefined,

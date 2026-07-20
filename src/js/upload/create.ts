@@ -5,8 +5,11 @@ import { cloudinary, setupCloudinary } from "../config/cloudinary.js";
 import type { Route } from "../types/Collection.js";
 import type { Request } from "express";
 
-const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
-  setupCloudinary();
+const uploadFile = (
+  file: Express.Multer.File,
+  route: Route,
+): Promise<StoreFile> => {
+  setupCloudinary(route);
 
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -17,8 +20,16 @@ const uploadFile = (file: Express.Multer.File): Promise<StoreFile> => {
         if (error || !result) {
           return reject(
             new AppError({
-              message: "Cloudinary upload failed. Please try later",
+              message: "Cloudinary upload failed.",
               statusCode: 500,
+              code: "UPLOAD_CLOUDINARY_FAILED",
+              hint:
+                "Verify your Cloudinary configuration, credentials, and network connectivity.",
+              details: {
+                handler: route.handler,
+                method: route.method,
+                path: route.path,
+              },
             }),
           );
         }
@@ -43,25 +54,40 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
   // if fileArray = undefined, [], false, length = 0
   if (!route?.fileArray?.length) return;
 
-  // if mongooseFieldName is missing
+  // if mongooseSchemaFieldName is missing
   for (const el of route.fileArray) {
     if (!el.mongooseSchemaFieldName)
       throw new AppError({
-        message: `mongooseSchemaFieldName is missing in handler: '${route.handler}', method: '${route.method}', path: '${route.path} to upload'`,
+        message: "mongooseSchemaFieldName is required.",
         statusCode: 400,
+        code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
+        hint:
+          "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
   }
 
   // if files not found
   if (!Object.keys(req.files ?? {}).length)
     throw new AppError({
-      message: `File(s) are required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to upload`,
+      message: "File is required.",
       statusCode: 400,
+      code: "UPLOAD_FILE_REQUIRED",
+      hint: "Upload at least one file using the configured upload field.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   const files = Object.values(req.files!).flat();
 
-  const metaData = await Promise.all(files.map(uploadFile));
+  const metaData = await Promise.all(files.map((file) => uploadFile(file, route)));
   const mongooseFieldName = route.fileArray[0]!.mongooseSchemaFieldName;
 
   return { [mongooseFieldName as string]: metaData };

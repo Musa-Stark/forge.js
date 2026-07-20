@@ -46,7 +46,7 @@ export const signJWT = ({
     }
 
     return jwt.sign(payload, jwtSecret, {
-      expiresIn: Math.floor(getDuration(tokenExpiry) / 1000),
+      expiresIn: Math.floor(getDuration(tokenExpiry, route) / 1000),
     });
   } catch (error) {
     if (error instanceof AppError) throw error;

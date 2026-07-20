@@ -10,13 +10,17 @@ const errorMiddleware = (
 ) => {
   const message = err.message || "Internal Server Error";
   const statusCode = err.statusCode || 500;
-  const data = err.data;
+  const code = err.code;
+  const details = err.details;
+  const hint = err.hint;
 
   AppLog("x", "error.middleware", message);
   // console.error(err);
 
   if (err.isOperational) {
-    return res.status(statusCode).json({ success: false, message, data });
+    return res
+      .status(statusCode)
+      .json({ success: false, message, code, details, hint });
   }
 
   if (err instanceof SyntaxError && "body" in err) {
