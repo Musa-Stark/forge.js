@@ -1,12 +1,15 @@
 import AppError from "./AppError.js";
 import z from "zod";
 import { closest, distance } from "fastest-levenshtein";
+import getErrorDetail from "./getErrorDetail.js";
+import type { Route } from "../types/Collection.js";
 
-const validate = (validationSchema: any, body: any) => {
+const validate = (validationSchema: any, body: any, route: Route) => {
   if (!validationSchema)
     throw new AppError({
       message: "validationSchema is required to validate",
       statusCode: 409,
+      code: "VALIDATION_SCHEMA_REQUIRED",
     });
 
   if (!body)
@@ -37,7 +40,7 @@ const validate = (validationSchema: any, body: any) => {
       // Get the invalid value from the request body
       const invalidValue = issue.path.reduce<any>(
         (obj, key) => obj?.[key],
-        body
+        body,
       );
 
       if (typeof invalidValue === "string") {

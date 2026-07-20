@@ -19,7 +19,7 @@ const signup = ({
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(route, validationsObj, route);
 
     // validation
     const body = validate(validationObj, req.body);

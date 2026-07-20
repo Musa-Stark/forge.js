@@ -1,5 +1,6 @@
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "./AppError.js";
+import getErrorDetail from "./getErrorDetail.js";
 
 const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   const key = route.validationKey;
@@ -8,12 +9,11 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   if (typeof key === "boolean")
     if (key) {
       throw new AppError({
-        message: `validationKey as boolean can only be 'false' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}'`,
+        message: "validationKey as boolean can only be 'false'",
         statusCode: 400,
-        data: {
-          nextStep:
-            "Provide it or make it false if this route doesn't need validation",
-        },
+        hint: "Make it false without ('', \"\" or ``)",
+        code: "ROUTE_VALIDATION_KEY_INVALID",
+        details: getErrorDetail(route),
       });
     } else {
       return;
@@ -22,12 +22,11 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   // if validationKey not provided
   if (key == null)
     throw new AppError({
-      message: `validationKey is required for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to validate`,
+      message: "validationKey is required",
       statusCode: 400,
-      data: {
-        nextStep:
-          "Provide it or make it false if this route doesn't need validation",
-      },
+      code: "ROUTE_VALIDATION_KEY_REQUIRED",
+      hint: "Provide it or make it false if this route doesn't need validation",
+      details: getErrorDetail(route),
     });
 
   // validationObject
@@ -36,8 +35,11 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
   // if validation not provided
   if (!validateObject)
     throw new AppError({
-      message: `validationKey: '${key}' is missing in validationsObj for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}'`,
+      message: `validationKey: '${key}' is missing in validationsObj`,
       statusCode: 400,
+      code: "VALIDATION_REQUIRED_FIELD_MISSING",
+      hint: `In validationsObj, use the '${key}' as key for validation`,
+      details: getErrorDetail(route),
     });
 
   // validate object

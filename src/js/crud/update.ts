@@ -22,7 +22,7 @@ const update = ({
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(route, validationsObj, route);
 
     // get /:parameter
     const id = getParam({ req, routeName, handler: "update" });

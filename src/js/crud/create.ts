@@ -22,7 +22,7 @@ const create = ({
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(route, validationsObj, route);
 
     // validate
     const body = validate(validationObj, req.body);
