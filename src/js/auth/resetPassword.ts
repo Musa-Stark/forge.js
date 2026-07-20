@@ -23,29 +23,37 @@ const resetPassword = ({
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj, route);
+    const validationObj = getValidationKey(route, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body);
+    const body = validate(validationObj, req.body, route);
 
-    // if no email or password in validation
+    // if no email or password in request
     if (!req.body.email || !req.body.password)
       throw new AppError({
-        message:
-          "collection error: email and password are required to reset password in validationsObj",
-        statusCode: 409,
+        message: "email and password are required.",
+        statusCode: 400,
+        code: "VALIDATION_REQUIRED_FIELD_MISSING",
+        hint: "Provide email and password in the request body.",
+        details: {
+          handler: route.handler,
+          method: route.method,
+          path: route.path,
+        },
       });
 
     // OTPUser
     await getOTPUser({
       email: body.email as string,
       purpose: "password_reset",
+      route,
     });
 
     // handle is verified or not
-    const { isVerified, isOTPUser } = await handleIsVerified({
+    const { isVerified } = await handleIsVerified({
       email: body.email as string,
       purpose: "password_reset",
+      route
     });
 
     // user
@@ -53,16 +61,19 @@ const resetPassword = ({
       modelName,
       routeName,
       email: body.email as string,
+      route
     });
 
     // update password
     user.password = await hash(body.password as string, route);
-    // save user
-    user.save();
 
-    const OTPModel = getOTPModel();
+    // save user
+    await user.save();
+
+    const OTPModel = getOTPModel(route);
+
     if (isVerified)
-      await OTPModel?.deleteOne({
+      await OTPModel.deleteOne({
         email: body.email as string,
         purpose: "password_reset",
       });
@@ -71,7 +82,7 @@ const resetPassword = ({
       res,
       message: "Password reset successfully!",
       data: {
-        nextStep: "got to /login",
+        nextStep: "go to /login",
       },
     });
   };

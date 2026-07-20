@@ -38,7 +38,7 @@ const crud = (
 
     // upload in route
     if (route?.fileArray)
-      middlewares.push(handleMulterMiddleware(route.fileArray));
+      middlewares.push(handleMulterMiddleware(route.fileArray, route));
 
     // app.get("/", (req, res) => {})
     app[route.method](

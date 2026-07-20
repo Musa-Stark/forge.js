@@ -30,10 +30,10 @@ const resendOTP = ({
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email)
       throw new AppError({
-        message: "Email and purpose are required",
-        statusCode: 409,
-        code: "AUTH_CONFIGURATION_INVALID",
-        hint: 'Provide email and purpose of resending OTP like "login", "signup" etc.',
+        message: "email and purpose are required.",
+        statusCode: 400,
+        code: "VALIDATION_REQUIRED_FIELD_MISSING",
+        hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
         details: {
           handler: route.handler,
           method: route.method,
@@ -46,12 +46,14 @@ const resendOTP = ({
       modelName,
       routeName,
       email: body.email as string,
+      route
     });
 
-    // get otpuser
+    // get otp user
     const OTPUser = await getOTPUser({
       email: body.email as string,
       purpose: body.purpose as string,
+      route,
     });
 
     // if otp already verified
@@ -64,7 +66,7 @@ const resendOTP = ({
       return;
     }
 
-    // sendOTP
+    // send OTP
     const { OTP, otpExpiry } = await sendOTP(body.email as string, route);
     const hashedOTP = await hash(OTP, route);
 
@@ -74,16 +76,16 @@ const resendOTP = ({
     OTPUser.isVerified = false;
 
     // save updated otp
-    OTPUser.save();
+    await OTPUser.save();
 
     // send response
     appResponse({
       res,
       message: "OTP resent successfully!",
+      statusCode: 200,
       data: {
         nextStep: "go to /verify-otp",
       },
-      statusCode: 200,
     });
   };
 };

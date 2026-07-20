@@ -42,6 +42,7 @@ const forgotPassword = ({
       modelName,
       routeName,
       email: body.email as string,
+      route
     });
 
     // send + create otp user

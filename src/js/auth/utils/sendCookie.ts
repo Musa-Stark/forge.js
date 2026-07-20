@@ -9,37 +9,48 @@ export const sendCookie = ({
   res,
   cookieName,
   payload,
-  route
+  route,
 }: {
   res: Response;
   cookieName: string;
   payload: string | object;
-  route: Route
+  route: Route;
 }) => {
-  // tokenExpiry + ENV + domain
   const { tokenExpiry, ENV, domain } = getEnvs();
 
-  if (!ENV)
+  if (!tokenExpiry || !ENV)
     throw new AppError({
-      message: "tokenExpiry and ENV are requried for cookie",
-      statusCode: 409,
+      message: "tokenExpiry and ENV are required.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define tokenExpiry and ENV in your environment configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   if (ENV === "production" && !domain)
     throw new AppError({
-      message: "environment is set: production and domain: not found",
-      statusCode: 409,
+      message: "domain is required in production.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define domain when ENV is set to production.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // token
   const token = signJWT({ payload, route });
 
-  // send cookie
   res.cookie(cookieName, token, {
     httpOnly: true,
     maxAge: getDuration(tokenExpiry, route),
     sameSite: ENV === "production" ? "none" : "lax",
-    secure: ENV === "production" ? true : false,
+    secure: ENV === "production",
     domain: ENV === "production" ? domain : undefined,
   });
 };
@@ -47,26 +58,40 @@ export const sendCookie = ({
 export const clearCookie = ({
   res,
   cookieName,
+  route,
 }: {
   res: Response;
   cookieName: string;
+  route: Route;
 }) => {
-  // ENV + domain
   const { ENV, domain } = getEnvs();
 
   if (!ENV)
     throw new AppError({
-      message: "ENV is required for clearing cookie",
-      statusCode: 409,
+      message: "ENV is required.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define ENV in your environment configuration.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
   if (ENV === "production" && !domain)
     throw new AppError({
-      message: "environment is set: production and domain: not found",
-      statusCode: 409,
+      message: "domain is required in production.",
+      statusCode: 500,
+      code: "MISSING_ENVIRONMENT_VARIABLE",
+      hint: "Define domain when ENV is set to production.",
+      details: {
+        handler: route.handler,
+        method: route.method,
+        path: route.path,
+      },
     });
 
-  // clear cookie
   res.clearCookie(cookieName, {
     httpOnly: true,
     sameSite: ENV === "production" ? "none" : "lax",

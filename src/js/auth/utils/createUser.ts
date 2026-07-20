@@ -23,7 +23,7 @@ const createUser = async ({
   route: Route;
 }) => {
   const Model = getModel({ modelName, routeName, route });
-  const OTPModel = getOTPModel();
+  const OTPModel = getOTPModel(route);
 
   // isVerified - mode:otp
   let isVerified: boolean = false;
@@ -32,6 +32,7 @@ const createUser = async ({
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "signup",
+      route
     }));
 
   // delete body._id | hash password
