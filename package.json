@@ -1,23 +1,59 @@
 {
-  "name": "backend-nexus",
+  "name": "@starklabs/forge",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A TypeScript-first Express framework for building production-ready APIs with zero boilerplate.",
+  "type": "module",
+  "main": "./dist/js/index.js",
+  "types": "./dist/js/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/js/index.js",
+      "types": "./dist/js/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Musa-Stark/backend-nexus.git"
+    "url": "git+https://github.com/Musa-Stark/stark-forge.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
   "bugs": {
-    "url": "https://github.com/Musa-Stark/backend-nexus/issues"
+    "url": "https://github.com/Musa-Stark/stark-forge/issues"
   },
-  "homepage": "https://github.com/Musa-Stark/backend-nexus#readme",
+  "homepage": "https://github.com/Musa-Stark/stark-forge#readme",
+  "keywords": [
+    "stark-forge",
+    "starklabs",
+    "express",
+    "node",
+    "nodejs",
+    "typescript",
+    "backend",
+    "framework",
+    "api",
+    "rest",
+    "crud",
+    "authentication",
+    "auth",
+    "mongoose",
+    "mongodb",
+    "zod",
+    "file-upload",
+    "health-check",
+    "api-versioning",
+    "boilerplate"
+  ],
+  "author": "Musa Stark",
+  "license": "MIT",
   "dependencies": {
     "cloudinary": "^2.10.0",
     "compression": "^1.8.1",
