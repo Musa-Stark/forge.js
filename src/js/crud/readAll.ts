@@ -17,9 +17,6 @@ const read = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
-    // validationObj
-    getValidationKey(route, validationsObj);
-
     // find items
     const items = await getItem({
       modelName,

@@ -1,5 +1,6 @@
 import type { Route } from "../../types/Collection.js";
 import AppError from "../../utils/AppError.js";
+import getErrorDetail from "../../utils/getErrorDetail.js";
 import getModel from "../../utils/getModel.js";
 import { sanitizeMany, sanitizeOne } from "../../utils/sanitize.js";
 
@@ -25,14 +26,29 @@ const getItem = async ({
   let data: any = null;
 
   try {
+    let query;
+
+    // if _id provided?? find 1 item else find all
     if (_id) {
-      // if only 1 item to find
-      data = await Model?.findById(_id).populate("owner", "_id email");
+      query = Model.findById(_id);
     } else {
-      // if all items to find
-      data = await Model?.find().populate("owner", "_id email");
+      query = Model.find();
     }
-    // catch error
+
+    const populateKey = route.populateKey;
+    if (populateKey) {
+      if (typeof populateKey === "boolean")
+        throw new AppError({
+          code: "CRUD_CONFIGURATION_INVALID",
+          hint: "populateKey as boolean must be 'false' only. Else it should be string, representing the ref in your mongooseSchemaObj.",
+          message: "Invalid populateKey",
+          statusCode: 409,
+          details: getErrorDetail(route),
+        });
+      query = query.populate(populateKey as string, "_id email");
+    }
+
+    data = await query;
   } catch (error) {
     // get err message
     const msg = (error as Error).message;
@@ -42,25 +58,19 @@ const getItem = async ({
         message: `Invalid mongoose _id`,
         statusCode: 409,
         code: "CRUD_ITEM_NOT_FOUND",
-        hint: "Check the /:id you provided in URL. It doesn't match any document's _id in database",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        hint: "Check the /:id you provided in URL. It doesn't match any document's _id in database.",
+        details: getErrorDetail(route),
       });
     } else {
       // general purpose error
+      const err = error as AppError;
+      console.log(err);
       throw new AppError({
-        message: `Error while finding item for the id: ${_id}`,
-        statusCode: 409,
-        code: "CRUD_ITEM_NOT_FOUND",
-        hint: "Check the /:id you provided in URL.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        message: err.message || "Error while finding item(s)",
+        statusCode: err.statusCode || 409,
+        code: err.code || "CRUD_ITEM_ERROR",
+        hint: err.hint || "Check the logs for detail info.",
+        details: err.details || getErrorDetail(route),
       });
     }
   }
@@ -76,11 +86,7 @@ const getItem = async ({
       hint: _id
         ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
         : "Hit a POST request and create an item",
-      details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
-      },
+      details: getErrorDetail(route),
     });
   }
 

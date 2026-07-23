@@ -20,6 +20,7 @@ const crudCollection = collection({
       handler: "readAll",
       authRole: "public",
       validationKey: false,
+      populateKey: true
     },
     {
       method: "get",
