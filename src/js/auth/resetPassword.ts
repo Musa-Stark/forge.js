@@ -9,6 +9,8 @@ import { hash } from "../utils/libsodium.js";
 import getOTPModel from "./utils/getOTPModel.js";
 import appResponse from "../utils/response.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const resetPassword = ({
   modelName,
@@ -35,11 +37,7 @@ const resetPassword = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // OTPUser

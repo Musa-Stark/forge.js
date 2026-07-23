@@ -4,6 +4,8 @@ import modeMap from "./utils/modeMap.js";
 import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const login = ({
   modelName,
@@ -30,11 +32,7 @@ const login = ({
         statusCode: 409,
         code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email and password to login',
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     await modeMap.login[route.mode!]({

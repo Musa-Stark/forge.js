@@ -5,6 +5,8 @@ import authorizeAccess from "./utils/authroizeAccess.js";
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const removeAll = ({
   modelName,
@@ -39,11 +41,7 @@ const removeAll = ({
         statusCode: 404,
         code: "CRUD_ITEM_NOT_FOUND",
         hint: "Hit a POST request to insert an item",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
     }
 

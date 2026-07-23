@@ -5,6 +5,8 @@ import AppError from "../utils/AppError.js";
 import modeMap from "./utils/modeMap.js";
 import getModel from "../utils/getModel.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const signup = ({
   modelName,
@@ -31,11 +33,7 @@ const signup = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // if existing user
@@ -49,11 +47,7 @@ const signup = ({
         statusCode: 409,
         code: "AUTH_EMAIL_ALREADY_EXISTS",
         hint: "Login with the existing account or use a different email address.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     await modeMap.signup[route.mode!]({

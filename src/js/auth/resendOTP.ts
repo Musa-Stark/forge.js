@@ -8,6 +8,8 @@ import appResponse from "../utils/response.js";
 import getOTPUser from "./utils/getOTPUser.js";
 import getUser from "./utils/getUser.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const resendOTP = ({
   modelName,
@@ -34,11 +36,7 @@ const resendOTP = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // if user not found

@@ -8,6 +8,8 @@ import getOTPModel from "./getOTPModel.js";
 import getUser from "./getUser.js";
 import { sendCookie } from "./sendCookie.js";
 import type { Route } from "../../types/Collection.js";
+import getErrorDetail from "../../utils/getErrorDetail.js";
+
 
 const authenticateUser = async ({
   body,
@@ -55,11 +57,7 @@ const authenticateUser = async ({
         statusCode: 401,
         code: "AUTH_PASSWORD_INCORRECT",
         hint: "Verify your password and try again.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
   }
 
