@@ -52,7 +52,7 @@ const update = ({
     // return response
     appResponse({
       res,
-      data: sanitizeOne(updatedItem!.toObject()),
+      data: sanitizeOne(updatedItem!.toObject(), route),
       message: "Item updated successfully!",
     });
   };

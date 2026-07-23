@@ -1,15 +1,21 @@
-export const sanitizeOne = (item: any) => {
-  const { password, createdAt, updatedAt, __v, ...clean } = item;
-  return clean;
+import type { Route } from "../types/Collection.js";
+
+export const sanitizeOne = (item: any, route: Route) => {
+  ["password", ...(route?.mongooseConfigObj?.hiddenFieldsArray ?? [])].forEach(
+    (key) => delete item[key],
+  );
+
+  return item;
 };
 
-export const sanitizeMany = (items: any) => {
-  let cleaned: any[] = [];
+export const sanitizeMany = (items: any[], route: Route) => {
+  return items.map((item) => {
+    const clean = item.toObject();
 
-  items.map((el: any) => {
-    const { password, createdAt, updatedAt, __v, ...clean } = el.toObject();
-    cleaned.push(clean);
+    ["password", ...(route?.mongooseConfigObj?.hiddenFieldsArray ?? [])].forEach(
+      (key) => delete clean[key],
+    );
+
+    return clean;
   });
-
-  return cleaned;
 };

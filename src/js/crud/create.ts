@@ -87,7 +87,7 @@ const create = ({
     // appresponse
     appResponse({
       res,
-      data: sanitizeOne(newItem.toObject()),
+      data: sanitizeOne(newItem.toObject(), route),
       message: "Item created successfully!",
     });
   };

@@ -82,7 +82,7 @@ const authenticateUser = async ({
     res,
     message: "Authenticated successfully!",
     statusCode: 200,
-    data: sanitizeOne(user.toObject()),
+    data: sanitizeOne(user.toObject(), route),
   });
 };
 

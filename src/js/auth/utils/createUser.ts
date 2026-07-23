@@ -61,7 +61,7 @@ const createUser = async ({
     res,
     message: "Your account has been created successfully!",
     statusCode: 201,
-    data: sanitizeOne(newUser.toObject()),
+    data: sanitizeOne(newUser.toObject(), route),
   });
 };
 

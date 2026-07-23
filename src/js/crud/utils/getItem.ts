@@ -35,7 +35,8 @@ const getItem = async ({
       query = Model.find();
     }
 
-    const populateKey = route.populateKey;
+    // populateKey - populate
+    const populateKey = route?.mongooseConfigObj?.populateKey;
     if (populateKey) {
       if (typeof populateKey === "boolean")
         throw new AppError({
@@ -92,8 +93,8 @@ const getItem = async ({
 
   if (clean) {
     data = Array.isArray(data)
-      ? sanitizeMany(data)
-      : sanitizeOne(data.toObject());
+      ? sanitizeMany(data, route)
+      : sanitizeOne(data.toObject(), route);
   }
 
   // return item or items

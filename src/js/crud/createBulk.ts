@@ -33,7 +33,7 @@ const createBulk = ({
     // return response
     appResponse({
       res,
-      data: sanitizeMany(newItems),
+      data: sanitizeMany(newItems, route),
       message: "Items created successfully!",
     });
   };
