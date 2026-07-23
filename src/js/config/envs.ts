@@ -1,13 +1,13 @@
-import type { Constructor } from "../types/Constructor.ts";
+import type { InternalConstructor } from "../types/Constructor.ts";
 import { defaultConfig } from "./defaultConfig.js";
 
 let envs = { ...defaultConfig };
 
-const setEnvs = (values: Constructor): void => {
+const setEnvs = (values: InternalConstructor): void => {
   envs = values;
 };
 
-const getEnvs = (): Constructor => {
+const getEnvs = (): InternalConstructor => {
   return envs;
 };
 

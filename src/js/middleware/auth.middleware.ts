@@ -20,7 +20,7 @@ const findUser = async (id: string, route: Route) => {
     });
   }
 
-  const Model = registerModel[userModelName];
+  const Model = registerModel[userModelName as string];
 
   if (!Model) {
     throw new AppError({

@@ -1,6 +1,6 @@
-import type { Constructor } from "../types/Constructor.js";
+import type { InternalConstructor } from "../types/Constructor.js";
 
-export const defaultConfig: Constructor = {
+export const defaultConfig: InternalConstructor = {
   port: 5000,
   apiVersion: 1,
   isOffline: true,
@@ -10,4 +10,5 @@ export const defaultConfig: Constructor = {
   rateLimitDuration: "15m",
   maxReqLimit: 100,
   rateLimitMsg: "RLM: Too many requests, please try again later.",
+  userModelName: "otpUser",
 };

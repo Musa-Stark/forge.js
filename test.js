@@ -5,10 +5,7 @@ import StarkNexus, {
 } from "./dist/js/index.js";
 import "dotenv/config";
 
-import {
-  authCollection,
-  crudCollection,
-} from "./collections/index.js";
+import { authCollection, crudCollection } from "./collections/index.js";
 
 new StarkNexus({
   collections: [authCollection, crudCollection],
