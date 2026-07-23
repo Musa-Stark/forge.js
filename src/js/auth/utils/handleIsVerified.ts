@@ -1,6 +1,8 @@
 import AppError from "../../utils/AppError.js";
 import getOTPUser from "./getOTPUser.js";
 import type { Route } from "../../types/Collection.js";
+import getErrorDetail from "../../utils/getErrorDetail.js";
+
 
 const handleIsVerified = async ({
   email,
@@ -28,11 +30,7 @@ const handleIsVerified = async ({
         statusCode: 403,
         code: "AUTH_FORBIDDEN",
         hint: "Verify your email address before continuing.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
     }
   }

@@ -16,32 +16,38 @@ const authCollection = collection({
       handler: "signup",
       path: "/signup",
       mode: "otp",
+      validationKey: "signup"
     },
     {
       method: "post",
       handler: "verifyOTP",
       path: "/verify-otp",
+      validationKey: "verifyOTP"
     },
     {
       method: "post",
       handler: "login",
       path: "/login",
       mode: "otp",
+      validationKey: "login"
     },
     {
       method: "post",
       handler: "resendOTP",
       path: "/resend-otp",
+      validationKey: "resendOTP"
     },
     {
       method: "post",
       handler: "forgotPassword",
       path: "/forgot-password",
+      validationKey: "forgotPassword"
     },
     {
       method: "post",
       handler: "resetPassword",
       path: "/reset-password",
+      validationKey: "resetPassword"
     },
     {
       method: "get",

@@ -20,6 +20,10 @@ const crudCollection = collection({
       handler: "readAll",
       authRole: "public",
       validationKey: false,
+      mongooseConfigObj: {
+        populateKey: "owner",
+        hiddenFieldsArray: ["__v", "updatedAt"]
+      }
     },
     {
       method: "get",

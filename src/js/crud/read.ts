@@ -18,9 +18,6 @@ const read = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
-    // validationObj
-    getValidationKey(route, validationsObj);
-
     // get /:parameter
     const id = getParam({ req, route });
 

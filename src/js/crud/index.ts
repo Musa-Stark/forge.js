@@ -6,6 +6,8 @@ import type { ValidationsObj, Route } from "../types/Collection.ts";
 import protect from "../middleware/auth.middleware.js";
 import AppError from "../utils/AppError.js";
 import { handleMulterMiddleware } from "../middleware/multer.middleware.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const crud = (
   app: Express,
@@ -23,11 +25,7 @@ const crud = (
         statusCode: 409,
         code: "CRUD_AUTHROLE_NOT_FOUND",
         hint: "Write authRole in collections -> routes -> authRole. Make it public if this route doesn't need authentication or authorization",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // middlewares array

@@ -8,6 +8,8 @@ import appResponse from "../utils/response.js";
 import { MongoServerError } from "mongodb";
 import { handleUploadFiles } from "../upload/index.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const create = ({
   modelName,
@@ -41,11 +43,7 @@ const create = ({
         statusCode: 409,
         code: "CRUD_INVALIDT_AUTHROLE",
         hint: "Make the authRole admin or adminOrOwner",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // create
@@ -82,18 +80,14 @@ const create = ({
         statusCode: 409,
         code: "CRUD_ERROR",
         hint: "This issue may requires a fix from the framework developer.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
     }
 
     // appresponse
     appResponse({
       res,
-      data: sanitizeOne(newItem.toObject()),
+      data: sanitizeOne(newItem.toObject(), route),
       message: "Item created successfully!",
     });
   };

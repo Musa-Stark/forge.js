@@ -4,6 +4,8 @@ import type { StoreFile } from "../types/StoreFile.js";
 import { cloudinary, setupCloudinary } from "../config/cloudinary.js";
 import type { Route } from "../types/Collection.js";
 import type { Request } from "express";
+import getErrorDetail from "../utils/getErrorDetail.js";
+
 
 const uploadFile = (
   file: Express.Multer.File,
@@ -63,11 +65,7 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
         code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
         hint:
           "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
   }
 

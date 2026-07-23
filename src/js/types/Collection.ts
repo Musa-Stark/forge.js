@@ -26,6 +26,10 @@ export interface Route {
   handler: Handler;
   validationKey: string | boolean;
   authRole: AuthRole;
+  mongooseConfigObj?: {
+    populateKey?: string | boolean;
+    hiddenFieldsArray?: string[]
+  };
   // middlewareArray?: MiddlewareInput;
   fileArray?: Upload[];
   // emailsArray?: Email | Email[];

@@ -6,6 +6,7 @@ import { hash } from "../../utils/libsodium.js";
 import getOTPModel from "./getOTPModel.js";
 import verifyCredentials from "./verifyCredentials.js";
 import type { Route } from "../../types/Collection.js";
+import getErrorDetail from "../../utils/getErrorDetail.js";
 
 const createOTPUser = async ({
   body,
@@ -49,11 +50,7 @@ const createOTPUser = async ({
         statusCode: 409,
         code: "RESOURCE_ALREADY_EXISTS",
         hint: "Check your email, including the spam folder, or request another OTP after the current one expires.",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
   }
 
@@ -71,8 +68,7 @@ const createOTPUser = async ({
 
   const hashedOTP = await hash(OTP, route);
 
-  if (body?.password)
-    body.password = await hash(body.password, route);
+  if (body?.password) body.password = await hash(body.password, route);
 
   // create otp
   await OTPModel.create({

@@ -26,5 +26,8 @@ export interface Constructor {
   adminEmailSender?: string;
   resendAPIKey?: string;
   tokenExpiry: DurationType;
-  userModelName?: string
+}
+
+export interface InternalConstructor extends Constructor {
+  userModelName?: String
 }

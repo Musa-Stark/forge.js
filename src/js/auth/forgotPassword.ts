@@ -5,6 +5,7 @@ import type { Request, Response } from "express";
 import createOTPUser from "./utils/createOTPUser.js";
 import getUser from "./utils/getUser.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import getErrorDetail from "../utils/getErrorDetail.js";
 
 const forgotPassword = ({
   modelName,
@@ -30,11 +31,7 @@ const forgotPassword = ({
         statusCode: 409,
         code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email your email for resetting password',
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // user

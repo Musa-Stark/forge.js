@@ -6,6 +6,8 @@ import appResponse from "../../utils/response.js";
 import { handleUploadFiles } from "../../upload/index.js";
 import AppError from "../../utils/AppError.js";
 import authorizeAccess from "../utils/authroizeAccess.js";
+import getErrorDetail from "../../utils/getErrorDetail.js";
+
 
 const addFile = ({
   modelName,
@@ -25,11 +27,7 @@ const addFile = ({
         statusCode: 400,
         code: "INVALID_CONFIGURATION",
         hint: "Checkout the collection configuration if fileArray is missing or empty",
-        details: {
-          handler: route.handler,
-          method: route.method,
-          path: route.path,
-        },
+        details: getErrorDetail(route),
       });
 
     // get param
