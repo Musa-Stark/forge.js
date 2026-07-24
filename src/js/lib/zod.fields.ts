@@ -211,6 +211,8 @@ export const zodValidations = {
   booleanTrue,
   booleanFalse,
   dateNow,
+  requiredDate,
+  optionalDate,
   stringArray,
   requiredStringArray,
   objectArray,
