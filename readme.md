@@ -186,7 +186,7 @@ collection({
     reqType: "crud",
     routeName: "expenses",
     modelName: "Expense",
-    routes,
+    routesArray: routes,
     mongooseSchemaObj: schema,
     validationsObj: validation,
 });
@@ -520,7 +520,7 @@ collection({
     reqType: "crud",
     routeName: "expenses",
     modelName: "Expense",
-    routes,
+    routesArray: routes,
     mongooseSchemaObj: schema,
     validationsObj: validation,
 });

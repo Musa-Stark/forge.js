@@ -65,7 +65,11 @@ export const booleanFalse = z.boolean().default(false);
  * =========================
  */
 
-export const dateNow = z.date().default(() => new Date());
+export const requiredDate = z.coerce.date();
+
+export const optionalDate = z.coerce.date().optional();
+
+export const dateNow = z.coerce.date().default(() => new Date());
 
 /**
  * =========================
