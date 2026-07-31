@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import type { SchemaDefinitionProperty } from "mongoose";
+import type { Model, SchemaDefinitionProperty } from "mongoose";
 
 import buildSchema from "./schema.builder.js";
 import AppLog from "../utils/AppLog.js";
@@ -52,10 +52,6 @@ const createModel = (
   name: string,
   definition: ModelDefinition,
 ): any => {
-  if (mongoose.modelNames().includes(name)) {
-    return mongoose.model(name);
-  }
-
   if (!definition)
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
