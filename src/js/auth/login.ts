@@ -9,21 +9,21 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 
 const login = ({
   modelName,
-  route,
+  routeObj,
   routeName,
   validationsObj,
 }: {
   modelName: string;
-  route: Route;
+  routeObj: Route;
   routeName: string;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password in validation
     if (!req.body.email || !req.body.password)
@@ -32,16 +32,16 @@ const login = ({
         statusCode: 409,
         code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email and password to login',
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
-    await modeMap.login[route.mode!]({
+    await modeMap.login[routeObj.mode!]({
       body,
       res,
       purpose: "login",
       routeName,
       modelName,
-      route
+      routeObj
     });
   };
 };

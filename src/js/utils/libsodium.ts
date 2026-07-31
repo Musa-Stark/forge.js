@@ -11,14 +11,14 @@ interface SealResult {
 }
 
 // Hash password
-export const hash = async (str: string, route: Route): Promise<string> => {
+export const hash = async (str: string, routeObj: Route): Promise<string> => {
   if (!str) {
     throw new AppError({
       message: "string is required to hash",
       statusCode: 404,
       code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -42,7 +42,7 @@ export const hash = async (str: string, route: Route): Promise<string> => {
 export const verifyHash = async (
   password: string,
   storedHash: string,
-  route: Route,
+  routeObj: Route,
 ): Promise<boolean> => {
   if (!password) {
     throw new AppError({
@@ -50,7 +50,7 @@ export const verifyHash = async (
       statusCode: 404,
       code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -60,7 +60,7 @@ export const verifyHash = async (
       statusCode: 404,
       code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -74,7 +74,7 @@ export const verifyHash = async (
       statusCode: 404,
       code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -124,7 +124,7 @@ export const generateJWTSecret = async (): Promise<string> => {
 export const seal = async (
   input: string,
   masterKey: string,
-  route: Route,
+  routeObj: Route,
 ): Promise<SealResult> => {
   try {
     if (!input) {
@@ -133,7 +133,7 @@ export const seal = async (
         statusCode: 404,
         code: "LIBSODIUM_HASH_ERROR",
         hint: "Provide a string to encrypt it.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -143,7 +143,7 @@ export const seal = async (
         statusCode: 404,
         code: "LIBSODIUM_HASH_ERROR",
         hint: "Provide masterkey in StarkForge({}) - initializing class",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -183,7 +183,7 @@ export const seal = async (
       statusCode: 404,
       code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 };
@@ -195,7 +195,7 @@ export const unSeal = async (
   publicKey: string,
   securedPrivateKey: string,
   masterKey: string,
-  route: Route,
+  routeObj: Route,
 ): Promise<string> => {
   try {
     if (!str) {
@@ -204,7 +204,7 @@ export const unSeal = async (
         statusCode: 400,
         code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the encrypted string returned by seal().",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -214,7 +214,7 @@ export const unSeal = async (
         statusCode: 400,
         code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the nonce returned by seal().",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -224,7 +224,7 @@ export const unSeal = async (
         statusCode: 400,
         code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the public key returned by seal().",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -234,7 +234,7 @@ export const unSeal = async (
         statusCode: 400,
         code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the secured private key returned by seal().",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -244,7 +244,7 @@ export const unSeal = async (
         statusCode: 400,
         code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the master key used during encryption.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -283,7 +283,7 @@ export const unSeal = async (
       statusCode: 500,
       code: "LIBSODIUM_DECRYPT_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 };

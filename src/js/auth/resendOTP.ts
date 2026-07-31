@@ -15,19 +15,19 @@ const resendOTP = ({
   modelName,
   routeName,
   validationsObj,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
-  route: Route;
+  routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email)
@@ -36,7 +36,7 @@ const resendOTP = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // if user not found
@@ -44,14 +44,14 @@ const resendOTP = ({
       modelName,
       routeName,
       email: body.email as string,
-      route
+      routeObj
     });
 
     // get otp user
     const OTPUser = await getOTPUser({
       email: body.email as string,
       purpose: body.purpose as string,
-      route,
+      routeObj,
     });
 
     // if otp already verified
@@ -65,8 +65,8 @@ const resendOTP = ({
     }
 
     // send OTP
-    const { OTP, otpExpiry } = await sendOTP(body.email as string, route);
-    const hashedOTP = await hash(OTP, route);
+    const { OTP, otpExpiry } = await sendOTP(body.email as string, routeObj);
+    const hashedOTP = await hash(OTP, routeObj);
 
     OTPUser.otpCount = 0;
     OTPUser.OTP = hashedOTP;

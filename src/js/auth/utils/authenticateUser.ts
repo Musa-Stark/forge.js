@@ -16,16 +16,16 @@ const authenticateUser = async ({
   modelName,
   res,
   routeName,
-  route,
+  routeObj,
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   // otp model
-  const OTPModel = getOTPModel(route);
+  const OTPModel = getOTPModel(routeObj);
 
   // handle is verified
   let isVerified = false;
@@ -35,7 +35,7 @@ const authenticateUser = async ({
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "login",
-      route
+      routeObj
     }));
 
   // user
@@ -44,12 +44,12 @@ const authenticateUser = async ({
     routeName,
     email: body.email as string,
     needPassword: true,
-    route
+    routeObj
   });
 
   // invalid password - credentials mode
   if (!isOTPUser) {
-    const isValid = await verifyHash(body.password, user.password, route);
+    const isValid = await verifyHash(body.password, user.password, routeObj);
 
     if (!isValid)
       throw new AppError({
@@ -57,7 +57,7 @@ const authenticateUser = async ({
         statusCode: 401,
         code: "AUTH_PASSWORD_INCORRECT",
         hint: "Verify your password and try again.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
   }
 
@@ -74,7 +74,7 @@ const authenticateUser = async ({
     res,
     cookieName: "authToken",
     payload: { sub: _id },
-    route,
+    routeObj,
   });
 
   // send response
@@ -82,7 +82,7 @@ const authenticateUser = async ({
     res,
     message: "Authenticated successfully!",
     statusCode: 200,
-    data: sanitizeOne(user.toObject(), route),
+    data: sanitizeOne(user.toObject(), routeObj),
   });
 };
 

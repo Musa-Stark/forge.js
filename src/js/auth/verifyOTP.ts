@@ -16,19 +16,19 @@ const verifyOTP = ({
   modelName,
   validationsObj,
   routeName,
-  route,
+  routeObj,
 }: {
   modelName: string;
   validationsObj: ValidationsObj;
   routeName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if body.purpose not found
     if (!req.body.purpose || !req.body.email || !req.body.otp)
@@ -36,12 +36,12 @@ const verifyOTP = ({
         message: "email, otp and purpose are required.",
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
-        hint: `Checkout if email, otp or purpose is missing in collection -> validationsObj -> ${route.validationKey}.`,
-        details: getErrorDetail(route),
+        hint: `Checkout if email, otp or purpose is missing in collection -> validationsObj -> ${routeObj.validationKey}.`,
+        details: getErrorDetail(routeObj),
       });
 
     // OTPModel: otp model
-    const OTPModel = getOTPModel(route)!;
+    const OTPModel = getOTPModel(routeObj)!;
 
     const OTPData = await OTPModel?.findOne({
       email: body.email,
@@ -55,7 +55,7 @@ const verifyOTP = ({
         statusCode: 404,
         code: "CRUD_ITEM_NOT_FOUND",
         hint: "Request a new OTP or verify the provided email and purpose.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // if otp already verified
@@ -80,7 +80,7 @@ const verifyOTP = ({
         statusCode: 429,
         code: "AUTH_FORBIDDEN",
         hint: "Request a new OTP before trying again.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // if otp expired
@@ -90,11 +90,11 @@ const verifyOTP = ({
         statusCode: 409,
         code: "OTP_EXPIRED",
         hint: "Request a new OTP and try again.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // if otp didn't matched
-    const isValid = await verifyHash(body.otp as string, OTPData.OTP, route);
+    const isValid = await verifyHash(body.otp as string, OTPData.OTP, routeObj);
     if (!isValid) {
       await OTPModel.updateOne({ _id: OTPData._id }, { $inc: { otpCount: 1 } });
 
@@ -103,7 +103,7 @@ const verifyOTP = ({
         statusCode: 409,
         code: "OTP_INVALID",
         hint: "Verify the OTP and try again.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -126,7 +126,7 @@ const verifyOTP = ({
       res,
       routeName,
       modelName,
-      route,
+      routeObj,
     });
   };
 };

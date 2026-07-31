@@ -7,16 +7,16 @@ import getErrorDetail from "../../utils/getErrorDetail.js";
 const handleIsVerified = async ({
   email,
   purpose,
-  route,
+  routeObj,
 }: {
   email: string;
   purpose: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   const isOTPUser = await getOTPUser({
     email,
     purpose,
-    route,
+    routeObj,
   });
 
   let isVerified = false;
@@ -30,7 +30,7 @@ const handleIsVerified = async ({
         statusCode: 403,
         code: "AUTH_FORBIDDEN",
         hint: "Verify your email address before continuing.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
   }

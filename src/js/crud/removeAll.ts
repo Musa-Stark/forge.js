@@ -11,23 +11,23 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 const removeAll = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    getValidationKey(route, validationsObj);
+    getValidationKey(routeObj, validationsObj);
 
     // authorize access
-    authorizeAccess({ route, routeName, req });
+    authorizeAccess({ routeObj, routeName, req });
 
     // model
-    const Model = getModel({ modelName, routeName, route });
+    const Model = getModel({ modelName, routeName, routeObj });
 
     // delete all
     const result = await Model.deleteMany({});
@@ -41,7 +41,7 @@ const removeAll = ({
         statusCode: 404,
         code: "CRUD_ITEM_NOT_FOUND",
         hint: "Hit a POST request to insert an item",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 

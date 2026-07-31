@@ -9,9 +9,9 @@ import { getEnvs } from "../config/envs.js";
 
 const uploadFile = (
   file: Express.Multer.File,
-  route: Route,
+  routeObj: Route,
 ): Promise<StoreFile> => {
-  setupCloudinary(route);
+  setupCloudinary(routeObj);
 
   const { cloudinaryFolderName } = getEnvs();
 
@@ -29,9 +29,9 @@ const uploadFile = (
               code: "UPLOAD_CLOUDINARY_FAILED",
               hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
-                handler: route.handler,
-                method: route.method,
-                path: route.path,
+                handler: routeObj.handler,
+                method: routeObj.method,
+                path: routeObj.path,
               },
             }),
           );
@@ -53,19 +53,19 @@ const uploadFile = (
   });
 };
 
-export const handleUploadFiles = async (req: Request, route: Route) => {
+export const handleUploadFiles = async (req: Request, routeObj: Route) => {
   // if fileArray = undefined, [], false, length = 0
-  if (!route?.fileArray?.length) return;
+  if (!routeObj?.fileArray?.length) return;
 
   // if mongooseSchemaFieldName is missing
-  for (const el of route.fileArray) {
+  for (const el of routeObj.fileArray) {
     if (!el.mongooseSchemaFieldName)
       throw new AppError({
         message: "mongooseSchemaFieldName is required.",
         statusCode: 400,
         code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
-        hint: "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
-        details: getErrorDetail(route),
+        hint: "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
+        details: getErrorDetail(routeObj),
       });
   }
 
@@ -77,18 +77,18 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
       code: "UPLOAD_FILE_REQUIRED",
       hint: "Upload at least one file using the configured upload field.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
   const files = Object.values(req.files!).flat();
 
   const metaData = await Promise.all(
-    files.map((file) => uploadFile(file, route)),
+    files.map((file) => uploadFile(file, routeObj)),
   );
-  const mongooseFieldName = route.fileArray[0]!.mongooseSchemaFieldName;
+  const mongooseFieldName = routeObj.fileArray[0]!.mongooseSchemaFieldName;
 
   return { [mongooseFieldName as string]: metaData };
 };

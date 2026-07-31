@@ -360,7 +360,7 @@ Forge is designed to eliminate repetitive backend engineering while remaining sc
 ### Core
 
 - Convention-based backend architecture
-- Dynamic route generation
+- Dynamic routeObj generation
 - Automatic Mongoose model creation
 - Built-in CRUD engine
 - Zero controller boilerplate
@@ -602,7 +602,7 @@ Routes are declarative.
 
 Instead of writing Express routers, middleware, controllers, authentication and validation manually...
 
-You simply describe the route.
+You simply describe the routeObj.
 
 ```ts
 {
@@ -616,7 +616,7 @@ You simply describe the route.
 
 Forge handles the rest.
 
-A complete CRUD resource can be expressed in only a handful of route objects.
+A complete CRUD resource can be expressed in only a handful of routeObj objects.
 
 Example:
 
@@ -720,7 +720,7 @@ Forge ships with production-ready handlers.
 
 No controller implementation required.
 
-Simply reference the handler name inside your route.
+Simply reference the handler name inside your routeObj.
 
 ---
 
@@ -748,13 +748,13 @@ Forge applies the appropriate middleware automatically.
 
 No imports.
 
-No route protection boilerplate.
+No routeObj protection boilerplate.
 
 ---
 
 # Uploads
 
-Uploads are configured per route.
+Uploads are configured per routeObj.
 
 Only routes that need uploads should configure uploads.
 

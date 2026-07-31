@@ -8,12 +8,12 @@ import authorizeAccess from "./utils/authroizeAccess.js";
 const read = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -21,12 +21,12 @@ const read = ({
     const items = await getItem({
       modelName,
       routeName,
-      path: route.path,
-      route,
+      path: routeObj.path,
+      routeObj,
     });
 
-    if (route.authRole !== "public")
-      authorizeAccess({ route, routeName, item: items[0], req });
+    if (routeObj.authRole !== "public")
+      authorizeAccess({ routeObj, routeName, item: items[0], req });
 
     // return response
     appResponse({

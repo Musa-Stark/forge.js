@@ -6,7 +6,7 @@ import type { Route } from "../../types/Collection.js";
 
 const sendOTP = async (
   email: string,
-  route: Route,
+  routeObj: Route,
 ): Promise<{ OTP: string; otpExpiry: number }> => {
   const OTP = randomInt(100000, 1000000).toString();
   const otpExpiry = Date.now() + 1000 * 60 * 5;
@@ -20,9 +20,9 @@ const sendOTP = async (
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define isOffline in your environment configuration.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -40,9 +40,9 @@ const sendOTP = async (
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define adminEmailSender in your environment configuration.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -51,7 +51,7 @@ const sendOTP = async (
     htmlBody,
     subject: "OTP Verification",
     to: email,
-    route,
+    routeObj,
   });
 
   return { OTP, otpExpiry };

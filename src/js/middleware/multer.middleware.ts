@@ -21,9 +21,9 @@ const multerMiddleware = multer({
     //       code: "UPLOAD_INVALID_IMAGE",
     //       hint: "Upload only image files.",
     //       details: {
-    //         handler: route.handler,
-    //         method: route.method,
-    //         path: route.path,
+    //         handler: routeObj.handler,
+    //         method: routeObj.method,
+    //         path: routeObj.path,
     //       },
     //     }),
     //   );
@@ -35,7 +35,7 @@ const multerMiddleware = multer({
 
 export const handleMulterMiddleware = (
   fileArray: Upload[],
-  route: Route,
+  routeObj: Route,
 ) => {
   if (!Array.isArray(fileArray))
     throw new AppError({
@@ -44,9 +44,9 @@ export const handleMulterMiddleware = (
       code: "UPLOAD_ARRAY_REQUIRED",
       hint: "Provide fileArray as an array in the collection configuration.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -113,12 +113,12 @@ export const handleMulterMiddleware = (
                 : code === "UPLOAD_TOO_MANY_FILES"
                   ? "Reduce the number of uploaded files."
                   : code === "UPLOAD_FIELD_NOT_FOUND"
-                    ? "Ensure the uploaded field name matches collection -> route -> fileArray -> fieldName. If these are multiple files, make 'multiple: true;'"
+                    ? "Ensure the uploaded field name matches collection -> routeObj -> fileArray -> fieldName. If these are multiple files, make 'multiple: true;'"
                     : "Check the upload request and try again.",
             details: {
-              handler: route.handler,
-              method: route.method,
-              path: route.path,
+              handler: routeObj.handler,
+              method: routeObj.method,
+              path: routeObj.path,
             },
           }),
         );
@@ -131,9 +131,9 @@ export const handleMulterMiddleware = (
           code: "UPLOAD_FAILED",
           hint: "An unexpected error occurred while processing the upload.",
           details: {
-            handler: route.handler,
-            method: route.method,
-            path: route.path,
+            handler: routeObj.handler,
+            method: routeObj.method,
+            path: routeObj.path,
           },
         }),
       );

@@ -7,12 +7,12 @@ const verifyCredentials = async ({
   modelName,
   body,
   routeName,
-  route,
+  routeObj,
 }: {
   modelName: string;
   body: any;
   routeName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   if (!modelName || !body)
     throw new AppError({
@@ -21,9 +21,9 @@ const verifyCredentials = async ({
       code: "MISSING_PARAMETER",
       hint: "Provide modelName and body before verifying credentials.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -33,10 +33,10 @@ const verifyCredentials = async ({
     routeName,
     email: body.email as string,
     needPassword: true,
-    route
+    routeObj
   });
 
-  const isValid = await verifyHash(body.password, user.password, route);
+  const isValid = await verifyHash(body.password, user.password, routeObj);
 
   if (!isValid)
     throw new AppError({
@@ -45,9 +45,9 @@ const verifyCredentials = async ({
       code: "AUTH_PASSWORD_INCORRECT",
       hint: "Verify your password and try again.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 };

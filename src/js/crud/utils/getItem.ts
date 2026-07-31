@@ -10,17 +10,17 @@ const getItem = async ({
   path,
   _id,
   clean = true,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
   path?: string;
   _id?: string;
   clean?: boolean;
-  route: Route;
+  routeObj: Route;
 }) => {
   // get model
-  const Model = getModel({ modelName, routeName, route });
+  const Model = getModel({ modelName, routeName, routeObj });
 
   // initialize data
   let data: any = null;
@@ -36,7 +36,7 @@ const getItem = async ({
     }
 
     // populateKey - populate
-    const populateKey = route?.mongooseConfigObj?.populateKey;
+    const populateKey = routeObj?.mongooseConfigObj?.populateKey;
     if (populateKey) {
       if (typeof populateKey === "boolean")
         throw new AppError({
@@ -44,7 +44,7 @@ const getItem = async ({
           hint: "populateKey as boolean must be 'false' only. Else it should be string, representing the ref in your mongooseSchemaObj.",
           message: "Invalid populateKey",
           statusCode: 409,
-          details: getErrorDetail(route),
+          details: getErrorDetail(routeObj),
         });
       query = query.populate(populateKey as string, "_id email");
     }
@@ -60,7 +60,7 @@ const getItem = async ({
         statusCode: 409,
         code: "CRUD_ITEM_NOT_FOUND",
         hint: "Check the /:id you provided in URL. It doesn't match any document's _id in database.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     } else {
       // general purpose error
@@ -71,7 +71,7 @@ const getItem = async ({
         statusCode: err.statusCode || 409,
         code: err.code || "CRUD_ITEM_ERROR",
         hint: err.hint || "Check the logs for detail info.",
-        details: err.details || getErrorDetail(route),
+        details: err.details || getErrorDetail(routeObj),
       });
     }
   }
@@ -87,14 +87,14 @@ const getItem = async ({
       hint: _id
         ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
         : "Hit a POST request and create an item",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
   if (clean) {
     data = Array.isArray(data)
-      ? sanitizeMany(data, route)
-      : sanitizeOne(data.toObject(), route);
+      ? sanitizeMany(data, routeObj)
+      : sanitizeOne(data.toObject(), routeObj);
   }
 
   // return item or items

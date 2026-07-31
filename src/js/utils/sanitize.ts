@@ -1,12 +1,12 @@
 import type { Route } from "../types/Collection.js";
 
-export const sanitizeOne = (item: any, route: Route) => {
+export const sanitizeOne = (item: any, routeObj: Route) => {
   // default excluded sensitive
   const defaultExcluded = ["password"];
 
   // developer based excluded
   const fields =
-    route?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
+    routeObj?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
 
   // merged
   let merged = [...defaultExcluded, ...fields];
@@ -36,7 +36,7 @@ export const sanitizeOne = (item: any, route: Route) => {
   return item;
 };
 
-export const sanitizeMany = (items: any[], route: Route) => {
+export const sanitizeMany = (items: any[], routeObj: Route) => {
   return items.map((el) => {
     // make el a JS object
     const item = el.toObject();
@@ -46,7 +46,7 @@ export const sanitizeMany = (items: any[], route: Route) => {
 
     // developer based excluded
     const fields =
-      route?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
+      routeObj?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
 
     // merged
     let merged = [...defaultExcluded, ...fields];

@@ -3,9 +3,9 @@ import { clearCookie } from "./utils/sendCookie.js";
 import appResponse from "../utils/response.js";
 import type { Route } from "../types/Collection.js";
 
-const logout = (route: Route) => {
+const logout = (routeObj: Route) => {
   return async (req: Request, res: Response) => {
-    clearCookie({ res, cookieName: "authToken", route });
+    clearCookie({ res, cookieName: "authToken", routeObj });
 
     appResponse({ res, message: "Logged out successfully!" });
   };

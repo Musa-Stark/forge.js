@@ -9,12 +9,12 @@ export const sendCookie = ({
   res,
   cookieName,
   payload,
-  route,
+  routeObj,
 }: {
   res: Response;
   cookieName: string;
   payload: string | object;
-  route: Route;
+  routeObj: Route;
 }) => {
   const { tokenExpiry, ENV, domain } = getEnvs();
 
@@ -25,9 +25,9 @@ export const sendCookie = ({
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define tokenExpiry and ENV in your environment configuration.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -38,17 +38,17 @@ export const sendCookie = ({
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define domain when ENV is set to production.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
-  const token = signJWT({ payload, route });
+  const token = signJWT({ payload, routeObj });
 
   res.cookie(cookieName, token, {
     httpOnly: true,
-    maxAge: getDuration(tokenExpiry, route),
+    maxAge: getDuration(tokenExpiry, routeObj),
     sameSite: ENV === "production" ? "none" : "lax",
     secure: ENV === "production",
     domain: ENV === "production" ? domain : undefined,
@@ -58,11 +58,11 @@ export const sendCookie = ({
 export const clearCookie = ({
   res,
   cookieName,
-  route,
+  routeObj,
 }: {
   res: Response;
   cookieName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   const { ENV, domain } = getEnvs();
 
@@ -73,9 +73,9 @@ export const clearCookie = ({
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define ENV in your environment configuration.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -86,9 +86,9 @@ export const clearCookie = ({
       code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define domain when ENV is set to production.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

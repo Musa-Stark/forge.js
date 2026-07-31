@@ -49,7 +49,7 @@ handlers/
 crud:
 
 reqType: crud
-route: products
+routeObj: products
 modelName: Product
 mongooseschema = name, price, category, isAvailable, description (optional), image
 validations = //

@@ -4,10 +4,10 @@ import type { Route } from "../../types/Collection.js";
 
 const getParam = ({
   req,
-  route,
+  routeObj,
 }: {
   req: Request;
-  route: Route;
+  routeObj: Route;
 }) => {
   const key: string = Object.keys(req.params)[0]!;
 
@@ -18,9 +18,9 @@ const getParam = ({
       code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: "Provide path, check collection -> routes -> path configuration or your URL",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path
       }
     });
 

@@ -11,25 +11,25 @@ import authorizeAccess from "../utils/authroizeAccess.js";
 const deleteFile = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validation
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // get param
     const param = getParam({
       req,
-      route
+      routeObj
     });
 
     // get item
@@ -37,17 +37,17 @@ const deleteFile = ({
       modelName,
       routeName,
       _id: param as string,
-      path: route.path,
+      path: routeObj.path,
       clean: false,
-      route
+      routeObj
     });
 
      // authorizeAccess
-    authorizeAccess({ route, routeName, item, req });
+    authorizeAccess({ routeObj, routeName, item, req });
 
     // delete file from cloudinary
     const { _id, mongooseField } =
-      (await handleDeleteFile(route, body, item)) || {};
+      (await handleDeleteFile(routeObj, body, item)) || {};
 
     // remove from mongoose array
     item[mongooseField as string].id(_id)?.deleteOne();

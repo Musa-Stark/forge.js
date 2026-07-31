@@ -10,22 +10,22 @@ const createBulk = ({
   modelName,
   routeName,
   validationsObj,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // model
-    const Model = getModel({ modelName, routeName, route });
+    const Model = getModel({ modelName, routeName, routeObj });
 
     // create
     const newItems = await Model.insertMany(body);
@@ -33,7 +33,7 @@ const createBulk = ({
     // return response
     appResponse({
       res,
-      data: sanitizeMany(newItems, route),
+      data: sanitizeMany(newItems, routeObj),
       message: "Items created successfully!",
     });
   };

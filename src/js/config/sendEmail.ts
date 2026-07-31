@@ -9,7 +9,7 @@ export interface Email {
   subject: string;
   htmlBody: string;
   to: string | string[];
-  route: Route;
+  routeObj: Route;
 }
 
 const sendEmail = async ({
@@ -17,7 +17,7 @@ const sendEmail = async ({
   subject,
   htmlBody,
   to,
-  route,
+  routeObj,
 }: Email): Promise<boolean> => {
   if (!from)
     throw new AppError({
@@ -26,9 +26,9 @@ const sendEmail = async ({
       code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -39,9 +39,9 @@ const sendEmail = async ({
       code: "EMAIL_INVALID_RECIPIENT",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
   }
@@ -53,9 +53,9 @@ const sendEmail = async ({
       code: "EMAIL_INVALID_SUBJECT",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
   }
@@ -67,9 +67,9 @@ const sendEmail = async ({
       code: "EMAIL_INVALID_BODY",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
   }
@@ -84,9 +84,9 @@ const sendEmail = async ({
       code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
   }
@@ -109,9 +109,9 @@ const sendEmail = async ({
       code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
   }

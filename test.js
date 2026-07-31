@@ -2,13 +2,19 @@ import StarkNexus, {
   startServer,
   generateJWTSecret,
   generateMasterKey,
+  app,
 } from "./dist/js/index.js";
 import "dotenv/config";
 
-import { authCollection, crudCollection, userCollection } from "./collections/index.js";
+import {
+  authCollection,
+  crudCollection,
+  userCollection,
+  testCollection,
+} from "./collections/index.js";
 
 new StarkNexus({
-  collections: [authCollection, crudCollection, userCollection],
+  collections: [authCollection, crudCollection, userCollection, testCollection],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",

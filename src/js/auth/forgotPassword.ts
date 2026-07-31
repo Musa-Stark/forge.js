@@ -11,19 +11,19 @@ const forgotPassword = ({
   modelName,
   routeName,
   validationsObj,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
   validationsObj: ValidationsObj;
-  route: Route;
+  routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     if (!req.body.email)
       throw new AppError({
@@ -31,7 +31,7 @@ const forgotPassword = ({
         statusCode: 409,
         code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email your email for resetting password',
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // user
@@ -39,7 +39,7 @@ const forgotPassword = ({
       modelName,
       routeName,
       email: body.email as string,
-      route
+      routeObj
     });
 
     // send + create otp user
@@ -49,7 +49,7 @@ const forgotPassword = ({
       purpose: "password_reset",
       routeName,
       modelName,
-      route,
+      routeObj,
     });
   };
 };

@@ -2,7 +2,7 @@ import registerModel from "../../lib/model.registry.js";
 import AppError from "../../utils/AppError.js";
 import type { Route } from "../../types/Collection.js";
 
-const getOTPModel = (route: Route) => {
+const getOTPModel = (routeObj: Route) => {
   const Model = registerModel["otpUser"];
 
   if (!Model)
@@ -12,9 +12,9 @@ const getOTPModel = (route: Route) => {
       code: "CRUD_MODEL_NOT_FOUND",
       hint: "Initialize the OTP model before using OTP authentication.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

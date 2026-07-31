@@ -32,20 +32,20 @@ const auth = (
   registerModel["otpUser"] = otpUserModel;
   // }
 
-  for (const route of routes) {
+  for (const routeObj of routes) {
     // auth.middleware.ts
     const middleware = [];
-    if (route.path === "/logout") middleware.push(protect(route));
+    if (routeObj.path === "/logout") middleware.push(protect(routeObj));
 
-    app[route.method](
+    app[routeObj.method](
       // /api/v1/auth/signup
-      `/api/v${apiVersion}/${routeName}${route.path}`,
+      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
       ...middleware,
       asyncHandler(
-        handlerMap[route.handler]({
+        handlerMap[routeObj.handler]({
           modelName,
           routeName,
-          route,
+          routeObj,
           validationsObj,
         }),
       ),
