@@ -83,6 +83,7 @@
     "@types/morgan": "^1.9.10",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.0",
-    "@types/streamifier": "^0.1.2"
+    "@types/streamifier": "^0.1.2",
+    "typescript": "^7.0.2"
   }
 }
