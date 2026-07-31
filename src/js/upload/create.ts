@@ -5,7 +5,7 @@ import { cloudinary, setupCloudinary } from "../config/cloudinary.js";
 import type { Route } from "../types/Collection.js";
 import type { Request } from "express";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import { getEnvs } from "../config/envs.js";
 
 const uploadFile = (
   file: Express.Multer.File,
@@ -13,10 +13,12 @@ const uploadFile = (
 ): Promise<StoreFile> => {
   setupCloudinary(route);
 
+  const { cloudinaryFolderName } = getEnvs();
+
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: "framework",
+        folder: cloudinaryFolderName || "starkForge",
       },
       (error, result) => {
         if (error || !result) {
@@ -25,8 +27,7 @@ const uploadFile = (
               message: "Cloudinary upload failed.",
               statusCode: 500,
               code: "UPLOAD_CLOUDINARY_FAILED",
-              hint:
-                "Verify your Cloudinary configuration, credentials, and network connectivity.",
+              hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
                 handler: route.handler,
                 method: route.method,
@@ -63,8 +64,7 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
         message: "mongooseSchemaFieldName is required.",
         statusCode: 400,
         code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
-        hint:
-          "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
+        hint: "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
         details: getErrorDetail(route),
       });
   }
@@ -85,7 +85,9 @@ export const handleUploadFiles = async (req: Request, route: Route) => {
 
   const files = Object.values(req.files!).flat();
 
-  const metaData = await Promise.all(files.map((file) => uploadFile(file, route)));
+  const metaData = await Promise.all(
+    files.map((file) => uploadFile(file, route)),
+  );
   const mongooseFieldName = route.fileArray[0]!.mongooseSchemaFieldName;
 
   return { [mongooseFieldName as string]: metaData };

@@ -5,7 +5,8 @@ export const sanitizeOne = (item: any, route: Route) => {
   const defaultExcluded = ["password"];
 
   // developer based excluded
-  const fields = route?.mongooseConfigObj?.hiddenFieldsArray ?? [];
+  const fields =
+    route?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
 
   // merged
   let merged = [...defaultExcluded, ...fields];
@@ -44,7 +45,8 @@ export const sanitizeMany = (items: any[], route: Route) => {
     const defaultExcluded = ["password"];
 
     // developer based excluded
-    const fields = route?.mongooseConfigObj?.hiddenFieldsArray ?? [];
+    const fields =
+      route?.mongooseConfigObj?.hiddenFieldsArray?.filter(() => true) ?? [];
 
     // merged
     let merged = [...defaultExcluded, ...fields];

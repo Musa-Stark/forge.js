@@ -8,7 +8,6 @@ import AppError from "../utils/AppError.js";
 import { handleMulterMiddleware } from "../middleware/multer.middleware.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 
-
 const crud = (
   app: Express,
   routeName: string,
@@ -19,12 +18,17 @@ const crud = (
   const { apiVersion } = getEnvs();
   for (const route of routes) {
     // push middleware to middlewares
-    if (!route.authRole)
+    if (
+      !route.authRole ||
+      !route.handler ||
+      !route.method ||
+      !route.path
+    )
       throw new AppError({
-        message: "authRole is required",
+        message: "authRole, handler, method and path are required required",
         statusCode: 409,
         code: "CRUD_AUTHROLE_NOT_FOUND",
-        hint: "Write authRole in collections -> routes -> authRole. Make it public if this route doesn't need authentication or authorization",
+        hint: "Check if authRole, handler, method or path is missing in collections -> routes.",
         details: getErrorDetail(route),
       });
 

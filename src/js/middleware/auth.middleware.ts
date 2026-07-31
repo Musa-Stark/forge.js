@@ -51,7 +51,7 @@ const protect =
             message: "Authentication required",
             statusCode: 401,
             code: "AUTH_REQUIRED",
-            hint: "Sign in to access this resource.",
+            hint: "Log in to access this resource.",
             details: getErrorDetail(route),
           }),
         );

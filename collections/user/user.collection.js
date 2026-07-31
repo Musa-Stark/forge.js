@@ -12,7 +12,7 @@ const userCollection = collection({
       path: "/",
       validationKey: false,
       mongooseConfigObj: {
-        hiddenFieldsArray: ["!password", "__v"],
+        hiddenFieldsArray: ["__v"],
       },
     },
     {
@@ -22,10 +22,43 @@ const userCollection = collection({
       path: "/:id",
       validationKey: false,
       mongooseConfigObj: {
-        hiddenFieldsArray: ["__v", "_id"],
+        hiddenFieldsArray: ["_id"],
       },
     },
+    {
+      authRole: "authenticated",
+      handler: "create",
+      method: "post",
+      path: "/",
+      validationKey: "create",
+      fileArray: [
+        {
+          mongooseSchemaFieldName: "gallery",
+          fieldName: "gallery",
+          multiple: true,
+        },
+      ],
+    },
+    {
+      authRole: "adminOrOwner",
+      handler: "addFile",
+      method: "patch",
+      path: "/:id/addFile",
+      fileArray: [{
+        fieldName: "gallery",
+        mongooseSchemaFieldName: "test",
+        multiple: true
+      }]
+    }
   ],
+
+  validationsObj: {
+    create: {
+      name: zodFields.requiredString,
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+  },
 });
 
 export default userCollection;

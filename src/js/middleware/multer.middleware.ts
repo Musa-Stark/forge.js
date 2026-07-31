@@ -113,7 +113,7 @@ export const handleMulterMiddleware = (
                 : code === "UPLOAD_TOO_MANY_FILES"
                   ? "Reduce the number of uploaded files."
                   : code === "UPLOAD_FIELD_NOT_FOUND"
-                    ? "Ensure the uploaded field name matches collection -> fileArray -> fieldName."
+                    ? "Ensure the uploaded field name matches collection -> route -> fileArray -> fieldName. If these are multiple files, make 'multiple: true;'"
                     : "Check the upload request and try again.",
             details: {
               handler: route.handler,

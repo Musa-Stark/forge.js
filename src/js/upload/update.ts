@@ -5,6 +5,7 @@ import type { StoreFile } from "../types/StoreFile.js";
 import type { Route } from "../types/Collection.ts";
 import type { Request } from "express";
 import AppLog from "../utils/AppLog.js";
+import { getEnvs } from "../config/envs.js";
 
 const uploadFile = (
   file: Express.Multer.File,
@@ -12,10 +13,12 @@ const uploadFile = (
 ): Promise<StoreFile> => {
   setupCloudinary(route);
 
+  const { cloudinaryFolderName } = getEnvs();
+
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: "framework",
+        folder: cloudinaryFolderName || "starkForge",
       },
       async (error, result) => {
         if (error || !result) {
@@ -24,8 +27,7 @@ const uploadFile = (
               message: "Cloudinary upload failed.",
               statusCode: 500,
               code: "UPLOAD_CLOUDINARY_FAILED",
-              hint:
-                "Verify your Cloudinary configuration, credentials, and network connectivity.",
+              hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
                 handler: route.handler,
                 method: route.method,
@@ -66,8 +68,7 @@ const handleUpdateFile = async (
       message: "fileArray is required.",
       statusCode: 400,
       code: "UPLOAD_ARRAY_REQUIRED",
-      hint:
-        "Provide fileArray in the collection route configuration for update handlers.",
+      hint: "Provide fileArray in the collection route configuration for update handlers.",
       details: {
         handler: route.handler,
         method: route.method,
@@ -89,8 +90,7 @@ const handleUpdateFile = async (
       message: "mongooseSchemaFieldName is required.",
       statusCode: 400,
       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
-      hint:
-        "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
+      hint: "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
       details: {
         handler: route.handler,
         method: route.method,
@@ -125,8 +125,7 @@ const handleUpdateFile = async (
       message: `'${mongooseField}' field not found.`,
       statusCode: 400,
       code: "SCHEMA_FIELD_REQUIRED",
-      hint:
-        "Ensure mongooseSchemaFieldName matches an existing schema field.",
+      hint: "Ensure mongooseSchemaFieldName matches an existing schema field.",
       details: {
         handler: route.handler,
         method: route.method,
@@ -144,8 +143,7 @@ const handleUpdateFile = async (
       message: "validationIdentifierKey is required.",
       statusCode: 400,
       code: "VALIDATION_KEY_REQUIRED",
-      hint:
-        "Provide validationIdentifierKey in collection -> fileArray configuration.",
+      hint: "Provide validationIdentifierKey in collection -> route -> fileArray [{...}].",
       details: {
         handler: route.handler,
         method: route.method,
@@ -175,8 +173,7 @@ const handleUpdateFile = async (
       message: `File with id '${body[validationIdentifierKey]}' not found.`,
       statusCode: 404,
       code: "CRUD_ITEM_NOT_FOUND",
-      hint:
-        "Verify the provided file identifier exists in the stored file array.",
+      hint: "Verify the provided file identifier exists in the stored file array.",
       details: {
         handler: route.handler,
         method: route.method,
@@ -185,10 +182,7 @@ const handleUpdateFile = async (
     });
 
   if (!Array.isArray(req.files)) {
-    const updated = await uploadFile(
-      req.files![reqFilesArray[0]!]![0]!,
-      route,
-    );
+    const updated = await uploadFile(req.files![reqFilesArray[0]!]![0]!, route);
 
     await cloudinary.uploader.destroy(oldItem.storageKey);
 

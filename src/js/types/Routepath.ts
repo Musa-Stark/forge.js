@@ -6,58 +6,58 @@ export type RoutePath =
   | "/:id"
 
   // CRUD
-  | "/create"
-  | "/create/bulk"
-  | "/new"
-  | "/edit/:id"
+  // | "/create"
+  // | "/create/bulk"
+  // | "/new"
+  // | "/edit/:id"
   | "/update/:id"
   | "/delete/:id"
-  | "/restore/:id"
-  | "/archive/:id"
+  // | "/restore/:id"
+  // | "/archive/:id"
 
   // Auth
   | "/signup"
   | "/login"
   | "/logout"
-  | "/refresh-token"
+  // | "/refresh-token"
   | "/forgot-password"
   | "/reset-password"
-  | "/change-password"
-  | "/verify-email"
+  // | "/change-password"
+  // | "/verify-email"
   | "/verify-otp"
   | "/resend-otp"
 
   // Current User
-  | "/me"
-  | "/profile"
+  // | "/me"
+  // | "/profile"
 
   // Search & Filters
-  | "/search"
-  | "/filter"
-  | "/sort"
+  // | "/search"
+  // | "/filter"
+  // | "/sort"
 
   // Pagination
-  | "/page/:page"
-  | "/limit/:limit"
+  // | "/page/:page"
+  // | "/limit/:limit"
 
   // Status
-  | "/active"
-  | "/inactive"
-  | "/published"
-  | "/draft"
-  | "/featured"
+  // | "/active"
+  // | "/inactive"
+  // | "/published"
+  // | "/draft"
+  // | "/featured"
 
   // Relationships
-  | "/:id/posts"
-  | "/:id/comments"
-  | "/:id/likes"
-  | "/:id/followers"
-  | "/:id/following"
+  // | "/:id/posts"
+  // | "/:id/comments"
+  // | "/:id/likes"
+  // | "/:id/followers"
+  // | "/:id/following"
 
   // Uploads
-  | "/upload"
-  | "/upload/:id"
-  | "/download/:id"
+  // | "/upload"
+  // | "/upload/:id"
+  // | "/download/:id"
 
   // Files
   | "/:id/addFile"
@@ -65,20 +65,20 @@ export type RoutePath =
   | "/:id/deleteFile"
 
   // Admin
-  | "/dashboard"
-  | "/stats"
-  | "/analytics"
-  | "/reports"
+  // | "/dashboard"
+  // | "/stats"
+  // | "/analytics"
+  // | "/reports"
 
   // Settings
-  | "/settings"
-  | "/preferences"
+  // | "/settings"
+  // | "/preferences"
 
   // Notifications
-  | "/notifications"
-  | "/notifications/read"
+  // | "/notifications"
+  // | "/notifications/read"
 
   // Misc
-  | "/health"
-  | "/ping"
-  | "/version";
+  // | "/health"
+  // | "/ping"
+  // | "/version";

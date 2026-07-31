@@ -61,7 +61,7 @@ const addFile = ({
             message: `mongooseSchemaFieldName: '${field}' not found in mongodb document.`,
             statusCode: 400,
             code: "INVALID_CONFIGURATION",
-            hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document.",
+            hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document -> fileMetaData.",
             details: {
               handler: route.handler,
               method: route.method,
