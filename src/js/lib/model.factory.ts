@@ -51,7 +51,11 @@ const createModel = (
   routeName: string,
   name: string,
   definition: ModelDefinition,
-) => {
+): any => {
+  if (mongoose.modelNames().includes(name)) {
+    return mongoose.model(name);
+  }
+
   if (!definition)
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
@@ -66,10 +70,6 @@ const createModel = (
     });
 
   const schema = buildSchema(normalizeDefinition(definition));
-
-  if (mongoose.modelNames().includes(name)) {
-    return mongoose.model(name);
-  }
 
   AppLog("db", "modelFactory", `${name} model created!`);
 
