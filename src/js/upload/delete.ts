@@ -37,7 +37,7 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       statusCode: 400,
       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
       hint:
-        "Provide mongooseSchemaFieldName in collection -> fileArray configuration.",
+        "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
       details: {
         handler: route.handler,
         method: route.method,
@@ -72,7 +72,7 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       statusCode: 400,
       code: "VALIDATION_KEY_REQUIRED",
       hint:
-        "Provide validationIdentifierKey in collection -> fileArray configuration.",
+        "Provide validationIdentifierKey in collection -> route -> fileArray [{...}].",
       details: {
         handler: route.handler,
         method: route.method,

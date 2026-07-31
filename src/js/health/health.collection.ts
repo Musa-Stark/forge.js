@@ -1,6 +1,6 @@
 import type { Collection } from "../types/Collection.js";
 
-const collection = (vals: Collection) => {
+const collection = (vals: any) => {
   return vals;
 }
 

@@ -20,7 +20,7 @@ const validate = (validationSchema: any, body: any, route: Route) => {
       statusCode: 409,
       code: "BODY_MISSING",
       details: getErrorDetail(route),
-      hint: "Provide body (Data from frontend or postman etc.)",
+      hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write fileArray : [{...}] in collection -> routesArray -> route.",
     });
 
   const zodBodyObj = z.object(validationSchema);
@@ -66,7 +66,7 @@ const validate = (validationSchema: any, body: any, route: Route) => {
       statusCode: 409,
       code: "VALIDATION_FAILED",
       details: getErrorDetail(route),
-      hint: "Check the keys you provided in collection -> valdiationsObj -> validationSchema. It should be similar to body -> item key"
+      hint: `Check the keys you provided in collection -> valdiationsObj -> ${route.validationKey}. It should be similar to body -> item key`,
     });
   }
 

@@ -67,10 +67,6 @@ const createModel = (
 
   const schema = buildSchema(normalizeDefinition(definition));
 
-  if (mongoose.modelNames().includes(name)) {
-    return mongoose.model(name);
-  }
-
   AppLog("db", "modelFactory", `${name} model created!`);
 
   return mongoose.model(name, schema);

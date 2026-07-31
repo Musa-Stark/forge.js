@@ -36,7 +36,7 @@ const verifyOTP = ({
         message: "email, otp and purpose are required.",
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
-        hint: "Provide email, otp and purpose in the request body.",
+        hint: `Checkout if email, otp or purpose is missing in collection -> validationsObj -> ${route.validationKey}.`,
         details: getErrorDetail(route),
       });
 
@@ -88,7 +88,7 @@ const verifyOTP = ({
       throw new AppError({
         message: "OTP has expired.",
         statusCode: 409,
-        code: "AUTH_TOKEN_EXPIRED",
+        code: "OTP_EXPIRED",
         hint: "Request a new OTP and try again.",
         details: getErrorDetail(route),
       });
@@ -101,7 +101,7 @@ const verifyOTP = ({
       throw new AppError({
         message: "Invalid OTP.",
         statusCode: 409,
-        code: "AUTH_TOKEN_INVALID",
+        code: "OTP_INVALID",
         hint: "Verify the OTP and try again.",
         details: getErrorDetail(route),
       });

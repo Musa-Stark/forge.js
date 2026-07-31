@@ -9,6 +9,8 @@ const authCollection = collection({
     email: mongooseFields.email,
     password: mongooseFields.password,
     role: mongooseFields.role,
+    profileImage: mongooseFields.fileMetaData,
+    test: mongooseFields.fileMetaData
   },
   routesArray: [
     {

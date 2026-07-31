@@ -3,14 +3,13 @@ import type { OAuthProvider } from "../lib/OAuthProviders.ts";
 import type { Role } from "../lib/roles.ts";
 import type { ZodValidation } from "../lib/zod.fields.ts";
 import type { RoutePath } from "./Routepath.ts";
-import type { healthHandlers } from "./healthHandlers.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { crudHandlers } from "./crudHandlers.ts";
 import type { uploadHandlers } from "./uploadHandlers.js";
 import type { Email } from "./email.ts";
 import type { Upload } from "./upload.ts";
 
-export type Handler = healthHandlers | authHandlers | crudHandlers | uploadHandlers;
+export type Handler = authHandlers | crudHandlers | uploadHandlers;
 
 // export type Middleware = "upload";
 // export type MiddlewareInput = Middleware | Middleware[];

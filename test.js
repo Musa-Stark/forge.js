@@ -5,10 +5,10 @@ import StarkNexus, {
 } from "./dist/js/index.js";
 import "dotenv/config";
 
-import { authCollection, crudCollection } from "./collections/index.js";
+import { authCollection, crudCollection, userCollection } from "./collections/index.js";
 
 new StarkNexus({
-  collections: [authCollection, crudCollection],
+  collections: [authCollection, crudCollection, userCollection],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",
