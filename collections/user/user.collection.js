@@ -22,7 +22,7 @@ const userCollection = collection({
       path: "/:id",
       validationKey: false,
       mongooseConfigObj: {
-        hiddenFieldsArray: ["__v", "!password"],
+        hiddenFieldsArray: ["__v", "_id"],
       },
     },
   ],
