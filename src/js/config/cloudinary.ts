@@ -4,7 +4,7 @@ import AppError from "../utils/AppError.js";
 import type { Route } from "../types/Collection.js";
 
 // setup cloudinary
-const setupCloudinary = (route: Route) => {
+const setupCloudinary = (routeObj: Route) => {
   const { cloudinaryAPIKey, cloudinaryCloudName, cloudinaryAPISecret } =
     getEnvs();
 
@@ -16,9 +16,9 @@ const setupCloudinary = (route: Route) => {
       code: "CLOUDINARY_CONFIGURATION_INVALID",
       hint: "Make sure you have provided all these 3 in order to use cloudinary as a file storage service",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

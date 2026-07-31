@@ -7,16 +7,16 @@ const getUser = async ({
   routeName,
   email,
   needPassword,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
   email: string;
   needPassword?: boolean;
-  route: Route;
+  routeObj: Route;
 }) => {
   // model
-  const Model = getModel({ modelName, routeName, route });
+  const Model = getModel({ modelName, routeName, routeObj });
 
   // user
   let user: any = null;
@@ -35,9 +35,9 @@ const getUser = async ({
       code: "AUTH_USER_NOT_FOUND",
       hint: "Verify the provided email address or create a new account.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

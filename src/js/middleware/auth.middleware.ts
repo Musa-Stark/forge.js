@@ -7,7 +7,7 @@ import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 
-const findUser = async (id: string, route: Route) => {
+const findUser = async (id: string, routeObj: Route) => {
   const { userModelName } = getEnvs();
 
   if (!userModelName) {
@@ -16,7 +16,7 @@ const findUser = async (id: string, route: Route) => {
       statusCode: 500,
       code: "AUTH_CONFIG_ERROR",
       hint: "Configure 'userModelName' in your environment variables.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -28,7 +28,7 @@ const findUser = async (id: string, route: Route) => {
       statusCode: 500,
       code: "AUTH_CONFIG_ERROR",
       hint: "Register the user model before enabling authentication.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -36,7 +36,7 @@ const findUser = async (id: string, route: Route) => {
 };
 
 const protect =
-  (route: Route) =>
+  (routeObj: Route) =>
   async (
     req: Request,
     res: Response,
@@ -52,14 +52,14 @@ const protect =
             statusCode: 401,
             code: "AUTH_REQUIRED",
             hint: "Log in to access this resource.",
-            details: getErrorDetail(route),
+            details: getErrorDetail(routeObj),
           }),
         );
       }
 
       const payload = verifyJWT({
         token,
-        route,
+        routeObj,
       });
 
       if (typeof payload === "string" || !payload.sub) {
@@ -69,12 +69,12 @@ const protect =
             statusCode: 401,
             code: "AUTH_INVALID_TOKEN",
             hint: "Sign in again to obtain a valid authentication token.",
-            details: getErrorDetail(route),
+            details: getErrorDetail(routeObj),
           }),
         );
       }
 
-      const user = await findUser(payload.sub as string, route);
+      const user = await findUser(payload.sub as string, routeObj);
 
       if (!user) {
         return next(
@@ -83,7 +83,7 @@ const protect =
             statusCode: 401,
             code: "AUTH_USER_NOT_FOUND",
             hint: "Sign in with an existing account.",
-            details: getErrorDetail(route),
+            details: getErrorDetail(routeObj),
           }),
         );
       }
@@ -108,7 +108,7 @@ const protect =
           statusCode: 500,
           code: "AUTH_MIDDLEWARE_ERROR",
           hint: "This issue requires a fix from the framework developer.",
-          details: getErrorDetail(route),
+          details: getErrorDetail(routeObj),
         }),
       );
     }

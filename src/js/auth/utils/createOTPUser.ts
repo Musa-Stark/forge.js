@@ -14,17 +14,17 @@ const createOTPUser = async ({
   purpose,
   routeName,
   modelName,
-  route,
+  routeObj,
 }: {
   body: any;
   res: Response;
   purpose: string;
   routeName: string;
   modelName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   // otp model
-  const OTPModel = getOTPModel(route)!;
+  const OTPModel = getOTPModel(routeObj)!;
 
   // if no purpose
   if (!purpose)
@@ -34,9 +34,9 @@ const createOTPUser = async ({
       code: "MISSING_PARAMETER",
       hint: "Provide purpose before creating an OTP request.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -50,7 +50,7 @@ const createOTPUser = async ({
         statusCode: 409,
         code: "RESOURCE_ALREADY_EXISTS",
         hint: "Check your email, including the spam folder, or request another OTP after the current one expires.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
   }
 
@@ -60,15 +60,15 @@ const createOTPUser = async ({
       modelName,
       body,
       routeName,
-      route,
+      routeObj,
     });
 
   // send otp + handle hashing
-  const { OTP, otpExpiry } = await sendOTP(body.email, route);
+  const { OTP, otpExpiry } = await sendOTP(body.email, routeObj);
 
-  const hashedOTP = await hash(OTP, route);
+  const hashedOTP = await hash(OTP, routeObj);
 
-  if (body?.password) body.password = await hash(body.password, route);
+  if (body?.password) body.password = await hash(body.password, routeObj);
 
   // create otp
   await OTPModel.create({

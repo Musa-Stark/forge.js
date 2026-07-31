@@ -7,10 +7,10 @@ import type { Route } from "../types/Collection.js";
 
 export const signJWT = ({
   payload,
-  route,
+  routeObj,
 }: {
   payload: string | object | Buffer;
-  route: Route;
+  routeObj: Route;
 }): string => {
   try {
     if (!payload) {
@@ -19,7 +19,7 @@ export const signJWT = ({
         statusCode: 400,
         code: "JWT_SIGN_ERROR",
         hint: "Provide a valid payload for JWT generation.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -31,7 +31,7 @@ export const signJWT = ({
         statusCode: 500,
         code: "JWT_SIGN_ERROR",
         hint: "Configure 'jwtSecret' in your environment variables.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -41,12 +41,12 @@ export const signJWT = ({
         statusCode: 500,
         code: "JWT_SIGN_ERROR",
         hint: "Configure 'tokenExpiry' in your environment variables.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
     return jwt.sign(payload, jwtSecret, {
-      expiresIn: Math.floor(getDuration(tokenExpiry, route) / 1000),
+      expiresIn: Math.floor(getDuration(tokenExpiry, routeObj) / 1000),
     });
   } catch (error) {
     if (error instanceof AppError) throw error;
@@ -58,17 +58,17 @@ export const signJWT = ({
       statusCode: 500,
       code: "JWT_SIGN_ERROR",
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 };
 
 export const verifyJWT = ({
   token,
-  route,
+  routeObj,
 }: {
   token: string;
-  route: Route;
+  routeObj: Route;
 }): string | JwtPayload => {
   try {
     if (!token) {
@@ -77,7 +77,7 @@ export const verifyJWT = ({
         statusCode: 400,
         code: "JWT_VERIFY_ERROR",
         hint: "Provide a valid JWT for verification.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -89,7 +89,7 @@ export const verifyJWT = ({
         statusCode: 500,
         code: "JWT_VERIFY_ERROR",
         hint: "Configure 'jwtSecret' in your environment variables.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
@@ -104,7 +104,7 @@ export const verifyJWT = ({
       statusCode: 401,
       code: "JWT_VERIFY_ERROR",
       hint: "Ensure the token is valid, has not expired, and was signed using the correct secret.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 };

@@ -67,7 +67,7 @@ const startServer = async (): Promise<void> => {
     handleCollection([healthCollection]);
   }
 
-  // route not found
+  // routeObj not found
   app.use((req, res) => {
     res.status(404).json({ success: false, message: "Route not found" });
   });
@@ -80,4 +80,4 @@ const startServer = async (): Promise<void> => {
   );
 };
 
-export default startServer;
+export {startServer, app};

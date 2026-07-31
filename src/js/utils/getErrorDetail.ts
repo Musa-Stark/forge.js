@@ -1,10 +1,10 @@
 import type { Route } from "../types/Collection.js";
 
-const getErrorDetail = (route: Route) => {
+const getErrorDetail = (routeObj: Route) => {
   return {
-    handler: route.handler,
-    method: route.method,
-    path: route.path,
+    handler: routeObj.handler,
+    method: routeObj.method,
+    path: routeObj.path,
   };
 };
 

@@ -10,34 +10,34 @@ import getValidationKey from "../utils/validationKeyError.js";
 const remove = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
-  route: Route;
+  routeObj: Route;
   routeName: string;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    getValidationKey(route, validationsObj);
+    getValidationKey(routeObj, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, route });
+    const id = getParam({ req, routeObj });
 
     // ensure item exists
     const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
-      route
+      routeObj
     });
 
     // authorize access
-    authorizeAccess({ route, routeName, item, req });
+    authorizeAccess({ routeObj, routeName, item, req });
 
     // model
-    const Model = getModel({ modelName, routeName, route });
+    const Model = getModel({ modelName, routeName, routeObj });
 
     // delete
     await Model.findByIdAndDelete(id);

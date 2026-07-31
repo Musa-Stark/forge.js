@@ -14,26 +14,26 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 const create = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if files
-    const fileMetaData = await handleUploadFiles(req, route);
+    const fileMetaData = await handleUploadFiles(req, routeObj);
 
     // model
-    const Model = getModel({ modelName, routeName, route });
+    const Model = getModel({ modelName, routeName, routeObj });
 
     // owner
     const owner = req.user?._id;
@@ -43,7 +43,7 @@ const create = ({
         statusCode: 409,
         code: "CRUD_INVALIDT_AUTHROLE",
         hint: "Make the authRole admin or adminOrOwner",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // create
@@ -67,9 +67,9 @@ const create = ({
           code: "CRUD_ITEM_ALREADY_EXISTS",
           hint: `'${field}' is declared as unique in collection -> mongooseSchemaObj`,
           details: {
-            handler: route.handler,
-            method: route.method,
-            path: route.path,
+            handler: routeObj.handler,
+            method: routeObj.method,
+            path: routeObj.path,
           },
         });
       }
@@ -80,14 +80,14 @@ const create = ({
         statusCode: 409,
         code: "CRUD_ERROR",
         hint: "This issue may requires a fix from the framework developer.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     }
 
     // appresponse
     appResponse({
       res,
-      data: sanitizeOne(newItem.toObject(), route),
+      data: sanitizeOne(newItem.toObject(), routeObj),
       message: "Item created successfully!",
     });
   };

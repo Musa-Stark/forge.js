@@ -3,10 +3,10 @@ import { cloudinary, setupCloudinary } from "../config/cloudinary.js";
 import type { Route } from "../types/Collection.ts";
 import AppLog from "../utils/AppLog.js";
 
-const handleDeleteFile = async (route: Route, body: any, item: any) => {
-  setupCloudinary(route);
+const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
+  setupCloudinary(routeObj);
 
-  const fileArray = route.fileArray;
+  const fileArray = routeObj.fileArray;
 
   if (!Array.isArray(fileArray) || fileArray.length === 0)
     throw new AppError({
@@ -14,11 +14,11 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       statusCode: 400,
       code: "UPLOAD_ARRAY_REQUIRED",
       hint:
-        "Provide fileArray in the collection route configuration for delete handlers.",
+        "Provide fileArray in the collection routeObj configuration for delete handlers.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -26,7 +26,7 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
     AppLog(
       "warn",
       "deleteFile",
-      `fileArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to delete.`,
+      `fileArray in collection has more than 1 items for handler: '${routeObj.handler}', method: '${routeObj.method}' and path: '${routeObj.path}' to delete.`,
     );
 
   const mongooseField = fileArray[0]?.mongooseSchemaFieldName;
@@ -37,11 +37,11 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       statusCode: 400,
       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
       hint:
-        "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
+        "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -55,9 +55,9 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       hint:
         "Ensure mongooseSchemaFieldName matches an existing schema field.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -72,11 +72,11 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       statusCode: 400,
       code: "VALIDATION_KEY_REQUIRED",
       hint:
-        "Provide validationIdentifierKey in collection -> route -> fileArray [{...}].",
+        "Provide validationIdentifierKey in collection -> routeObj -> fileArray [{...}].",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -87,9 +87,9 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `Provide '${validationIdentifierKey}' in the request body.`,
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -105,9 +105,9 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       hint:
         "Verify the provided file identifier exists in the stored file array.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -122,9 +122,9 @@ const handleDeleteFile = async (route: Route, body: any, item: any) => {
       hint:
         "Ensure the stored file contains a valid storageKey before deletion.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

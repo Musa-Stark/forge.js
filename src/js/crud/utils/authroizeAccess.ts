@@ -5,34 +5,34 @@ import AppLog from "../../utils/AppLog.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 
 const authorizeAccess = ({
-  route,
+  routeObj,
   routeName,
   item,
   req,
 }: {
-  route: Route;
+  routeObj: Route;
   routeName: string;
   item?: any;
   req: Request;
 }) => {
   // if authRole !== admin or adminOrOwner
-  if (route.authRole !== "admin" && route.authRole !== "adminOrOwner")
+  if (routeObj.authRole !== "admin" && routeObj.authRole !== "adminOrOwner")
     throw new AppError({
       message: "authRole should only be 'admin' or 'adminOrOwner'",
       statusCode: 409,
       code: "FRAMEWORK_CONFIGURATION_INVALID",
-      hint: "Make the authRole admin or adminOrOwner based on your route requirement. Checkout collection -> routes -> authRole",
-      details: getErrorDetail(route),
+      hint: "Make the authRole admin or adminOrOwner based on your routeObj requirement. Checkout collection -> routes -> authRole",
+      details: getErrorDetail(routeObj),
     });
 
   // if removeAll to not admin
-  if (route.authRole !== "admin" && route.handler === "removeAll")
+  if (routeObj.authRole !== "admin" && routeObj.handler === "removeAll")
     throw new AppError({
       message: "authRole should only be 'admin'",
       statusCode: 409,
       code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: "Make the authRole admin. Checkout collection -> routes -> authRole",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
 
   // vars
@@ -45,30 +45,30 @@ const authorizeAccess = ({
     AppLog(
       "x",
       "authorization",
-      `owner not found in item for route: '/${routeName}', method: '${route.method}' and path: '${route.path}'`,
+      `owner not found in item for routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
     );
 
   // allow only admin
-  if (route.authRole === "admin") {
+  if (routeObj.authRole === "admin") {
     if (!isAdmin)
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
         code: "PERMISSION_DENIED",
         hint: "You are not the admin.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
   }
 
   // if allow both admin or owner
-  if (route.authRole === "adminOrOwner") {
+  if (routeObj.authRole === "adminOrOwner") {
     if (!isAdmin && !isOwner)
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
         code: "PERMISSION_DENIED",
         hint: "You are not the owner.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
   }
 };

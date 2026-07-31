@@ -14,16 +14,16 @@ const createUser = async ({
   modelName,
   res,
   routeName,
-  route,
+  routeObj,
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
-  const Model = getModel({ modelName, routeName, route });
-  const OTPModel = getOTPModel(route);
+  const Model = getModel({ modelName, routeName, routeObj });
+  const OTPModel = getOTPModel(routeObj);
 
   // isVerified - mode:otp
   let isVerified: boolean = false;
@@ -32,7 +32,7 @@ const createUser = async ({
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "signup",
-      route
+      routeObj
     }));
 
   // delete body._id | hash password
@@ -41,7 +41,7 @@ const createUser = async ({
     body.role = "user";
     delete body._id;
   } else {
-    body.password = await hash(body.password, route);
+    body.password = await hash(body.password, routeObj);
     body.role = "user";
   }
 
@@ -54,14 +54,14 @@ const createUser = async ({
   const { _id } = newUser.toObject();
 
   // send cookied
-  sendCookie({ res, cookieName: "authToken", payload: { sub: _id }, route });
+  sendCookie({ res, cookieName: "authToken", payload: { sub: _id }, routeObj });
 
   // send res
   appResponse({
     res,
     message: "Your account has been created successfully!",
     statusCode: 201,
-    data: sanitizeOne(newUser.toObject(), route),
+    data: sanitizeOne(newUser.toObject(), routeObj),
   });
 };
 

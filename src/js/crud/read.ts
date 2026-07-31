@@ -9,29 +9,29 @@ import authorizeAccess from "./utils/authroizeAccess.js";
 const read = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // get /:parameter
-    const id = getParam({ req, route });
+    const id = getParam({ req, routeObj });
 
     // findById item
     const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
-      path: route.path,
-      route,
+      path: routeObj.path,
+      routeObj,
     });
 
-    if (route.authRole !== "public")
-      authorizeAccess({ route, routeName, item, req });
+    if (routeObj.authRole !== "public")
+      authorizeAccess({ routeObj, routeName, item, req });
 
     // return response
     appResponse({

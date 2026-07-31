@@ -6,19 +6,19 @@ import type { Route } from "../types/Collection.js";
 const getModel = ({
   modelName,
   routeName,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   if (!modelName) {
     throw new AppError({
-      message: `Model name is required for route '${routeName}'`,
+      message: `Model name is required for routeObj '${routeName}'`,
       statusCode: 500,
       code: "MODEL_NAME_REQUIRED",
       hint: "Provide a valid modelName when configuring the collection.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 
@@ -30,7 +30,7 @@ const getModel = ({
       statusCode: 500,
       code: "MODEL_NOT_REGISTERED",
       hint: "Register the model before using it in a collection.",
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
   }
 

@@ -16,42 +16,42 @@ const crud = (
   validationsObj?: ValidationsObj,
 ) => {
   const { apiVersion } = getEnvs();
-  for (const route of routes) {
+  for (const routeObj of routes) {
     // push middleware to middlewares
     if (
-      !route.authRole ||
-      !route.handler ||
-      !route.method ||
-      !route.path
+      !routeObj.authRole ||
+      !routeObj.handler ||
+      !routeObj.method ||
+      !routeObj.path
     )
       throw new AppError({
         message: "authRole, handler, method and path are required required",
         statusCode: 409,
         code: "CRUD_AUTHROLE_NOT_FOUND",
         hint: "Check if authRole, handler, method or path is missing in collections -> routes.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // middlewares array
     const middlewares = [];
 
     // protect
-    if (route.authRole !== "public") middlewares.push(protect(route));
+    if (routeObj.authRole !== "public") middlewares.push(protect(routeObj));
 
-    // upload in route
-    if (route?.fileArray)
-      middlewares.push(handleMulterMiddleware(route.fileArray, route));
+    // upload in routeObj
+    if (routeObj?.fileArray)
+      middlewares.push(handleMulterMiddleware(routeObj.fileArray, routeObj));
 
     // app.get("/", (req, res) => {})
-    app[route.method](
-      `/api/v${apiVersion}/${routeName}${route.path}`,
+    app[routeObj.method](
+      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
       ...middlewares,
       asyncHandler(
         // redirect -> handler
-        handlerMap[route.handler]({
+        handlerMap[routeObj.handler]({
           modelName,
           routeName,
-          route,
+          routeObj,
           validationsObj,
         }),
       ),

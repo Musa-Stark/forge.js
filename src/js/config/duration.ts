@@ -21,7 +21,7 @@ export const DURATIONS = {
 
 export type DurationType = keyof typeof DURATIONS;
 
-const getDuration = (key: DurationType, route: Route) => {
+const getDuration = (key: DurationType, routeObj: Route) => {
   if (!DURATIONS[key])
     throw new AppError({
       message: "Invalid duration key",
@@ -29,9 +29,9 @@ const getDuration = (key: DurationType, route: Route) => {
       code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: 'Write duration like "1m", "1h" or "1d"',
       details: {
-        handler: route.handler || "",
-        method: route.method || "",
-        path: route.path || "",
+        handler: routeObj.handler || "",
+        method: routeObj.method || "",
+        path: routeObj.path || "",
       },
     });
 

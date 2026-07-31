@@ -5,14 +5,14 @@ import type { Route } from "../../types/Collection.js";
 const getOTPUser = async ({
   email,
   purpose,
-  route,
+  routeObj,
 }: {
   email: string;
   purpose: string;
-  route: Route;
+  routeObj: Route;
 }) => {
   // otp model
-  const OTPModel = getOTPModel(route);
+  const OTPModel = getOTPModel(routeObj);
 
   // otp user
   const OTPUser = await OTPModel.findOne({ email, purpose });
@@ -24,9 +24,9 @@ const getOTPUser = async ({
       code: "CRUD_ITEM_NOT_FOUND",
       hint: "Request a new OTP or verify the provided email and purpose.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 

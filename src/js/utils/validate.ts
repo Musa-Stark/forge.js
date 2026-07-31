@@ -4,14 +4,14 @@ import { closest, distance } from "fastest-levenshtein";
 import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 
-const validate = (validationSchema: any, body: any, route: Route) => {
+const validate = (validationSchema: any, body: any, routeObj: Route) => {
   if (!validationSchema)
     throw new AppError({
       message: "validationSchema is required to validate",
       statusCode: 409,
       code: "VALIDATION_SCHEMA_REQUIRED",
-      details: getErrorDetail(route),
-      hint: "Provide validation in validationsObj. Use same name as key as provided in route configuration",
+      details: getErrorDetail(routeObj),
+      hint: "Provide validation in validationsObj. Use same name as key as provided in routeObj configuration",
     });
 
   if (!body)
@@ -19,8 +19,8 @@ const validate = (validationSchema: any, body: any, route: Route) => {
       message: "body is required to validate",
       statusCode: 409,
       code: "BODY_MISSING",
-      details: getErrorDetail(route),
-      hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write fileArray : [{...}] in collection -> routesArray -> route.",
+      details: getErrorDetail(routeObj),
+      hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write fileArray : [{...}] in collection -> routesArray -> routeObj.",
     });
 
   const zodBodyObj = z.object(validationSchema);
@@ -65,8 +65,8 @@ const validate = (validationSchema: any, body: any, route: Route) => {
       message: `${field}: ${message}`,
       statusCode: 409,
       code: "VALIDATION_FAILED",
-      details: getErrorDetail(route),
-      hint: `Check the keys you provided in collection -> valdiationsObj -> ${route.validationKey}. It should be similar to body -> item key`,
+      details: getErrorDetail(routeObj),
+      hint: `Check the keys you provided in collection -> valdiationsObj -> ${routeObj.validationKey}. It should be similar to body -> item key`,
     });
   }
 

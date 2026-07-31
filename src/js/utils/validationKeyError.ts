@@ -2,8 +2,8 @@ import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "./AppError.js";
 import getErrorDetail from "./getErrorDetail.js";
 
-const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
-  const key = route.validationKey;
+const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
+  const key = routeObj.validationKey;
 
   // if false
   if (typeof key === "boolean")
@@ -13,7 +13,7 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
         statusCode: 400,
         hint: "Make it false without ('', \"\" or ``)",
         code: "ROUTE_VALIDATION_KEY_INVALID",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
     } else {
       return;
@@ -25,8 +25,8 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
       message: "validationKey is required",
       statusCode: 400,
       code: "ROUTE_VALIDATION_KEY_REQUIRED",
-      hint: "Provide it or make it false if this route doesn't need validation",
-      details: getErrorDetail(route),
+      hint: "Provide it or make it false if this routeObj doesn't need validation",
+      details: getErrorDetail(routeObj),
     });
 
   // validationObject
@@ -39,7 +39,7 @@ const getValidationKey = (route: Route, validationsObj: ValidationsObj) => {
       statusCode: 400,
       code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `In validationsObj, use the '${key}' as key for validation`,
-      details: getErrorDetail(route),
+      details: getErrorDetail(routeObj),
     });
 
   // validate object

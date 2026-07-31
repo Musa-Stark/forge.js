@@ -12,37 +12,37 @@ import getValidationKey from "../utils/validationKeyError.js";
 const update = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // get /:parameter
-    const id = getParam({ req, route });
+    const id = getParam({ req, routeObj });
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // ensure item exists
     const item = await getItem({
       modelName,
       routeName,
       _id: id as string,
-      route
+      routeObj
     });
 
     // authorize access
-    authorizeAccess({ item, req, route, routeName });
+    authorizeAccess({ item, req, routeObj, routeName });
 
     // model
-    const Model = getModel({ modelName, routeName, route });
+    const Model = getModel({ modelName, routeName, routeObj });
 
     // update
     const updatedItem = await Model.findByIdAndUpdate(id, body, {
@@ -52,7 +52,7 @@ const update = ({
     // return response
     appResponse({
       res,
-      data: sanitizeOne(updatedItem!.toObject(), route),
+      data: sanitizeOne(updatedItem!.toObject(), routeObj),
       message: "Item updated successfully!",
     });
   };

@@ -11,40 +11,40 @@ import authorizeAccess from "../utils/authroizeAccess.js";
 const updateFile = ({
   modelName,
   routeName,
-  route,
+  routeObj,
   validationsObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validation
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // get param
-    const param = getParam({ req, route });
+    const param = getParam({ req, routeObj });
 
     // get item
     let item = await getItem({
       modelName,
       routeName,
       _id: param as string,
-      path: route.path,
+      path: routeObj.path,
       clean: false,
-      route
+      routeObj
     });
 
     // authorizeAccess
-    authorizeAccess({ route, routeName, item, req });
+    authorizeAccess({ routeObj, routeName, item, req });
 
     // update file
     const { updated, _id, mongooseField } =
-      (await handleUpdateFile(req, route, body, item)) || {};
+      (await handleUpdateFile(req, routeObj, body, item)) || {};
 
     // get old
     const old = item[mongooseField as string].id(_id);

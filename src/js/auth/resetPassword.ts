@@ -14,21 +14,21 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 
 const resetPassword = ({
   modelName,
-  route,
+  routeObj,
   routeName,
   validationsObj,
 }: {
   modelName: string;
-  route: Route;
+  routeObj: Route;
   routeName: string;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password in request
     if (!req.body.email || !req.body.password)
@@ -37,21 +37,21 @@ const resetPassword = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // OTPUser
     await getOTPUser({
       email: body.email as string,
       purpose: "password_reset",
-      route,
+      routeObj,
     });
 
     // handle is verified or not
     const { isVerified } = await handleIsVerified({
       email: body.email as string,
       purpose: "password_reset",
-      route
+      routeObj
     });
 
     // user
@@ -59,16 +59,16 @@ const resetPassword = ({
       modelName,
       routeName,
       email: body.email as string,
-      route
+      routeObj
     });
 
     // update password
-    user.password = await hash(body.password as string, route);
+    user.password = await hash(body.password as string, routeObj);
 
     // save user
     await user.save();
 
-    const OTPModel = getOTPModel(route);
+    const OTPModel = getOTPModel(routeObj);
 
     if (isVerified)
       await OTPModel.deleteOne({

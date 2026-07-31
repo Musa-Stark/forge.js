@@ -12,28 +12,28 @@ import getErrorDetail from "../../utils/getErrorDetail.js";
 const addFile = ({
   modelName,
   routeName,
-  route,
+  routeObj,
 }: {
   modelName: string;
   routeName: string;
-  route: Route;
+  routeObj: Route;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // if fileArray is missing
-    if (!route?.fileArray?.length)
+    if (!routeObj?.fileArray?.length)
       throw new AppError({
         message: "fileArray is missing or empty",
         statusCode: 400,
         code: "INVALID_CONFIGURATION",
         hint: "Checkout the collection configuration if fileArray is missing or empty",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // get param
     const param = getParam({
       req,
-      route
+      routeObj
     });
 
     // get item
@@ -41,16 +41,16 @@ const addFile = ({
       modelName,
       routeName,
       _id: param as string,
-      path: route.path,
+      path: routeObj.path,
       clean: false,
-      route,
+      routeObj,
     });
 
     // authorizeAccess
-    authorizeAccess({ route, routeName, item, req });
+    authorizeAccess({ routeObj, routeName, item, req });
 
     // upload files
-    const fileMetaData = await handleUploadFiles(req, route);
+    const fileMetaData = await handleUploadFiles(req, routeObj);
 
     if (fileMetaData) {
       for (const [field, files] of Object.entries(fileMetaData)) {
@@ -63,9 +63,9 @@ const addFile = ({
             code: "INVALID_CONFIGURATION",
             hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document -> fileMetaData.",
             details: {
-              handler: route.handler,
-              method: route.method,
-              path: route.path,
+              handler: routeObj.handler,
+              method: routeObj.method,
+              path: routeObj.path,
             },
           });
         item[field].push(...files);

@@ -1,8 +1,15 @@
 import mongoose from "mongoose";
 import AppLog from "../utils/AppLog.js";
 
-const connectLocally = async (databaseName = "offline-db-ts") => {
-  await mongoose.connect(`mongodb://localhost:27017/${databaseName}`);
+const connectLocally = async (databaseName = "starkForge") => {
+  try {
+    await mongoose.connect(`mongodb://localhost:27017/${databaseName}`);
+  } catch (error) {
+    AppLog("x", "db", (error as Error).message);
+    AppLog("x", "db", "Error while connecting to database! Check if MongoDB is installed locally and is enabled.");
+    process.exit(1);
+  }
+
   AppLog(
     "check",
     "db",
@@ -40,7 +47,7 @@ const connectDB = async ({
       `Connected successfully! Database name: '${databaseName}'`,
     );
   } catch (error) {
-    AppLog("x", "db", "Error while connecting!");
+    AppLog("x", "db", "Error while connecting to database!");
     AppLog("x", "db", (error as Error).message);
     process.exit(1);
   }

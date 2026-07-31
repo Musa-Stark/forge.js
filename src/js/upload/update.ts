@@ -9,9 +9,9 @@ import { getEnvs } from "../config/envs.js";
 
 const uploadFile = (
   file: Express.Multer.File,
-  route: Route,
+  routeObj: Route,
 ): Promise<StoreFile> => {
-  setupCloudinary(route);
+  setupCloudinary(routeObj);
 
   const { cloudinaryFolderName } = getEnvs();
 
@@ -29,9 +29,9 @@ const uploadFile = (
               code: "UPLOAD_CLOUDINARY_FAILED",
               hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
-                handler: route.handler,
-                method: route.method,
-                path: route.path,
+                handler: routeObj.handler,
+                method: routeObj.method,
+                path: routeObj.path,
               },
             }),
           );
@@ -55,24 +55,24 @@ const uploadFile = (
 
 const handleUpdateFile = async (
   req: Request,
-  route: Route,
+  routeObj: Route,
   body: any,
   item: any,
 ) => {
   const reqFilesArray = Object.keys(req.files ?? {});
 
-  const fileArray = route.fileArray;
+  const fileArray = routeObj.fileArray;
 
   if (!Array.isArray(fileArray) || fileArray.length === 0)
     throw new AppError({
       message: "fileArray is required.",
       statusCode: 400,
       code: "UPLOAD_ARRAY_REQUIRED",
-      hint: "Provide fileArray in the collection route configuration for update handlers.",
+      hint: "Provide fileArray in the collection routeObj configuration for update handlers.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -80,7 +80,7 @@ const handleUpdateFile = async (
     AppLog(
       "warn",
       "updateFile",
-      `fileArray in collection has more than 1 items for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      `fileArray in collection has more than 1 items for handler: '${routeObj.handler}', method: '${routeObj.method}' and path: '${routeObj.path}' to update.`,
     );
 
   const mongooseField = fileArray[0]?.mongooseSchemaFieldName;
@@ -90,11 +90,11 @@ const handleUpdateFile = async (
       message: "mongooseSchemaFieldName is required.",
       statusCode: 400,
       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
-      hint: "Provide mongooseSchemaFieldName in collection -> route -> fileArray [{...}].",
+      hint: "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -105,9 +105,9 @@ const handleUpdateFile = async (
       code: "UPLOAD_FILE_REQUIRED",
       hint: "Upload a file using the configured upload field.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -115,7 +115,7 @@ const handleUpdateFile = async (
     AppLog(
       "warn",
       "updateFile",
-      `req.files has more than 1 fieldNames: '${reqFilesArray.join(", ")}' for handler: '${route.handler}', method: '${route.method}' and path: '${route.path}' to update.`,
+      `req.files has more than 1 fieldNames: '${reqFilesArray.join(", ")}' for handler: '${routeObj.handler}', method: '${routeObj.method}' and path: '${routeObj.path}' to update.`,
     );
 
   const mongooseFilesArray = item[mongooseField];
@@ -127,9 +127,9 @@ const handleUpdateFile = async (
       code: "SCHEMA_FIELD_REQUIRED",
       hint: "Ensure mongooseSchemaFieldName matches an existing schema field.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -143,11 +143,11 @@ const handleUpdateFile = async (
       message: "validationIdentifierKey is required.",
       statusCode: 400,
       code: "VALIDATION_KEY_REQUIRED",
-      hint: "Provide validationIdentifierKey in collection -> route -> fileArray [{...}].",
+      hint: "Provide validationIdentifierKey in collection -> routeObj -> fileArray [{...}].",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -158,9 +158,9 @@ const handleUpdateFile = async (
       code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `Provide '${validationIdentifierKey}' in the request body.`,
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
@@ -175,14 +175,14 @@ const handleUpdateFile = async (
       code: "CRUD_ITEM_NOT_FOUND",
       hint: "Verify the provided file identifier exists in the stored file array.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
   if (!Array.isArray(req.files)) {
-    const updated = await uploadFile(req.files![reqFilesArray[0]!]![0]!, route);
+    const updated = await uploadFile(req.files![reqFilesArray[0]!]![0]!, routeObj);
 
     await cloudinary.uploader.destroy(oldItem.storageKey);
 

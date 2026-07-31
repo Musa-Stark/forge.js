@@ -10,21 +10,21 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 
 const signup = ({
   modelName,
-  route,
+  routeObj,
   routeName,
   validationsObj,
 }: {
   modelName: string;
-  route: Route;
+  routeObj: Route;
   routeName: string;
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // validationObj
-    const validationObj = getValidationKey(route, validationsObj);
+    const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validation
-    const body = validate(validationObj, req.body, route);
+    const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password
     if (!req.body.email || !req.body.password)
@@ -33,11 +33,11 @@ const signup = ({
         statusCode: 400,
         code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
     // if existing user
-    const Model = getModel({ modelName, routeName, route })!;
+    const Model = getModel({ modelName, routeName, routeObj })!;
 
     const existing = await Model.findOne({ email: body.email });
 
@@ -47,16 +47,16 @@ const signup = ({
         statusCode: 409,
         code: "AUTH_EMAIL_ALREADY_EXISTS",
         hint: "Login with the existing account or use a different email address.",
-        details: getErrorDetail(route),
+        details: getErrorDetail(routeObj),
       });
 
-    await modeMap.signup[route.mode!]({
+    await modeMap.signup[routeObj.mode!]({
       body,
       res,
       routeName,
       modelName,
       purpose: "signup",
-      route
+      routeObj
     });
   };
 };

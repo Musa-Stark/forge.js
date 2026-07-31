@@ -10,10 +10,10 @@ const health = (
 ) => {
   const { apiVersion } = getEnvs();
 
-  for (const route of routes) {
-    app[route.method](
-      `/api/v${apiVersion}/${routeName}${route.path}`,
-      handlerMap[route.handler],
+  for (const routeObj of routes) {
+    app[routeObj.method](
+      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
+      handlerMap[routeObj.handler],
     );
   }
 };

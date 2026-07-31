@@ -6,11 +6,11 @@ import type { Route } from "../../types/Collection.js";
 const otpVerifiedResponse = ({
   res,
   body,
-  route,
+  routeObj,
 }: {
   res: Response;
   body: any;
-  route: Route;
+  routeObj: Route;
 }) => {
   if (!body.purpose)
     throw new AppError({
@@ -19,9 +19,9 @@ const otpVerifiedResponse = ({
       code: "MISSING_PARAMETER",
       hint: "Provide purpose before sending the OTP verification response.",
       details: {
-        handler: route.handler,
-        method: route.method,
-        path: route.path,
+        handler: routeObj.handler,
+        method: routeObj.method,
+        path: routeObj.path,
       },
     });
 
