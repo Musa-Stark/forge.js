@@ -2,8 +2,9 @@ import sodium from "libsodium-wrappers-sumo";
 import AppError from "./AppError.js";
 import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
+import { getEnvs } from "../config/envs.js";
 
-interface SealResult {
+export interface SealResult {
   str: string;
   nonce: string;
   publicKey: string;
@@ -16,7 +17,6 @@ export const hash = async (str: string, routeObj: Route): Promise<string> => {
     throw new AppError({
       message: "string is required to hash",
       statusCode: 404,
-      code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -48,7 +48,6 @@ export const verifyHash = async (
     throw new AppError({
       message: "string is required to verify",
       statusCode: 404,
-      code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -58,7 +57,6 @@ export const verifyHash = async (
     throw new AppError({
       message: "storedHash is required to verify",
       statusCode: 404,
-      code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -72,7 +70,6 @@ export const verifyHash = async (
     throw new AppError({
       message: "Invalid stored has format",
       statusCode: 404,
-      code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -94,19 +91,21 @@ export const verifyHash = async (
 };
 
 // Generate master key
-export const generateMasterKey = async (): Promise<string> => {
+export const generateMasterKey = async () => {
   await sodium.ready;
 
   const key = sodium.crypto_secretbox_keygen();
 
   const base64Key = sodium.to_base64(key, sodium.base64_variants.ORIGINAL);
 
-  console.log(base64Key);
-  return base64Key;
+  setTimeout(() => {
+    console.log("masterKey: ", base64Key);
+    return base64Key;
+  }, 1000);
 };
 
 // Generate JWT secret
-export const generateJWTSecret = async (): Promise<string> => {
+export const generateJWTSecret = async () => {
   await sodium.ready;
 
   const secret = sodium.randombytes_buf(64);
@@ -116,14 +115,15 @@ export const generateJWTSecret = async (): Promise<string> => {
     sodium.base64_variants.ORIGINAL,
   );
 
-  console.log(base64Secret);
-  return base64Secret;
+  setTimeout(() => {
+    console.log("jwtSecret: ", base64Secret);
+    return base64Secret;
+  }, 1000);
 };
 
 // Seal
 export const seal = async (
   input: string,
-  masterKey: string,
   routeObj: Route,
 ): Promise<SealResult> => {
   try {
@@ -131,18 +131,18 @@ export const seal = async (
       throw new AppError({
         message: "string is required to encrypt",
         statusCode: 404,
-        code: "LIBSODIUM_HASH_ERROR",
         hint: "Provide a string to encrypt it.",
         details: getErrorDetail(routeObj),
       });
     }
 
+    const { masterKey } = getEnvs();
+
     if (!masterKey) {
       throw new AppError({
         message: "Master key is required for encryption",
         statusCode: 404,
-        code: "LIBSODIUM_HASH_ERROR",
-        hint: "Provide masterkey in StarkForge({}) - initializing class",
+        hint: "Import 'generateMasterKey' from StarkForge, run it 'generateMasterKey()' and then copy-paste the masterKey from terminal to StarkForge({})",
         details: getErrorDetail(routeObj),
       });
     }
@@ -181,7 +181,6 @@ export const seal = async (
     throw new AppError({
       message: "Error while encrypting",
       statusCode: 404,
-      code: "LIBSODIUM_HASH_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -189,20 +188,24 @@ export const seal = async (
 };
 
 // Unseal
-export const unSeal = async (
-  str: string,
-  nonce: string,
-  publicKey: string,
-  securedPrivateKey: string,
-  masterKey: string,
-  routeObj: Route,
-): Promise<string> => {
+export const unSeal = async ({
+  str,
+  nonce,
+  publicKey,
+  securedPrivateKey,
+  routeObj,
+}: {
+  str: string;
+  nonce: string;
+  publicKey: string;
+  securedPrivateKey: string;
+  routeObj: Route;
+}): Promise<string> => {
   try {
     if (!str) {
       throw new AppError({
         message: "Encrypted string is required for decryption",
         statusCode: 400,
-        code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the encrypted string returned by seal().",
         details: getErrorDetail(routeObj),
       });
@@ -212,7 +215,6 @@ export const unSeal = async (
       throw new AppError({
         message: "Nonce is required for decryption",
         statusCode: 400,
-        code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the nonce returned by seal().",
         details: getErrorDetail(routeObj),
       });
@@ -222,7 +224,6 @@ export const unSeal = async (
       throw new AppError({
         message: "Public key is required for decryption",
         statusCode: 400,
-        code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the public key returned by seal().",
         details: getErrorDetail(routeObj),
       });
@@ -232,18 +233,18 @@ export const unSeal = async (
       throw new AppError({
         message: "Secured private key is required for decryption",
         statusCode: 400,
-        code: "LIBSODIUM_DECRYPT_ERROR",
         hint: "Provide the secured private key returned by seal().",
         details: getErrorDetail(routeObj),
       });
     }
 
+    const { masterKey } = getEnvs();
+
     if (!masterKey) {
       throw new AppError({
         message: "Master key is required for decryption",
         statusCode: 400,
-        code: "LIBSODIUM_DECRYPT_ERROR",
-        hint: "Provide the master key used during encryption.",
+        hint: "Provide the master key used during encryption in StarkForge({}).",
         details: getErrorDetail(routeObj),
       });
     }
@@ -281,7 +282,6 @@ export const unSeal = async (
     throw new AppError({
       message: "Error while decrypting",
       statusCode: 500,
-      code: "LIBSODIUM_DECRYPT_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });

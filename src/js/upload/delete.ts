@@ -12,7 +12,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: "fileArray is required.",
       statusCode: 400,
-      code: "UPLOAD_ARRAY_REQUIRED",
       hint:
         "Provide fileArray in the collection routeObj configuration for delete handlers.",
       details: {
@@ -35,7 +34,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: "mongooseSchemaFieldName is required.",
       statusCode: 400,
-      code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
       hint:
         "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
       details: {
@@ -51,7 +49,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: `'${mongooseField}' field not found.`,
       statusCode: 400,
-      code: "SCHEMA_FIELD_REQUIRED",
       hint:
         "Ensure mongooseSchemaFieldName matches an existing schema field.",
       details: {
@@ -70,7 +67,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: "validationIdentifierKey is required.",
       statusCode: 400,
-      code: "VALIDATION_KEY_REQUIRED",
       hint:
         "Provide validationIdentifierKey in collection -> routeObj -> fileArray [{...}].",
       details: {
@@ -84,7 +80,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: `'${validationIdentifierKey}' is required.`,
       statusCode: 400,
-      code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `Provide '${validationIdentifierKey}' in the request body.`,
       details: {
         handler: routeObj.handler,
@@ -101,7 +96,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: `File with id '${body[validationIdentifierKey]}' not found.`,
       statusCode: 404,
-      code: "CRUD_ITEM_NOT_FOUND",
       hint:
         "Verify the provided file identifier exists in the stored file array.",
       details: {
@@ -118,7 +112,6 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     throw new AppError({
       message: "storageKey is required.",
       statusCode: 400,
-      code: "UPLOAD_STORAGE_KEY_REQUIRED",
       hint:
         "Ensure the stored file contains a valid storageKey before deletion.",
       details: {

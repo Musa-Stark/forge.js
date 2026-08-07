@@ -9,7 +9,7 @@ import { MongoServerError } from "mongodb";
 import { handleUploadFiles } from "../upload/index.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import handleEncryption from "./encryption/handleEncryption.js";
 
 const create = ({
   modelName,
@@ -32,6 +32,9 @@ const create = ({
     // if files
     const fileMetaData = await handleUploadFiles(req, routeObj);
 
+    // if encryptedFields
+    const encryptedFields = await handleEncryption(req.body, routeObj);
+
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
@@ -41,7 +44,6 @@ const create = ({
       throw new AppError({
         message: "authRole should'nt be public",
         statusCode: 409,
-        code: "CRUD_INVALIDT_AUTHROLE",
         hint: "Make the authRole admin or adminOrOwner",
         details: getErrorDetail(routeObj),
       });
@@ -53,6 +55,7 @@ const create = ({
         owner: req.user._id,
         ...fileMetaData,
         ...body,
+        ...encryptedFields,
       });
     } catch (err) {
       // err as Error
@@ -64,7 +67,6 @@ const create = ({
         throw new AppError({
           message: `Item with this '${field}' already exists`,
           statusCode: 409,
-          code: "CRUD_ITEM_ALREADY_EXISTS",
           hint: `'${field}' is declared as unique in collection -> mongooseSchemaObj`,
           details: {
             handler: routeObj.handler,
@@ -78,7 +80,6 @@ const create = ({
       throw new AppError({
         message: e.message,
         statusCode: 409,
-        code: "CRUD_ERROR",
         hint: "This issue may requires a fix from the framework developer.",
         details: getErrorDetail(routeObj),
       });

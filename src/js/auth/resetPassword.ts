@@ -35,7 +35,6 @@ const resetPassword = ({
       throw new AppError({
         message: "email and password are required.",
         statusCode: 400,
-        code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
         details: getErrorDetail(routeObj),
       });

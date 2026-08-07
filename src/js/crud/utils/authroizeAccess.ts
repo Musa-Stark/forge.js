@@ -20,7 +20,6 @@ const authorizeAccess = ({
     throw new AppError({
       message: "authRole should only be 'admin' or 'adminOrOwner'",
       statusCode: 409,
-      code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: "Make the authRole admin or adminOrOwner based on your routeObj requirement. Checkout collection -> routes -> authRole",
       details: getErrorDetail(routeObj),
     });
@@ -30,7 +29,6 @@ const authorizeAccess = ({
     throw new AppError({
       message: "authRole should only be 'admin'",
       statusCode: 409,
-      code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: "Make the authRole admin. Checkout collection -> routes -> authRole",
       details: getErrorDetail(routeObj),
     });
@@ -54,7 +52,6 @@ const authorizeAccess = ({
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
-        code: "PERMISSION_DENIED",
         hint: "You are not the admin.",
         details: getErrorDetail(routeObj),
       });
@@ -66,7 +63,6 @@ const authorizeAccess = ({
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
-        code: "PERMISSION_DENIED",
         hint: "You are not the owner.",
         details: getErrorDetail(routeObj),
       });

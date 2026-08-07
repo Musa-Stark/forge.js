@@ -31,7 +31,6 @@ const signup = ({
       throw new AppError({
         message: "email and password are required.",
         statusCode: 400,
-        code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: "Provide email and password in the request body.",
         details: getErrorDetail(routeObj),
       });
@@ -45,7 +44,6 @@ const signup = ({
       throw new AppError({
         message: "User with this email already exists.",
         statusCode: 409,
-        code: "AUTH_EMAIL_ALREADY_EXISTS",
         hint: "Login with the existing account or use a different email address.",
         details: getErrorDetail(routeObj),
       });

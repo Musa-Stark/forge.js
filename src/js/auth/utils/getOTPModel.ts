@@ -9,7 +9,6 @@ const getOTPModel = (routeObj: Route) => {
     throw new AppError({
       message: "OTP model not found.",
       statusCode: 500,
-      code: "CRUD_MODEL_NOT_FOUND",
       hint: "Initialize the OTP model before using OTP authentication.",
       details: {
         handler: routeObj.handler,

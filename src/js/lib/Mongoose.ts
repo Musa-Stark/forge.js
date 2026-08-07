@@ -48,6 +48,13 @@ export interface ObjectIdField {
   ref?: string;
 }
 
+export interface EncryptedString {
+  str: StringField;
+  nonce: StringField;
+  publicKey: StringField;
+  securedPrivateKey: StringField;
+}
+
 export interface FileMetaDataField {
   storageKey: StringField;
   url: StringField;

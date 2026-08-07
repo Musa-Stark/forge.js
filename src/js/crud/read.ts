@@ -5,6 +5,7 @@ import getParam from "./utils/getParam.js";
 import type { Route, ValidationsObj } from "../types/Collection.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
+import handleDecryption from "./encryption/handleDecryption.js";
 
 const read = ({
   modelName,
@@ -30,13 +31,17 @@ const read = ({
       routeObj,
     });
 
+    // if not public -> do authorizeAccess
     if (routeObj.authRole !== "public")
       authorizeAccess({ routeObj, routeName, item, req });
+
+    // if decryption
+    const decryption = await handleDecryption(item, routeObj)
 
     // return response
     appResponse({
       res,
-      data: item,
+      data: {...item, ...decryption},
       message: "Item found successfully!",
     });
   };

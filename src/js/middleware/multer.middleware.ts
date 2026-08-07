@@ -41,7 +41,6 @@ export const handleMulterMiddleware = (
     throw new AppError({
       message: "fileArray must be an array.",
       statusCode: 400,
-      code: "UPLOAD_ARRAY_REQUIRED",
       hint: "Provide fileArray as an array in the collection configuration.",
       details: {
         handler: routeObj.handler,
@@ -128,7 +127,6 @@ export const handleMulterMiddleware = (
         new AppError({
           message: "File upload failed.",
           statusCode: 500,
-          code: "UPLOAD_FAILED",
           hint: "An unexpected error occurred while processing the upload.",
           details: {
             handler: routeObj.handler,

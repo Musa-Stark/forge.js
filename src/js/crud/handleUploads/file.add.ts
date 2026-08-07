@@ -25,7 +25,6 @@ const addFile = ({
       throw new AppError({
         message: "fileArray is missing or empty",
         statusCode: 400,
-        code: "INVALID_CONFIGURATION",
         hint: "Checkout the collection configuration if fileArray is missing or empty",
         details: getErrorDetail(routeObj),
       });
@@ -60,7 +59,6 @@ const addFile = ({
           throw new AppError({
             message: `mongooseSchemaFieldName: '${field}' not found in mongodb document.`,
             statusCode: 400,
-            code: "INVALID_CONFIGURATION",
             hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document -> fileMetaData.",
             details: {
               handler: routeObj.handler,

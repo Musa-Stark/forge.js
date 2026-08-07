@@ -22,7 +22,6 @@ export const sendCookie = ({
     throw new AppError({
       message: "tokenExpiry and ENV are required.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define tokenExpiry and ENV in your environment configuration.",
       details: {
         handler: routeObj.handler,
@@ -35,7 +34,6 @@ export const sendCookie = ({
     throw new AppError({
       message: "domain is required in production.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define domain when ENV is set to production.",
       details: {
         handler: routeObj.handler,
@@ -70,7 +68,6 @@ export const clearCookie = ({
     throw new AppError({
       message: "ENV is required.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define ENV in your environment configuration.",
       details: {
         handler: routeObj.handler,
@@ -83,7 +80,6 @@ export const clearCookie = ({
     throw new AppError({
       message: "domain is required in production.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define domain when ENV is set to production.",
       details: {
         handler: routeObj.handler,

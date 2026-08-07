@@ -23,7 +23,6 @@ const sendEmail = async ({
     throw new AppError({
       message: "Email sender is required",
       statusCode: 404,
-      code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
@@ -36,7 +35,6 @@ const sendEmail = async ({
     throw new AppError({
       message: "Email receiver is required",
       statusCode: 404,
-      code: "EMAIL_INVALID_RECIPIENT",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
@@ -50,7 +48,6 @@ const sendEmail = async ({
     throw new AppError({
       message: "Email subject is required",
       statusCode: 404,
-      code: "EMAIL_INVALID_SUBJECT",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
@@ -64,7 +61,6 @@ const sendEmail = async ({
     throw new AppError({
       message: "Email body is required",
       statusCode: 404,
-      code: "EMAIL_INVALID_BODY",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
@@ -81,7 +77,6 @@ const sendEmail = async ({
     throw new AppError({
       message: "resendAPIKey is required",
       statusCode: 404,
-      code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
@@ -106,7 +101,6 @@ const sendEmail = async ({
     throw new AppError({
       message: error.message,
       statusCode: 409,
-      code: "EMAIL_CONFIGURATION_INVALID",
       hint: "This issue requires a fix from the framework developer.",
       details: {
         handler: routeObj.handler,

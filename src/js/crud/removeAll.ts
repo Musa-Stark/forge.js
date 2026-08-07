@@ -39,7 +39,6 @@ const removeAll = ({
       throw new AppError({
         message: `Data not found to delete`,
         statusCode: 404,
-        code: "CRUD_ITEM_NOT_FOUND",
         hint: "Hit a POST request to insert an item",
         details: getErrorDetail(routeObj),
       });

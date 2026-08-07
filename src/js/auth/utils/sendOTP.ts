@@ -17,7 +17,6 @@ const sendOTP = async (
     throw new AppError({
       message: "isOffline is required.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define isOffline in your environment configuration.",
       details: {
         handler: routeObj.handler,
@@ -37,7 +36,6 @@ const sendOTP = async (
     throw new AppError({
       message: "adminEmailSender is required.",
       statusCode: 500,
-      code: "MISSING_ENVIRONMENT_VARIABLE",
       hint: "Define adminEmailSender in your environment configuration.",
       details: {
         handler: routeObj.handler,

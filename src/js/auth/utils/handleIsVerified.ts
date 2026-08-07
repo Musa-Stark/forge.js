@@ -28,7 +28,6 @@ const handleIsVerified = async ({
       throw new AppError({
         message: "Email address is not verified.",
         statusCode: 403,
-        code: "AUTH_FORBIDDEN",
         hint: "Verify your email address before continuing.",
         details: getErrorDetail(routeObj),
       });

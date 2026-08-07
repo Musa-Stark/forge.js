@@ -55,7 +55,6 @@ const authenticateUser = async ({
       throw new AppError({
         message: "Invalid password.",
         statusCode: 401,
-        code: "AUTH_PASSWORD_INCORRECT",
         hint: "Verify your password and try again.",
         details: getErrorDetail(routeObj),
       });

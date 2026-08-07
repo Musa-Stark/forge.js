@@ -30,7 +30,6 @@ const login = ({
       throw new AppError({
          message: "Email and password are required",
         statusCode: 409,
-        code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email and password to login',
         details: getErrorDetail(routeObj),
       });

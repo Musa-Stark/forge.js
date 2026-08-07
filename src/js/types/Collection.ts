@@ -27,12 +27,14 @@ export interface Route {
   authRole: AuthRole;
   mongooseConfigObj?: {
     populateKey?: string | boolean;
-    hiddenFieldsArray?: string[]
+    hiddenFieldsArray?: string[];
   };
   // middlewareArray?: MiddlewareInput;
   fileArray?: Upload[];
   // emailsArray?: Email | Email[];
   mode?: AuthMode;
+  encryptedFieldsArray: string[];
+  decryptedFieldsArray: string[];
 }
 
 export type MongooseSchema = {

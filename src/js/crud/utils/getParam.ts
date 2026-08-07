@@ -15,7 +15,6 @@ const getParam = ({
     throw new AppError({
       message: "path: '/:[param]' is required",
       statusCode: 409,
-      code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: "Provide path, check collection -> routes -> path configuration or your URL",
       details: {
         handler: routeObj.handler,
