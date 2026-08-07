@@ -13,6 +13,7 @@ const crudCollection = collection({
     owner: mongooseFields.userRef,
     profileImage: mongooseFields.fileMetaData,
     cardNumber: mongooseFields.encryptedString,
+    // cvv: mongooseFields.encryptedString
   },
   routesArray: [
     {
@@ -21,6 +22,7 @@ const crudCollection = collection({
       handler: "readAll",
       authRole: "public",
       validationKey: false,
+      decryptedFieldsArray: ["cardNumber", "cvv"],
       mongooseConfigObj: {
         populateKey: "owner",
         hiddenFieldsArray: ["__v", "updatedAt"],
@@ -32,7 +34,11 @@ const crudCollection = collection({
       handler: "read",
       authRole: "adminOrOwner",
       validationKey: false,
-      decryptedFieldsArray: ["cardNumber"]
+      decryptedFieldsArray: ["cardNumber", "cvv?"],
+      mongooseConfigObj: {
+        populateKey: "owner",
+        hiddenFieldsArray: ["__v"]
+      }
     },
     {
       method: "post",
@@ -40,7 +46,7 @@ const crudCollection = collection({
       handler: "create",
       authRole: "authenticated",
       validationKey: "createProduct",
-      encryptedFieldsArray: ["cardNumber"]
+      encryptedFieldsArray: ["cardNumber", "cvv?"]
     },
     {
       method: "post",

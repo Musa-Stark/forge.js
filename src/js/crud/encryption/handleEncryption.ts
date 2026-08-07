@@ -32,16 +32,24 @@ const handleEncryption = async (body: any, routeObj: Route) => {
 
   const encrypted: Record<string, SealResult> = {};
 
-  for (const field of encArr) {
+  for (let field of encArr) {
+    const optional = field.endsWith("?");
+    field = optional ? field.slice(0, -1) : field;
+
     // Validate that the field exists in the request body.
-    if (!Object.hasOwn(body, field)) {
-      throw new AppError({
-        details: getErrorDetail(routeObj),
-        hint: `Make sure '${field}' is included in the request body.`,
-        message: `The required field '${field}' is missing.`,
-        statusCode: 400,
-      });
-    }
+    if (!Object.hasOwn(body, field))
+      if (optional) {
+        continue;
+      } else {
+        throw new AppError({
+          details: getErrorDetail(routeObj),
+          hint: `Make sure '${field}' is included in the request body.`,
+          message: `The required field '${field}' is missing.`,
+          statusCode: 400,
+        });
+      }
+
+    console.log(field);
 
     encrypted[field] = await seal(body[field], routeObj);
   }

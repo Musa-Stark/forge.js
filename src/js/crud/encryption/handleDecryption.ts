@@ -31,16 +31,23 @@ const handleDecryption = async (item: any, routeObj: Route) => {
 
   const decrypted: Record<string, string> = {};
 
-  for (const field of decArr) {
+  for (let field of decArr) {
+    // clean the optional
+    const optional = field.endsWith("?");
+    field = optional ? field.slice(0, -1) : field;
+
     // Validate that the field exists in the request body.
-    if (!Object.hasOwn(item, field)) {
-      throw new AppError({
-        details: getErrorDetail(routeObj),
-        hint: `Make sure '${field}' is included in the request body.`,
-        message: `The required field '${field}' is missing.`,
-        statusCode: 400,
-      });
-    }
+    if (!Object.hasOwn(item, field))
+      if (optional) {
+        continue;
+      } else {
+        throw new AppError({
+          details: getErrorDetail(routeObj),
+          hint: `Make sure '${field}' is included in the item.`,
+          message: `The required field '${field}' is missing.`,
+          statusCode: 400,
+        });
+      }
 
     const { str, nonce, publicKey, securedPrivateKey } = item[field];
     if (!str || !nonce || !publicKey || !securedPrivateKey)
