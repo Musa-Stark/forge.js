@@ -1,6 +1,6 @@
-import type { Collection } from "../types/Collection.ts";
+import type { Collection } from "../types/Collection.js";
 
-export interface CollectionInfo {
+export interface AppInfo {
   modelsCount?: number;
   validationsCount?: number;
   routesCount?: number;
@@ -11,9 +11,10 @@ export interface CollectionInfo {
   fileUpload?: boolean;
   errorHandling?: boolean; //
   cors?: boolean; //
+  dbConnectionStatus: string | null;
 }
 
-let collectionInfo: CollectionInfo = {
+let appInfo: AppInfo = {
   modelsCount: 1,
   validationsCount: 0,
   routesCount: 0,
@@ -24,30 +25,30 @@ let collectionInfo: CollectionInfo = {
   fileUpload: false,
   errorHandling: true,
   cors: false,
+  dbConnectionStatus: null,
 };
 
 const resources: string[] = ["OTP Model"];
 
-const setCollectionInfo = (req: Collection) => {
-  
+const setAppInfo = (req: Collection) => {
   if (req.modelName && !resources.includes(req.modelName)) {
-    if (req.mongooseSchemaObj) collectionInfo.modelsCount!++;
+    if (req.mongooseSchemaObj) appInfo.modelsCount!++;
 
     resources.push(req.modelName);
   }
 
-  if (req.validationsObj) collectionInfo.validationsCount!++;
+  if (req.validationsObj) appInfo.validationsCount!++;
 
-  if (req.reqType === "auth") collectionInfo.authentication = true;
+  if (req.reqType === "auth") appInfo.authentication = true;
 
   if (req.routesArray) {
-    collectionInfo.routesCount! += req.routesArray.length;
+    appInfo.routesCount! += req.routesArray.length;
     for (const el of req.routesArray) {
-      if (el.fileArray) collectionInfo.fileUpload = true;
+      if (el.fileArray) appInfo.fileUpload = true;
       if (el.authRole === "admin" || el.authRole === "adminOrOwner")
-        collectionInfo.authorization = true;
+        appInfo.authorization = true;
     }
   }
 };
 
-export { collectionInfo, setCollectionInfo, resources };
+export { appInfo, setAppInfo, resources };

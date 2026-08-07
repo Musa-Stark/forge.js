@@ -88,11 +88,12 @@ const printBanner = (config: any) => {
   row("Driver", config.db.driver);
   row("Database", config.db.name);
   row(
-    "Status",
+    "Connected",
     config.db.connected
-      ? c("Connected", colors.green)
-      : c("Disconnected", colors.red),
+    ? c("true", colors.green)
+    : c("false", colors.red),
   );
+  row("status", config.db.status);
 
   section("⚡ Generated");
 

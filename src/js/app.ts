@@ -7,13 +7,12 @@ import errorMiddleware from "./middleware/error.middleware.js";
 import createModel from "./lib/model.factory.js";
 import registerModel from "./lib/model.registry.js";
 import connectDB from "./lib/db.js";
-import AppLog from "./utils/AppLog.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { rateLimiter } from "./middleware/rateLimit.middleware.js";
 import healthCollection from "./health/health.collection.js";
-import { setCollectionInfo } from "./terminal/collectionInfo.js";
-import printInfo from "./terminal/terminal.js";
+import { setAppInfo } from "./terminal/appInfo.js";
+import printInfo from "./terminal/loggerConfig.js";
 
 // body - middlewares
 const jsonParser = express.json();
@@ -38,7 +37,7 @@ app.use((req, res, next) => {
 // handle collection
 const handleCollection = (collections: Collection[]): void => {
   for (const Req of collections) {
-    setCollectionInfo(Req);
+    setAppInfo(Req);
 
     const { routeName, modelName, mongooseSchemaObj } = Req;
     if (modelName) {

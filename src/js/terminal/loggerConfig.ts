@@ -1,15 +1,15 @@
 import Banner from "./logger.js";
 import { getEnvs } from "../config/envs.js";
-import { collectionInfo, resources } from "./collectionInfo.js";
-import type { CollectionInfo } from "./collectionInfo.ts";
+import { appInfo, resources } from "./appInfo.js";
+import type { AppInfo } from "./appInfo.js";
 
 const printInfo = () => {
   const { apiVersion, ENV, port, databaseName } = getEnvs();
   const features = [];
 
-  const infokeys = Object.keys(collectionInfo) as [keyof CollectionInfo];
+  const infokeys = Object.keys(appInfo) as [keyof AppInfo];
   for (const el of infokeys) {
-    const item = collectionInfo[el];
+    const item = appInfo[el];
     if (typeof item === "boolean" && item === true) features.push(el);
   }
 
@@ -30,12 +30,13 @@ const printInfo = () => {
       driver: "MongoDB",
       name: databaseName || "starkForge",
       connected: true,
+      status: appInfo.dbConnectionStatus
     },
 
     generated: {
-      models: collectionInfo.modelsCount,
-      validators: collectionInfo.validationsCount,
-      routes: collectionInfo.routesCount,
+      models: appInfo.modelsCount,
+      validators: appInfo.validationsCount,
+      routes: appInfo.routesCount,
     },
 
     features,
