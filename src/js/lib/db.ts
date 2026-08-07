@@ -34,7 +34,7 @@ const connectDB = async ({
     if (!isOffline && !mongoDBURI)
       throw new Error("You are online! mongoDBURI is required");
 
-    if (!databaseName) databaseName = "default-db";
+    if (!databaseName) databaseName = "starkForge";
 
     setTimeout(() => {
       AppLog("loading", "db", "Connecting to mongodb...");

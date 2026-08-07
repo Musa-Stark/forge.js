@@ -12,6 +12,8 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { rateLimiter } from "./middleware/rateLimit.middleware.js";
 import healthCollection from "./health/health.collection.js";
+import { setCollectionInfo } from "./terminal/collectionInfo.js";
+import printInfo from "./terminal/terminal.js";
 
 // body - middlewares
 const jsonParser = express.json();
@@ -36,6 +38,8 @@ app.use((req, res, next) => {
 // handle collection
 const handleCollection = (collections: Collection[]): void => {
   for (const Req of collections) {
+    setCollectionInfo(Req);
+
     const { routeName, modelName, mongooseSchemaObj } = Req;
     if (modelName) {
       const MODEL = createModel(routeName, modelName, mongooseSchemaObj!);
@@ -52,6 +56,8 @@ const handleCollection = (collections: Collection[]): void => {
       Req.mongooseSchemaObj,
     );
   }
+
+  printInfo()
 };
 
 // start server
@@ -80,4 +86,4 @@ const startServer = async (): Promise<void> => {
   );
 };
 
-export {startServer, app};
+export { startServer, app };
