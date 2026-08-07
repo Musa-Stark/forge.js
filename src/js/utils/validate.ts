@@ -9,7 +9,6 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
     throw new AppError({
       message: "validationSchema is required to validate",
       statusCode: 409,
-      code: "VALIDATION_SCHEMA_REQUIRED",
       details: getErrorDetail(routeObj),
       hint: "Provide validation in validationsObj. Use same name as key as provided in routeObj configuration",
     });
@@ -18,7 +17,6 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
     throw new AppError({
       message: "body is required to validate",
       statusCode: 409,
-      code: "BODY_MISSING",
       details: getErrorDetail(routeObj),
       hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write fileArray : [{...}] in collection -> routesArray -> routeObj.",
     });
@@ -64,7 +62,6 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
     throw new AppError({
       message: `${field}: ${message}`,
       statusCode: 409,
-      code: "VALIDATION_FAILED",
       details: getErrorDetail(routeObj),
       hint: `Check the keys you provided in collection -> valdiationsObj -> ${routeObj.validationKey}. It should be similar to body -> item key`,
     });

@@ -26,7 +26,6 @@ const uploadFile = (
             new AppError({
               message: "Cloudinary upload failed.",
               statusCode: 500,
-              code: "UPLOAD_CLOUDINARY_FAILED",
               hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
                 handler: routeObj.handler,
@@ -63,7 +62,6 @@ export const handleUploadFiles = async (req: Request, routeObj: Route) => {
       throw new AppError({
         message: "mongooseSchemaFieldName is required.",
         statusCode: 400,
-        code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
         hint: "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
         details: getErrorDetail(routeObj),
       });
@@ -74,7 +72,6 @@ export const handleUploadFiles = async (req: Request, routeObj: Route) => {
     throw new AppError({
       message: "File is required.",
       statusCode: 400,
-      code: "UPLOAD_FILE_REQUIRED",
       hint: "Upload at least one file using the configured upload field.",
       details: {
         handler: routeObj.handler,

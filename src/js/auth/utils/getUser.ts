@@ -32,7 +32,6 @@ const getUser = async ({
     throw new AppError({
       message: "User not found.",
       statusCode: 404,
-      code: "AUTH_USER_NOT_FOUND",
       hint: "Verify the provided email address or create a new account.",
       details: {
         handler: routeObj.handler,

@@ -31,7 +31,6 @@ const createOTPUser = async ({
     throw new AppError({
       message: "purpose is required.",
       statusCode: 400,
-      code: "MISSING_PARAMETER",
       hint: "Provide purpose before creating an OTP request.",
       details: {
         handler: routeObj.handler,
@@ -48,7 +47,6 @@ const createOTPUser = async ({
       throw new AppError({
         message: "OTP has already been requested.",
         statusCode: 409,
-        code: "RESOURCE_ALREADY_EXISTS",
         hint: "Check your email, including the spam folder, or request another OTP after the current one expires.",
         details: getErrorDetail(routeObj),
       });

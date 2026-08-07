@@ -29,7 +29,6 @@ const forgotPassword = ({
       throw new AppError({
         message: "Email is required",
         statusCode: 409,
-        code: "AUTH_CONFIGURATION_INVALID",
         hint: 'Provide email your email for resetting password',
         details: getErrorDetail(routeObj),
       });

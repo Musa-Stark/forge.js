@@ -16,7 +16,6 @@ const otpVerifiedResponse = ({
     throw new AppError({
       message: "purpose is required.",
       statusCode: 400,
-      code: "MISSING_PARAMETER",
       hint: "Provide purpose before sending the OTP verification response.",
       details: {
         handler: routeObj.handler,

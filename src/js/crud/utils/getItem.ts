@@ -40,7 +40,6 @@ const getItem = async ({
     if (populateKey) {
       if (typeof populateKey === "boolean")
         throw new AppError({
-          code: "CRUD_CONFIGURATION_INVALID",
           hint: "populateKey as boolean must be 'false' only. Else it should be string, representing the ref in your mongooseSchemaObj.",
           message: "Invalid populateKey",
           statusCode: 409,
@@ -58,7 +57,6 @@ const getItem = async ({
       throw new AppError({
         message: `Invalid mongoose _id`,
         statusCode: 409,
-        code: "CRUD_ITEM_NOT_FOUND",
         hint: "Check the /:id you provided in URL. It doesn't match any document's _id in database.",
         details: getErrorDetail(routeObj),
       });
@@ -83,7 +81,6 @@ const getItem = async ({
     throw new AppError({
       message: `${_id ? "Item" : "Data"} not found`,
       statusCode: 404,
-      code: "CRUD_ITEM_NOT_FOUND",
       hint: _id
         ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
         : "Hit a POST request and create an item",

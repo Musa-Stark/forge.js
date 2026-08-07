@@ -12,7 +12,6 @@ const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
         message: "validationKey as boolean can only be 'false'",
         statusCode: 400,
         hint: "Make it false without ('', \"\" or ``)",
-        code: "ROUTE_VALIDATION_KEY_INVALID",
         details: getErrorDetail(routeObj),
       });
     } else {
@@ -24,7 +23,6 @@ const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
     throw new AppError({
       message: "validationKey is required",
       statusCode: 400,
-      code: "ROUTE_VALIDATION_KEY_REQUIRED",
       hint: "Provide it or make it false if this routeObj doesn't need validation",
       details: getErrorDetail(routeObj),
     });
@@ -37,7 +35,6 @@ const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
     throw new AppError({
       message: `validationKey: '${key}' is missing in validationsObj`,
       statusCode: 400,
-      code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `In validationsObj, use the '${key}' as key for validation`,
       details: getErrorDetail(routeObj),
     });

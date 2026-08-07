@@ -27,7 +27,6 @@ const crud = (
       throw new AppError({
         message: "authRole, handler, method and path are required required",
         statusCode: 409,
-        code: "CRUD_AUTHROLE_NOT_FOUND",
         hint: "Check if authRole, handler, method or path is missing in collections -> routes.",
         details: getErrorDetail(routeObj),
       });

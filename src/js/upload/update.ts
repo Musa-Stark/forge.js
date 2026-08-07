@@ -26,7 +26,6 @@ const uploadFile = (
             new AppError({
               message: "Cloudinary upload failed.",
               statusCode: 500,
-              code: "UPLOAD_CLOUDINARY_FAILED",
               hint: "Verify your Cloudinary configuration, credentials, and network connectivity.",
               details: {
                 handler: routeObj.handler,
@@ -67,7 +66,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: "fileArray is required.",
       statusCode: 400,
-      code: "UPLOAD_ARRAY_REQUIRED",
       hint: "Provide fileArray in the collection routeObj configuration for update handlers.",
       details: {
         handler: routeObj.handler,
@@ -89,7 +87,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: "mongooseSchemaFieldName is required.",
       statusCode: 400,
-      code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
       hint: "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
       details: {
         handler: routeObj.handler,
@@ -102,7 +99,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: "File is required.",
       statusCode: 400,
-      code: "UPLOAD_FILE_REQUIRED",
       hint: "Upload a file using the configured upload field.",
       details: {
         handler: routeObj.handler,
@@ -124,7 +120,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: `'${mongooseField}' field not found.`,
       statusCode: 400,
-      code: "SCHEMA_FIELD_REQUIRED",
       hint: "Ensure mongooseSchemaFieldName matches an existing schema field.",
       details: {
         handler: routeObj.handler,
@@ -142,7 +137,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: "validationIdentifierKey is required.",
       statusCode: 400,
-      code: "VALIDATION_KEY_REQUIRED",
       hint: "Provide validationIdentifierKey in collection -> routeObj -> fileArray [{...}].",
       details: {
         handler: routeObj.handler,
@@ -155,7 +149,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: `'${validationIdentifierKey}' is required.`,
       statusCode: 400,
-      code: "VALIDATION_REQUIRED_FIELD_MISSING",
       hint: `Provide '${validationIdentifierKey}' in the request body.`,
       details: {
         handler: routeObj.handler,
@@ -172,7 +165,6 @@ const handleUpdateFile = async (
     throw new AppError({
       message: `File with id '${body[validationIdentifierKey]}' not found.`,
       statusCode: 404,
-      code: "CRUD_ITEM_NOT_FOUND",
       hint: "Verify the provided file identifier exists in the stored file array.",
       details: {
         handler: routeObj.handler,

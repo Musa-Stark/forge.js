@@ -21,7 +21,6 @@ const getOTPUser = async ({
     throw new AppError({
       message: "OTP request not found.",
       statusCode: 404,
-      code: "CRUD_ITEM_NOT_FOUND",
       hint: "Request a new OTP or verify the provided email and purpose.",
       details: {
         handler: routeObj.handler,

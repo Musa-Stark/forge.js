@@ -1,0 +1,183 @@
+# Query: code: "
+# Flags: CaseSensitive WordMatch
+
+106 results - 37 files
+
+src/js/auth/forgotPassword.ts:
+
+src/js/auth/login.ts:
+  33:         code: "AUTH_CONFIGURATION_INVALID",
+
+src/js/auth/resendOTP.ts:
+  37:         code: "VALIDATION_REQUIRED_FIELD_MISSING",
+
+src/js/auth/resetPassword.ts:
+  38:         code: "VALIDATION_REQUIRED_FIELD_MISSING",
+
+src/js/auth/signup.ts:
+  34:         code: "VALIDATION_REQUIRED_FIELD_MISSING",
+  48:         code: "AUTH_EMAIL_ALREADY_EXISTS",
+
+src/js/auth/verifyOTP.ts:
+   38:         code: "VALIDATION_REQUIRED_FIELD_MISSING",
+   56:         code: "CRUD_ITEM_NOT_FOUND",
+   81:         code: "AUTH_FORBIDDEN",
+   91:         code: "OTP_EXPIRED",
+  104:         code: "OTP_INVALID",
+
+src/js/auth/utils/authenticateUser.ts:
+  58:         code: "AUTH_PASSWORD_INCORRECT",
+
+src/js/auth/utils/createOTPUser.ts:
+  34:       code: "MISSING_PARAMETER",
+  51:         code: "RESOURCE_ALREADY_EXISTS",
+
+src/js/auth/utils/getOTPModel.ts:
+  12:       code: "CRUD_MODEL_NOT_FOUND",
+
+src/js/auth/utils/getOTPUser.ts:
+  24:       code: "CRUD_ITEM_NOT_FOUND",
+
+src/js/auth/utils/getUser.ts:
+  35:       code: "AUTH_USER_NOT_FOUND",
+
+src/js/auth/utils/handleIsVerified.ts:
+  31:         code: "AUTH_FORBIDDEN",
+
+src/js/auth/utils/otpVerifiedResponse.ts:
+  19:       code: "MISSING_PARAMETER",
+
+src/js/auth/utils/sendCookie.ts:
+  25:       code: "MISSING_ENVIRONMENT_VARIABLE",
+  38:       code: "MISSING_ENVIRONMENT_VARIABLE",
+  73:       code: "MISSING_ENVIRONMENT_VARIABLE",
+  86:       code: "MISSING_ENVIRONMENT_VARIABLE",
+
+src/js/auth/utils/sendOTP.ts:
+  20:       code: "MISSING_ENVIRONMENT_VARIABLE",
+  40:       code: "MISSING_ENVIRONMENT_VARIABLE",
+
+src/js/auth/utils/verifyCredentials.ts:
+  21:       code: "MISSING_PARAMETER",
+  45:       code: "AUTH_PASSWORD_INCORRECT",
+
+src/js/config/cloudinary.ts:
+  16:       code: "CLOUDINARY_CONFIGURATION_INVALID",
+
+src/js/config/duration.ts:
+  29:       code: "FRAMEWORK_CONFIGURATION_INVALID",
+
+src/js/config/sendEmail.ts:
+   26:       code: "EMAIL_CONFIGURATION_INVALID",
+   39:       code: "EMAIL_INVALID_RECIPIENT",
+   53:       code: "EMAIL_INVALID_SUBJECT",
+   67:       code: "EMAIL_INVALID_BODY",
+   84:       code: "EMAIL_CONFIGURATION_INVALID",
+  109:       code: "EMAIL_CONFIGURATION_INVALID",
+
+src/js/crud/create.ts:
+  47:         code: "CRUD_INVALIDT_AUTHROLE",
+  70:           code: "CRUD_ITEM_ALREADY_EXISTS",
+  84:         code: "CRUD_ERROR",
+
+src/js/crud/index.ts:
+  30:         code: "CRUD_AUTHROLE_NOT_FOUND",
+
+src/js/crud/removeAll.ts:
+  42:         code: "CRUD_ITEM_NOT_FOUND",
+
+src/js/crud/handleUploads/file.add.ts:
+  28:         code: "INVALID_CONFIGURATION",
+  63:             code: "INVALID_CONFIGURATION",
+
+src/js/crud/utils/authroizeAccess.ts:
+  23:       code: "FRAMEWORK_CONFIGURATION_INVALID",
+  33:       code: "FRAMEWORK_CONFIGURATION_INVALID",
+  57:         code: "PERMISSION_DENIED",
+  69:         code: "PERMISSION_DENIED",
+
+src/js/crud/utils/getItem.ts:
+  43:           code: "CRUD_CONFIGURATION_INVALID",
+  61:         code: "CRUD_ITEM_NOT_FOUND",
+  86:       code: "CRUD_ITEM_NOT_FOUND",
+
+src/js/crud/utils/getParam.ts:
+  18:       code: "FRAMEWORK_CONFIGURATION_INVALID",
+
+src/js/lib/model.factory.ts:
+  63:       code: "MODEL_FACTORY_ERROR",
+
+src/js/middleware/auth.middleware.ts:
+   17:       code: "AUTH_CONFIG_ERROR",
+   29:       code: "AUTH_CONFIG_ERROR",
+   53:             code: "AUTH_REQUIRED",
+   70:             code: "AUTH_INVALID_TOKEN",
+   84:             code: "AUTH_USER_NOT_FOUND",
+  109:           code: "AUTH_MIDDLEWARE_ERROR",
+
+src/js/middleware/multer.middleware.ts:
+   21:     //       code: "UPLOAD_INVALID_IMAGE",
+   44:       code: "UPLOAD_ARRAY_REQUIRED",
+  131:           code: "UPLOAD_FAILED",
+
+src/js/upload/create.ts:
+  29:               code: "UPLOAD_CLOUDINARY_FAILED",
+  66:         code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
+  77:       code: "UPLOAD_FILE_REQUIRED",
+
+src/js/upload/delete.ts:
+   15:       code: "UPLOAD_ARRAY_REQUIRED",
+   38:       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
+   54:       code: "SCHEMA_FIELD_REQUIRED",
+   73:       code: "VALIDATION_KEY_REQUIRED",
+   87:       code: "VALIDATION_REQUIRED_FIELD_MISSING",
+  104:       code: "CRUD_ITEM_NOT_FOUND",
+  121:       code: "UPLOAD_STORAGE_KEY_REQUIRED",
+
+src/js/upload/update.ts:
+   29:               code: "UPLOAD_CLOUDINARY_FAILED",
+   70:       code: "UPLOAD_ARRAY_REQUIRED",
+   92:       code: "UPLOAD_MONGOOSE_FIELD_REQUIRED",
+  105:       code: "UPLOAD_FILE_REQUIRED",
+  127:       code: "SCHEMA_FIELD_REQUIRED",
+  145:       code: "VALIDATION_KEY_REQUIRED",
+  158:       code: "VALIDATION_REQUIRED_FIELD_MISSING",
+  175:       code: "CRUD_ITEM_NOT_FOUND",
+
+src/js/utils/getModel.ts:
+  19:       code: "MODEL_NAME_REQUIRED",
+  31:       code: "MODEL_NOT_REGISTERED",
+
+src/js/utils/handleJWT.ts:
+   20:         code: "JWT_SIGN_ERROR",
+   32:         code: "JWT_SIGN_ERROR",
+   42:         code: "JWT_SIGN_ERROR",
+   59:       code: "JWT_SIGN_ERROR",
+   78:         code: "JWT_VERIFY_ERROR",
+   90:         code: "JWT_VERIFY_ERROR",
+  105:       code: "JWT_VERIFY_ERROR",
+
+src/js/utils/libsodium.ts:
+   19:       code: "LIBSODIUM_HASH_ERROR",
+   51:       code: "LIBSODIUM_HASH_ERROR",
+   61:       code: "LIBSODIUM_HASH_ERROR",
+   75:       code: "LIBSODIUM_HASH_ERROR",
+  134:         code: "LIBSODIUM_HASH_ERROR",
+  144:         code: "LIBSODIUM_HASH_ERROR",
+  184:       code: "LIBSODIUM_HASH_ERROR",
+  205:         code: "LIBSODIUM_DECRYPT_ERROR",
+  215:         code: "LIBSODIUM_DECRYPT_ERROR",
+  225:         code: "LIBSODIUM_DECRYPT_ERROR",
+  235:         code: "LIBSODIUM_DECRYPT_ERROR",
+  245:         code: "LIBSODIUM_DECRYPT_ERROR",
+  284:       code: "LIBSODIUM_DECRYPT_ERROR",
+
+src/js/utils/validate.ts:
+  12:       code: "VALIDATION_SCHEMA_REQUIRED",
+  21:       code: "BODY_MISSING",
+  67:       code: "VALIDATION_FAILED",
+
+src/js/utils/validationKeyError.ts:
+  15:         code: "ROUTE_VALIDATION_KEY_INVALID",
+  27:       code: "ROUTE_VALIDATION_KEY_REQUIRED",
+  40:       code: "VALIDATION_REQUIRED_FIELD_MISSING",

@@ -34,7 +34,6 @@ const resendOTP = ({
       throw new AppError({
         message: "email and purpose are required.",
         statusCode: 400,
-        code: "VALIDATION_REQUIRED_FIELD_MISSING",
         hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
         details: getErrorDetail(routeObj),
       });

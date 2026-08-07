@@ -2,7 +2,7 @@ export interface AppErrorConstructor {
   message: string;
   statusCode: number;
   isOperational?: boolean;
-  code: string;
+  code?: string;
   details: {
     handler: string;
     method: string;
@@ -22,7 +22,7 @@ class AppError extends Error {
     this.message = values.message;
     this.statusCode = values.statusCode;
     this.isOperational = values.isOperational ?? true;
-    this.code = values.code;
+    this.code = values.code || undefined;
     this.details = values.details;
     this.hint = values.hint;
   }

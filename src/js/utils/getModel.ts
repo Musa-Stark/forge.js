@@ -16,7 +16,6 @@ const getModel = ({
     throw new AppError({
       message: `Model name is required for routeObj '${routeName}'`,
       statusCode: 500,
-      code: "MODEL_NAME_REQUIRED",
       hint: "Provide a valid modelName when configuring the collection.",
       details: getErrorDetail(routeObj),
     });
@@ -28,7 +27,6 @@ const getModel = ({
     throw new AppError({
       message: `Model '${modelName}' is not registered`,
       statusCode: 500,
-      code: "MODEL_NOT_REGISTERED",
       hint: "Register the model before using it in a collection.",
       details: getErrorDetail(routeObj),
     });

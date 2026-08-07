@@ -14,7 +14,6 @@ const findUser = async (id: string, routeObj: Route) => {
     throw new AppError({
       message: "User model is required for authentication",
       statusCode: 500,
-      code: "AUTH_CONFIG_ERROR",
       hint: "Configure 'userModelName' in your environment variables.",
       details: getErrorDetail(routeObj),
     });
@@ -26,7 +25,6 @@ const findUser = async (id: string, routeObj: Route) => {
     throw new AppError({
       message: `User model '${userModelName}' is not registered`,
       statusCode: 500,
-      code: "AUTH_CONFIG_ERROR",
       hint: "Register the user model before enabling authentication.",
       details: getErrorDetail(routeObj),
     });
@@ -50,7 +48,6 @@ const protect =
           new AppError({
             message: "Authentication required",
             statusCode: 401,
-            code: "AUTH_REQUIRED",
             hint: "Log in to access this resource.",
             details: getErrorDetail(routeObj),
           }),
@@ -67,7 +64,6 @@ const protect =
           new AppError({
             message: "Invalid JWT payload",
             statusCode: 401,
-            code: "AUTH_INVALID_TOKEN",
             hint: "Sign in again to obtain a valid authentication token.",
             details: getErrorDetail(routeObj),
           }),
@@ -81,7 +77,6 @@ const protect =
           new AppError({
             message: "This account no longer exists",
             statusCode: 401,
-            code: "AUTH_USER_NOT_FOUND",
             hint: "Sign in with an existing account.",
             details: getErrorDetail(routeObj),
           }),
@@ -106,7 +101,6 @@ const protect =
         new AppError({
           message: "Authentication failed",
           statusCode: 500,
-          code: "AUTH_MIDDLEWARE_ERROR",
           hint: "This issue requires a fix from the framework developer.",
           details: getErrorDetail(routeObj),
         }),

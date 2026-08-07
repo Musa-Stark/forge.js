@@ -26,7 +26,6 @@ const getDuration = (key: DurationType, routeObj: Route) => {
     throw new AppError({
       message: "Invalid duration key",
       statusCode: 409,
-      code: "FRAMEWORK_CONFIGURATION_INVALID",
       hint: 'Write duration like "1m", "1h" or "1d"',
       details: {
         handler: routeObj.handler || "",

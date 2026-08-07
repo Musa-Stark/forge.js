@@ -17,7 +17,6 @@ export const signJWT = ({
       throw new AppError({
         message: "Payload is required to sign a JWT",
         statusCode: 400,
-        code: "JWT_SIGN_ERROR",
         hint: "Provide a valid payload for JWT generation.",
         details: getErrorDetail(routeObj),
       });
@@ -29,7 +28,6 @@ export const signJWT = ({
       throw new AppError({
         message: "JWT secret is required",
         statusCode: 500,
-        code: "JWT_SIGN_ERROR",
         hint: "Configure 'jwtSecret' in your environment variables.",
         details: getErrorDetail(routeObj),
       });
@@ -39,7 +37,6 @@ export const signJWT = ({
       throw new AppError({
         message: "Token expiry is required",
         statusCode: 500,
-        code: "JWT_SIGN_ERROR",
         hint: "Configure 'tokenExpiry' in your environment variables.",
         details: getErrorDetail(routeObj),
       });
@@ -56,7 +53,6 @@ export const signJWT = ({
     throw new AppError({
       message: "Failed to sign JWT",
       statusCode: 500,
-      code: "JWT_SIGN_ERROR",
       hint: "This issue requires a fix from the framework developer.",
       details: getErrorDetail(routeObj),
     });
@@ -75,7 +71,6 @@ export const verifyJWT = ({
       throw new AppError({
         message: "JWT token is required",
         statusCode: 400,
-        code: "JWT_VERIFY_ERROR",
         hint: "Provide a valid JWT for verification.",
         details: getErrorDetail(routeObj),
       });
@@ -87,7 +82,6 @@ export const verifyJWT = ({
       throw new AppError({
         message: "JWT secret is required",
         statusCode: 500,
-        code: "JWT_VERIFY_ERROR",
         hint: "Configure 'jwtSecret' in your environment variables.",
         details: getErrorDetail(routeObj),
       });
@@ -102,7 +96,6 @@ export const verifyJWT = ({
     throw new AppError({
       message: "Invalid or expired JWT",
       statusCode: 401,
-      code: "JWT_VERIFY_ERROR",
       hint: "Ensure the token is valid, has not expired, and was signed using the correct secret.",
       details: getErrorDetail(routeObj),
     });

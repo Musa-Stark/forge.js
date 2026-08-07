@@ -18,7 +18,6 @@ const verifyCredentials = async ({
     throw new AppError({
       message: "modelName and body are required.",
       statusCode: 400,
-      code: "MISSING_PARAMETER",
       hint: "Provide modelName and body before verifying credentials.",
       details: {
         handler: routeObj.handler,
@@ -42,7 +41,6 @@ const verifyCredentials = async ({
     throw new AppError({
       message: "Invalid password.",
       statusCode: 401,
-      code: "AUTH_PASSWORD_INCORRECT",
       hint: "Verify your password and try again.",
       details: {
         handler: routeObj.handler,
