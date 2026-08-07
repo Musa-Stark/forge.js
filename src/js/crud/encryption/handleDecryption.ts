@@ -43,7 +43,7 @@ const handleDecryption = async (item: any, routeObj: Route) => {
       } else {
         throw new AppError({
           details: getErrorDetail(routeObj),
-          hint: `Make sure '${field}' is included in the item.`,
+          hint: `Make sure '${field}' is found in the item: ${item._id}. If '${field}' is not found in some items, make it ${field}?`,
           message: `The required field '${field}' is missing.`,
           statusCode: 400,
         });
