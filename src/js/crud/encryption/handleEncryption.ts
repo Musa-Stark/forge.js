@@ -7,42 +7,43 @@ import type { SealResult } from "../../utils/libsodium.ts";
 const handleEncryption = async (body: any, routeObj: Route) => {
   const encArr = routeObj.encryptedFieldsArray;
 
-  // if encryptedFieldsArray not found
+  // If encryptedFieldsArray is not configured, skip encryption.
   if (!encArr) return;
 
-  // if not array
-  if (!Array.isArray(encArr))
+  // Validate configuration type.
+  if (!Array.isArray(encArr)) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "encryptedFieldsArray must be an array.",
-      message: "Invalid configuration for encryptedFieldsArray.",
+      hint: "encryptedFieldsArray must be an array of field names.",
+      message: "Encryption configuration is invalid.",
       statusCode: 409,
     });
+  }
 
-  // if length is 0
-  if (!encArr.length)
+  // Validate configuration is not empty.
+  if (!encArr.length) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "Write at least 1 element in encryptedFieldsArray",
-      message:
-        "Invalid configuration for encryptedFieldsArray, expected at least 1 element",
+      hint: "Add at least one field name to encryptedFieldsArray.",
+      message: "Encryption configuration is empty.",
       statusCode: 409,
     });
+  }
 
-  // loop through the array
   const encrypted: Record<string, SealResult> = {};
 
-  for (let el of encArr) {
-    // if el to be encrypted not found in req.body
-    if (!Object.hasOwn(body, el))
+  for (const field of encArr) {
+    // Validate that the field exists in the request body.
+    if (!Object.hasOwn(body, field)) {
       throw new AppError({
         details: getErrorDetail(routeObj),
-        hint: `'Make sure '${el}' is present in the request body.`,
-        message: `'${el}' not found in body`,
-        statusCode: 409,
+        hint: `Make sure '${field}' is included in the request body.`,
+        message: `The required field '${field}' is missing.`,
+        statusCode: 400,
       });
+    }
 
-    encrypted[el] = await seal(body[el], routeObj);
+    encrypted[field] = await seal(body[field], routeObj);
   }
 
   return encrypted;
