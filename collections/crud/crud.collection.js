@@ -32,6 +32,7 @@ const crudCollection = collection({
       handler: "read",
       authRole: "adminOrOwner",
       validationKey: false,
+      decryptedFieldsArray: ["cardNumber"]
     },
     {
       method: "post",

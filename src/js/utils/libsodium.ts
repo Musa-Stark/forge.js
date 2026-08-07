@@ -91,7 +91,7 @@ export const verifyHash = async (
 };
 
 // Generate master key
-export const generateMasterKey = async ()  => {
+export const generateMasterKey = async () => {
   await sodium.ready;
 
   const key = sodium.crypto_secretbox_keygen();
@@ -105,7 +105,7 @@ export const generateMasterKey = async ()  => {
 };
 
 // Generate JWT secret
-export const generateJWTSecret = async ()  => {
+export const generateJWTSecret = async () => {
   await sodium.ready;
 
   const secret = sodium.randombytes_buf(64);
@@ -188,14 +188,19 @@ export const seal = async (
 };
 
 // Unseal
-export const unSeal = async (
-  str: string,
-  nonce: string,
-  publicKey: string,
-  securedPrivateKey: string,
-  masterKey: string,
-  routeObj: Route,
-): Promise<string> => {
+export const unSeal = async ({
+  str,
+  nonce,
+  publicKey,
+  securedPrivateKey,
+  routeObj,
+}: {
+  str: string;
+  nonce: string;
+  publicKey: string;
+  securedPrivateKey: string;
+  routeObj: Route;
+}): Promise<string> => {
   try {
     if (!str) {
       throw new AppError({
@@ -233,11 +238,13 @@ export const unSeal = async (
       });
     }
 
+    const { masterKey } = getEnvs();
+
     if (!masterKey) {
       throw new AppError({
         message: "Master key is required for decryption",
         statusCode: 400,
-        hint: "Provide the master key used during encryption.",
+        hint: "Provide the master key used during encryption in StarkForge({}).",
         details: getErrorDetail(routeObj),
       });
     }
