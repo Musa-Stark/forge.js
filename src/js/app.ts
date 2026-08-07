@@ -56,8 +56,6 @@ const handleCollection = (collections: Collection[]): void => {
       Req.mongooseSchemaObj,
     );
   }
-
-  printInfo()
 };
 
 // start server
@@ -81,9 +79,7 @@ const startServer = async (): Promise<void> => {
   // error middleware
   app.use(errorMiddleware);
 
-  app.listen(port, () =>
-    AppLog("check", "app", `Server is running at http://localhost:${port}`),
-  );
+  app.listen(port, printInfo);
 };
 
 export { startServer, app };
