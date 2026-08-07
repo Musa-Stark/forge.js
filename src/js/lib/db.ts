@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 import AppLog from "../utils/AppLog.js";
+import { appInfo } from "../terminal/appInfo.js";
 
 const connectLocally = async (databaseName = "starkForge") => {
   try {
     await mongoose.connect(`mongodb://localhost:27017/${databaseName}`);
+    appInfo.dbConnectionStatus = "Offline";
   } catch (error) {
     AppLog("x", "db", (error as Error).message);
-    AppLog("x", "db", "Error while connecting to database! Check if MongoDB is installed locally and is enabled.");
+    AppLog(
+      "x",
+      "db",
+      "Error while connecting to database! Check if MongoDB is installed locally and is enabled.",
+    );
     process.exit(1);
   }
 
@@ -31,16 +37,17 @@ const connectDB = async ({
   try {
     if (isOffline) return connectLocally(databaseName);
 
-    if (!isOffline && !mongoDBURI)
+    if (!mongoDBURI)
       throw new Error("You are online! mongoDBURI is required");
 
-    if (!databaseName) databaseName = "default-db";
+    if (!databaseName) databaseName = "starkForge";
 
     setTimeout(() => {
       AppLog("loading", "db", "Connecting to mongodb...");
     }, 10);
 
     await mongoose.connect(`${mongoDBURI}/${databaseName}`);
+    appInfo.dbConnectionStatus = "Online";
     AppLog(
       "check",
       "db",

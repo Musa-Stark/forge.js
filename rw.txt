@@ -109,3 +109,26 @@ req: authRole + req
 pro:
 
 import authroizeAccess.
+========================================================================
+getEnvs -> env, port, databaseName
+
+terminalArray = {
+  modelsCount,
+  validationsCount,
+  routesCount
+}
+
+features {
+  authentication?
+  authorization?
+  validation?
+  auto crud?
+  rate limiting?
+  file upload?
+  error handling?
+  cors?
+}
+
+resources -> modelNames []
+
+Barrier:: database.connected
