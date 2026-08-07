@@ -19,8 +19,6 @@
 === cloudinary custom folder name ===
 === Unexpected file field: backgroundImage. File field must match collection's fileArray -> fieldName | When formdata/... is sent instead of app/json and it is not needed. ===
 
-=== getting file, should also check if it is the owner of it if item's authRole is admin || adminOrOwner ===
-
 === COLLECTION ===
 Skips:
 Route:
@@ -45,90 +43,3 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
-
-crud:
-
-reqType: crud
-routeObj: products
-modelName: Product
-mongooseschema = name, price, category, isAvailable, description (optional), image
-validations = //
-routes:
-    1. method: get, path: /:id, handler: read, authRole: both
-    2. method: get, path: /, handler: readAll
-    3. method: post, path: /, handler: create, authRole: public
-    4. method: patch, path: /:id, handler: update, authRole: both
-    5. method: delete, path: /:id, handler: remove, authRole: admin
-
-
-1: getModel, getItem, sanitizeOne, return it
-2. getModel, getItems, sanitizeOnes, return them
-3. getModel, createItem, sanitizeOne, return it
-4. getModel, getItem, updateWithBody, sanitizeOne, return it
-5. getModel, getItem, deleteIt, sanitizeOne, return it
-
-authrole: -> admin
-    call protect, authroizeAccess(authRole) : boolean
-
-get
-get /:id
-post /
-post /create/bulk
-update /:id
-delete /:id
-delete / removeAll
-
-if ar === admin, allow only admin
-if ar === adminOrOwner, allow both admin and owner
-===================================================================
-
-updateFile:
-/products/134567819238/updateFile
-
-requirements: req.files, /:id/updateFile
-operation:
-- getItem
-- handleUpdateFile
-
-/// req.files (new image) - /:id/updateFile (doc id) - image._id (doc.image._id)
-
-deleteFile:
-/products/23456789123/deleteFile
-
-requirements:
-- /:id/deletFile - doc id to access among the table
-- 
-
-========================================================================
-
-feature/fixes
-
-1. getItem - authroizeAccess
-
-req: authRole + req
-pro:
-
-import authroizeAccess.
-========================================================================
-getEnvs -> env, port, databaseName
-
-terminalArray = {
-  modelsCount,
-  validationsCount,
-  routesCount
-}
-
-features {
-  authentication?
-  authorization?
-  validation?
-  auto crud?
-  rate limiting?
-  file upload?
-  error handling?
-  cors?
-}
-
-resources -> modelNames []
-
-Barrier:: database.connected
