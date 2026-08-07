@@ -28,6 +28,7 @@ new StarkNexus({
   cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET,
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryFolderName: process.env.CLOUDINARY_FOLDER_NAME,
+  masterKey: "jr0frt78n0gm6HRF2KO6JUse2XjPCcKug/Ys6ARzKLw=",
 });
 
 startServer();

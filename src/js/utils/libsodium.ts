@@ -2,8 +2,9 @@ import sodium from "libsodium-wrappers-sumo";
 import AppError from "./AppError.js";
 import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
+import { getEnvs } from "../config/envs.js";
 
-interface SealResult {
+export interface SealResult {
   str: string;
   nonce: string;
   publicKey: string;
@@ -90,19 +91,21 @@ export const verifyHash = async (
 };
 
 // Generate master key
-export const generateMasterKey = async (): Promise<string> => {
+export const generateMasterKey = async ()  => {
   await sodium.ready;
 
   const key = sodium.crypto_secretbox_keygen();
 
   const base64Key = sodium.to_base64(key, sodium.base64_variants.ORIGINAL);
 
-  console.log(base64Key);
-  return base64Key;
+  setTimeout(() => {
+    console.log("masterKey: ", base64Key);
+    return base64Key;
+  }, 1000);
 };
 
 // Generate JWT secret
-export const generateJWTSecret = async (): Promise<string> => {
+export const generateJWTSecret = async ()  => {
   await sodium.ready;
 
   const secret = sodium.randombytes_buf(64);
@@ -112,14 +115,15 @@ export const generateJWTSecret = async (): Promise<string> => {
     sodium.base64_variants.ORIGINAL,
   );
 
-  console.log(base64Secret);
-  return base64Secret;
+  setTimeout(() => {
+    console.log("jwtSecret: ", base64Secret);
+    return base64Secret;
+  }, 1000);
 };
 
 // Seal
 export const seal = async (
   input: string,
-  masterKey: string,
   routeObj: Route,
 ): Promise<SealResult> => {
   try {
@@ -132,11 +136,13 @@ export const seal = async (
       });
     }
 
+    const { masterKey } = getEnvs();
+
     if (!masterKey) {
       throw new AppError({
         message: "Master key is required for encryption",
         statusCode: 404,
-        hint: "Provide masterkey in StarkForge({}) - initializing class",
+        hint: "Import 'generateMasterKey' from StarkForge, run it 'generateMasterKey()' and then copy-paste the masterKey from terminal to StarkForge({})",
         details: getErrorDetail(routeObj),
       });
     }

@@ -4,6 +4,7 @@ import { ROLES, type Role } from "./roles.js";
 import type {
   BooleanField,
   DateField,
+  EncryptedString,
   FileMetaDataField,
   NumberField,
   ObjectArrayField,
@@ -183,6 +184,25 @@ const recruitmentStatus: StringField = {
   default: "new",
 };
 
+const encryptedString: EncryptedString = {
+  str: {
+    type: String,
+    required: true,
+  },
+  nonce: {
+    type: String,
+    required: true,
+  },
+  publicKey: {
+    type: String,
+    required: true,
+  },
+  securedPrivateKey: {
+    type: String,
+    required: true,
+  },
+};
+
 const fileMetaData: FileMetaDataField[] = [
   {
     storageKey: {
@@ -242,6 +262,7 @@ const mongooseFields = {
   otpStatus,
   recruitmentStatus,
   fileMetaData,
+  encryptedString,
 } as const;
 
 export type MongooseField =

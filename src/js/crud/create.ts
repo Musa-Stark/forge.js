@@ -9,7 +9,7 @@ import { MongoServerError } from "mongodb";
 import { handleUploadFiles } from "../upload/index.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import handleEncryption from "./encryption/handleEncryption.js";
 
 const create = ({
   modelName,
@@ -32,6 +32,9 @@ const create = ({
     // if files
     const fileMetaData = await handleUploadFiles(req, routeObj);
 
+    // if encryptedFields
+    const encryptedFields = await handleEncryption(req.body, routeObj);
+
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
@@ -52,6 +55,7 @@ const create = ({
         owner: req.user._id,
         ...fileMetaData,
         ...body,
+        ...encryptedFields,
       });
     } catch (err) {
       // err as Error

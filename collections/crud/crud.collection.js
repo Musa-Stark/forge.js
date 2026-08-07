@@ -12,6 +12,7 @@ const crudCollection = collection({
     description: mongooseFields.optionalString,
     owner: mongooseFields.userRef,
     profileImage: mongooseFields.fileMetaData,
+    cardNumber: mongooseFields.encryptedString,
   },
   routesArray: [
     {
@@ -22,8 +23,8 @@ const crudCollection = collection({
       validationKey: false,
       mongooseConfigObj: {
         populateKey: "owner",
-        hiddenFieldsArray: ["__v", "updatedAt"]
-      }
+        hiddenFieldsArray: ["__v", "updatedAt"],
+      },
     },
     {
       method: "get",
@@ -38,19 +39,7 @@ const crudCollection = collection({
       handler: "create",
       authRole: "authenticated",
       validationKey: "createProduct",
-      // fileArray: [
-      //   {
-      //     fieldName: "avatar",
-      //     multiple: true,
-      //     mongooseSchemaFieldName: "profileImage",
-      //   },
-      //   {
-      //     fieldName: "stark",
-      //     mongooseSchemaFieldName: "profileImage",
-      //     validationIdentifierKey: "profileImageId",
-      //     multiple: true,
-      //   },
-      // ],
+      encryptedFieldsArray: ["cardNumber"]
     },
     {
       method: "post",
@@ -63,17 +52,19 @@ const crudCollection = collection({
       path: "/:id/addFile",
       handler: "addFile",
       authRole: "adminOrOwner",
-      fileArray: [{
-        mongooseSchemaFieldName: "profileImage",
-        fieldName: "backgroundImage"
-      }]
+      fileArray: [
+        {
+          mongooseSchemaFieldName: "profileImage",
+          fieldName: "backgroundImage",
+        },
+      ],
     },
     {
       method: "patch",
       path: "/:id",
       handler: "update",
       authRole: "adminOrOwner",
-      validationKey: "update"
+      validationKey: "update",
     },
     {
       method: "patch",
@@ -109,10 +100,12 @@ const crudCollection = collection({
       handler: "deleteFile",
       authRole: "adminOrOwner",
       validationKey: "deleteAvatar",
-      fileArray: [{
-        mongooseSchemaFieldName: "profileImage",
-        validationIdentifierKey: "stark"
-      }]
+      fileArray: [
+        {
+          mongooseSchemaFieldName: "profileImage",
+          validationIdentifierKey: "stark",
+        },
+      ],
     },
   ],
   validationsObj: {
@@ -122,6 +115,7 @@ const crudCollection = collection({
       category: zodFields.objectArray,
       isAvailable: zodFields.booleanFalse,
       description: zodFields.optionalString,
+      cardNumber: zodFields.requiredString,
     },
     update: {
       name: zodFields.requiredString,
@@ -135,8 +129,8 @@ const crudCollection = collection({
       name: zodFields.requiredString,
     },
     deleteAvatar: {
-      stark: zodFields.requiredString
-    }
+      stark: zodFields.requiredString,
+    },
   },
 });
 
