@@ -43,3 +43,45 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
+
+automating auth + manual option
+
+console:
+auth -> http://localhost:10000/api/v1/auth/[login, signup, forgot-password, verify-otp, reset-password]
+
+StarkForge:
+import { fields } from "forge.js";
+
+const authConfig = {
+  mode: "builtIn",
+  user: {
+    modelName: "User",
+    schema: {
+      name: fields.requiredString,
+      email: fields.email,
+      password: fields.password,
+      role: fields.role,
+      isVerified: fields.booleanFalse,
+      // any extra fields they want
+    },
+  },
+  authMode: "credentials", // or "otp" | "magic-link"
+};
+
+=== Forge using it unified fields ===
+// Inside built-in auth setup
+const mongooseSchema = buildMongooseSchema(authConfig.user.schema);
+const User = mongoose.model(authConfig.user.modelName, mongooseSchema);
+
+// For signup validation
+const signupSchema = buildZodObject(authConfig.user.schema, [
+  "name",
+  "email",
+  "password",
+]);
+
+// For login
+const loginSchema = buildZodObject(authConfig.user.schema, ["email", "password"]);
+
+// For forgot password
+const forgotSchema = buildZodObject(authConfig.user.schema, ["email"]);

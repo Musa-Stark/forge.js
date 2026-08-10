@@ -40,6 +40,7 @@ const handleCollection = (collections: Collection[]): void => {
     setAppInfo(Req);
 
     const { routeName, modelName, mongooseSchemaObj } = Req;
+    console.log(mongooseSchemaObj)
     if (modelName) {
       const MODEL = createModel(routeName, modelName, mongooseSchemaObj!);
       registerModel[modelName] = MODEL;
@@ -78,7 +79,10 @@ const startServer = async (): Promise<void> => {
   // error middleware
   app.use(errorMiddleware);
 
-  app.listen(port, printInfo);
+  // app.listen(port, printInfo);
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`)
+  })
 };
 
 export { startServer, app };
