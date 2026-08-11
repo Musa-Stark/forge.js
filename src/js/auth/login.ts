@@ -6,7 +6,6 @@ import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 
-
 const login = ({
   modelName,
   routeObj,

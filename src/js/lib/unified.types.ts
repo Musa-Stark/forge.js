@@ -1,34 +1,11 @@
 // types/Field.ts
 import type { z } from "zod";
-import type {
-  StringField,
-  NumberField,
-  BooleanField,
-  DateField,
-  StringArrayField,
-  ObjectArrayField,
-  ObjectIdField,
-  EncryptedString,
-  FileMetaDataField,
-} from "./Mongoose.js";
+import type { SchemaDefinitionProperty } from "mongoose";
 
-export type UnifiedField =
-  | {
-      mongoose:
-        | StringField
-        | NumberField
-        | BooleanField
-        | DateField
-        | ObjectIdField
-        | any;
-      zod: z.ZodTypeAny;
-    }
-  | {
-      mongoose:
-        | StringArrayField
-        | ObjectArrayField
-        | FileMetaDataField[]
-        | EncryptedString
-        | any;
-      zod: z.ZodTypeAny;
-    };
+/**
+ * A field that can produce both a Mongoose definition and a Zod schema.
+ */
+export type UnifiedField = {
+  mongoose?: SchemaDefinitionProperty<any> | SchemaDefinitionProperty<any>[];
+  zod?: z.ZodTypeAny;
+};

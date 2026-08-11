@@ -11,8 +11,10 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { rateLimiter } from "./middleware/rateLimit.middleware.js";
 import healthCollection from "./health/health.collection.js";
+import authCollection from "./auth/builtin/auth.collection.js";
 import { setAppInfo } from "./terminal/appInfo.js";
 import printInfo from "./terminal/loggerConfig.js";
+import type { AuthConfig } from "./types/Constructor.js";
 
 // body - middlewares
 const jsonParser = express.json();
@@ -35,41 +37,64 @@ app.use((req, res, next) => {
 });
 
 // handle collection
-const handleCollection = (collections: Collection[]): void => {
+const handleCollection = (
+  collections: Collection[],
+  authConfigObj: AuthConfig,
+): void => {
   for (const Req of collections) {
     setAppInfo(Req);
 
-    const { routeName, modelName, mongooseSchemaObj } = Req;
-    console.log(mongooseSchemaObj)
+    let {
+      reqType,
+      routeName,
+      routesArray,
+      modelName,
+      validationsObj,
+      mongooseSchemaObj,
+    } = Req;
+
+    if (reqType === "auth" && authConfigObj.mode === "builtin")
+      mongooseSchemaObj = authConfigObj.schemaObj?.schema!;
+
     if (modelName) {
       const MODEL = createModel(routeName, modelName, mongooseSchemaObj!);
       registerModel[modelName] = MODEL;
     }
 
     handleReqType(
-      Req.reqType,
+      reqType,
       app,
-      Req.routeName,
-      Req.routesArray,
-      Req.modelName,
-      Req.validationsObj,
-      Req.mongooseSchemaObj,
+      routeName,
+      routesArray,
+      modelName,
+      validationsObj,
+      mongooseSchemaObj,
     );
   }
 };
 
 // start server
 const startServer = async (): Promise<void> => {
-  const { port, collections, isOffline, mongoDBURI, databaseName } = getEnvs();
+  const {
+    port,
+    collections,
+    isOffline,
+    mongoDBURI,
+    databaseName,
+    authConfigObj,
+  } = getEnvs();
   // connect db
   await connectDB({ isOffline, mongoDBURI, databaseName });
 
+  // collectionsArray
+  const collectionArray = [healthCollection];
+
+  // handleCollection config
+  if (authConfigObj?.mode === "builtin") collectionArray.push(authCollection);
+  if (collections) collectionArray.push(...collections);
+
   // call - handleCollection
-  if (collections) {
-    handleCollection([healthCollection, ...collections!]);
-  } else {
-    handleCollection([healthCollection]);
-  }
+  handleCollection(collectionArray, authConfigObj!);
 
   // routeObj not found
   app.use((req, res) => {
@@ -81,8 +106,8 @@ const startServer = async (): Promise<void> => {
 
   // app.listen(port, printInfo);
   app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`)
-  })
+    console.log(`Server is running at http://localhost:${port}`);
+  });
 };
 
 export { startServer, app };

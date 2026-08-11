@@ -4,13 +4,13 @@ import type {
   ValidationsObj,
   MongooseSchema,
 } from "../types/Collection.ts";
-import { getEnvs } from "../config/envs.js";
+import { getEnvs, envs } from "../config/envs.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import handlerMap from "../config/handlerMap.js";
 import registerModel from "../lib/model.registry.js";
 import createOTPModel from "./utils/createOTPModel.js";
-import { envs } from "../config/envs.js";
 import protect from "../middleware/auth.middleware.js";
+import getValidationsObj from "./builtin/getValidations.js";
 
 const auth = (
   app: Express,
@@ -20,7 +20,8 @@ const auth = (
   validationsObj?: ValidationsObj,
   mongooseSchemaObj?: MongooseSchema,
 ) => {
-  const { apiVersion } = getEnvs();
+  const { apiVersion, authConfigObj } = getEnvs();
+  const builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!)
 
   // set userModelName in envs
   envs.userModelName = modelName as string;
@@ -46,7 +47,10 @@ const auth = (
           modelName,
           routeName,
           routeObj,
-          validationsObj,
+          validationsObj:
+            authConfigObj?.mode === "builtin"
+              ? builtInValidation
+              : validationsObj,
         }),
       ),
     );

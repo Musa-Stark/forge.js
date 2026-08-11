@@ -3,18 +3,42 @@ import StarkNexus, {
   generateJWTSecret,
   generateMasterKey,
   app,
+  fields,
 } from "./dist/js/index.js";
-import "dotenv/config";
 
 import {
-  authCollection,
   crudCollection,
   userCollection,
   testCollection,
 } from "./collections/index.js";
 
+import "dotenv/config";
+
 new StarkNexus({
-  collections: [authCollection, crudCollection, userCollection, testCollection],
+  authConfigObj: {
+    mode: "builtin",
+
+    fieldsObj: {
+      email: "email",
+      password: "password",
+      name: "name",
+      otp: "otp",
+      purpose: "purpose",
+      provider: "provider",
+    },
+
+    schemaObj: {
+      modelName: "User",
+      schema: {
+        name: fields.requiredString,
+        email: fields.email,
+        password: fields.password,
+      },
+    },
+    login: "credentials",
+    signup: "credentials",
+  },
+  collections: [crudCollection, testCollection],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",
