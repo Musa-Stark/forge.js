@@ -57,34 +57,6 @@ export const authCollection = collection({
       path: "/logout",
     },
   ],
-  //   validationsObj: {
-  //     signup: {
-  //       name: fields.requiredString,
-  //       email: fields.email,
-  //       password: fields.password,
-  //       provider: fields.provider,
-  //     },
-  //     verifyOTP: {
-  //       email: fields.email,
-  //       otp: fields.requiredString,
-  //       purpose: fields.purposeOTP,
-  //     },
-  //     login: {
-  //       email: fields.email,
-  //       password: fields.password,
-  //     },
-  //     resendOTP: {
-  //       email: fields.email,
-  //       purpose: fields.purposeOTP,
-  //     },
-  //     forgotPassword: {
-  //       email: fields.email,
-  //     },
-  //     resetPassword: {
-  //       email: fields.email,
-  //       password: fields.password,
-  //     },
-  //   },
 });
 
 export default authCollection;

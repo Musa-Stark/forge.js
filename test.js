@@ -19,12 +19,8 @@ new StarkNexus({
     mode: "builtin",
 
     fieldsObj: {
-      email: "email",
-      password: "password",
-      name: "name",
       otp: "otp",
-      purpose: "purpose",
-      provider: "provider",
+      purpose: "purpose"
     },
 
     schemaObj: {
@@ -35,7 +31,7 @@ new StarkNexus({
         password: fields.password,
       },
     },
-    login: "credentials",
+    login: "otp",
     signup: "credentials",
   },
   collections: [crudCollection, testCollection],

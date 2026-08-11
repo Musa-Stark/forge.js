@@ -53,8 +53,10 @@ const handleCollection = (
       mongooseSchemaObj,
     } = Req;
 
-    if (reqType === "auth" && authConfigObj.mode === "builtin")
+    if (reqType === "auth" && authConfigObj.mode === "builtin") {
       mongooseSchemaObj = authConfigObj.schemaObj?.schema!;
+      modelName = authConfigObj.schemaObj?.modelName!;
+    }
 
     if (modelName) {
       const MODEL = createModel(routeName, modelName, mongooseSchemaObj!);

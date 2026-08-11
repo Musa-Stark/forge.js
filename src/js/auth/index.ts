@@ -21,7 +21,17 @@ const auth = (
   mongooseSchemaObj?: MongooseSchema,
 ) => {
   const { apiVersion, authConfigObj } = getEnvs();
-  const builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!)
+  let builtInValidation = null;
+  if (authConfigObj?.mode === "builtin") {
+    builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!);
+    routes = routes.map((item: Route) =>
+      item.handler === "login"
+        ? { ...item, mode: authConfigObj!.login! }
+        : item.handler === "signup"
+          ? { ...item, mode: authConfigObj!.signup! }
+          : item,
+    );
+  }
 
   // set userModelName in envs
   envs.userModelName = modelName as string;
@@ -47,10 +57,7 @@ const auth = (
           modelName,
           routeName,
           routeObj,
-          validationsObj:
-            authConfigObj?.mode === "builtin"
-              ? builtInValidation
-              : validationsObj,
+          validationsObj: builtInValidation || validationsObj,
         }),
       ),
     );

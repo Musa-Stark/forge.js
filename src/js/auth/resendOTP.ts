@@ -81,7 +81,7 @@ const resendOTP = ({
       message: "OTP resent successfully!",
       statusCode: 200,
       data: {
-        nextStep: "go to /verify-otp",
+        nextStep: `go to /verify-otp with purpose: ${req.body.purpose}`,
       },
     });
   };

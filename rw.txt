@@ -85,3 +85,16 @@ const loginSchema = buildZodObject(authConfig.user.schema, ["email", "password"]
 
 // For forgot password
 const forgotSchema = buildZodObject(authConfig.user.schema, ["email"]);
+
+ password: {
+    mongoose: {
+      type: [Function: String],
+      select: false
+    },
+    zod: ZodString {
+      toJSONSchema: [Function (anonymous)],
+      def: [Object],
+    }
+  }
+}
+[ 'name', 'email', 'password', 'otp' ]

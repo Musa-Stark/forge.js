@@ -8,16 +8,11 @@ export interface AuthConfig {
   mode: "builtin" | "manual";
 
   fieldsObj?: {
-    name: "name" | "[field name]" | (string & {}) | false;
-    email: "email" | "[field name]" | (string & {}) | false;
-    password: "password" | "[field name]" | (string & {}) | false;
-    provider: "provider" | "[field name]" | (string & {}) | false;
-    otp: "otp" | "[field name]" | (string & {}) | false;
-    purpose: "purpose" | "[field name]" | (string & {}) | false;
+    otp: "otp" | "[field name]" | (string & {});
+    purpose: "purpose" | "[field name]" | (string & {})
   };
-
   schemaObj?: {
-    modelName: "User" | "[modelName]" | (string & {});
+    modelName: "User" | "[Model Name]" | (string & {});
     schema: Record<string, UnifiedField>;
   };
 
