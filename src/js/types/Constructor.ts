@@ -1,7 +1,27 @@
-import type { Collection } from "./Collection.ts";
+import type { Collection, MongooseObj, SchemaField } from "./Collection.ts";
 import type { DurationType } from "../config/duration.ts";
+import type { UnifiedField } from "../lib/unified.types.js";
+
+// auth config types and interface
+export type authMode = "credentials" | "otp";
+export interface AuthConfig {
+  mode: "builtin" | "manual";
+
+  fieldsObj?: {
+    otp: "otp" | "[field name]" | (string & {});
+    purpose: "purpose" | "[field name]" | (string & {})
+  };
+  schemaObj?: {
+    modelName: "User" | "[Model Name]" | (string & {});
+    schema: Record<string, UnifiedField>;
+  };
+
+  signup?: authMode;
+  login?: authMode;
+}
 
 export interface Constructor {
+  authConfigObj?: AuthConfig;
   apiVersion: number;
   backendURL: string;
   cloudinaryAPIKey?: string;
@@ -29,5 +49,5 @@ export interface Constructor {
 }
 
 export interface InternalConstructor extends Constructor {
-  userModelName?: String
+  userModelName?: String;
 }

@@ -7,56 +7,90 @@ import AppError from "../utils/AppError.js";
 
 type Primitive = string | number | boolean | Date;
 
-type ModelField = Primitive | SchemaDefinitionProperty<unknown>;
+/**
+ * A field can now be:
+ * 1. UnifiedField  → { mongoose: ..., zod: ... }
+ * 2. Classic Mongoose definition (backward compatible)
+ * 3. Primitive value (also backward compatible)
+ */
+type ModelField =
+  | { mongoose: SchemaDefinitionProperty<unknown>; zod?: any }
+  | SchemaDefinitionProperty<unknown>
+  | Primitive;
 
 type ModelDefinition = Record<string, ModelField>;
 
+/**
+ * Extracts the pure Mongoose definition from any supported field format.
+ */
+const extractMongooseDefinition = (
+  value: ModelField,
+): SchemaDefinitionProperty<unknown> => {
+  // Case 1: Unified field → { mongoose, zod }
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    "mongoose" in value
+  ) {
+    return value.mongoose as SchemaDefinitionProperty<unknown>;
+  }
+
+  // Case 2: Already a classic Mongoose schema definition
+  if (
+    value &&
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    "type" in value
+  ) {
+    return value as SchemaDefinitionProperty<unknown>;
+  }
+
+  // Case 3: Primitive values (string | number | boolean | Date)
+  switch (typeof value) {
+    case "number":
+      return { type: Number, default: value };
+    case "string":
+      return { type: String, default: value };
+    case "boolean":
+      return { type: Boolean, default: value };
+    default:
+      if (value instanceof Date) {
+        return { type: Date, default: value };
+      }
+      // Fallback (arrays, nested objects, etc.)
+      return value as SchemaDefinitionProperty<unknown>;
+  }
+};
+
+/**
+ * Converts the whole definition object into a clean Mongoose-compatible definition.
+ */
 const normalizeDefinition = (
   definition: ModelDefinition,
 ): Record<string, SchemaDefinitionProperty<unknown>> => {
   return Object.fromEntries(
-    Object.entries(definition).map(([key, value]) => {
-      // Already a schema definition
-      if (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value) &&
-        "type" in value
-      ) {
-        return [key, value];
-      }
-
-      switch (typeof value) {
-        case "number":
-          return [key, { type: Number, default: value }];
-
-        case "string":
-          return [key, { type: String, default: value }];
-
-        case "boolean":
-          return [key, { type: Boolean, default: value }];
-
-        default:
-          if (value instanceof Date) {
-            return [key, { type: Date, default: value }];
-          }
-
-          return [key, value];
-      }
-    }),
-  ) as Record<string, SchemaDefinitionProperty<unknown>>;
+    Object.entries(definition).map(([key, value]) => [
+      key,
+      extractMongooseDefinition(value),
+    ]),
+  );
 };
 
+/**
+ * Creates (or returns existing) Mongoose model.
+ */
 const createModel = (
   routeName: string,
   name: string,
   definition: ModelDefinition,
 ): any => {
+  // Return existing model if already registered
   if (mongoose.modelNames().includes(name)) {
     return mongoose.model(name);
   }
 
-  if (!definition)
+  if (!definition) {
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
       statusCode: 409,
@@ -67,8 +101,10 @@ const createModel = (
         path: "",
       },
     });
+  }
 
-  const schema = buildSchema(normalizeDefinition(definition));
+  const cleanDefinition = normalizeDefinition(definition);
+  const schema = buildSchema(cleanDefinition);
 
   AppLog("db", "modelFactory", `${name} model created!`);
 

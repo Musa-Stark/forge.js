@@ -4,13 +4,13 @@ import type {
   ValidationsObj,
   MongooseSchema,
 } from "../types/Collection.ts";
-import { getEnvs } from "../config/envs.js";
+import { getEnvs, envs } from "../config/envs.js";
 import asyncHandler from "../utils/AsyncHandler.js";
 import handlerMap from "../config/handlerMap.js";
 import registerModel from "../lib/model.registry.js";
 import createOTPModel from "./utils/createOTPModel.js";
-import { envs } from "../config/envs.js";
 import protect from "../middleware/auth.middleware.js";
+import getValidationsObj from "./builtin/getValidations.js";
 
 const auth = (
   app: Express,
@@ -20,7 +20,18 @@ const auth = (
   validationsObj?: ValidationsObj,
   mongooseSchemaObj?: MongooseSchema,
 ) => {
-  const { apiVersion } = getEnvs();
+  const { apiVersion, authConfigObj } = getEnvs();
+  let builtInValidation = null;
+  if (authConfigObj?.mode === "builtin") {
+    builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!);
+    routes = routes.map((item: Route) =>
+      item.handler === "login"
+        ? { ...item, mode: authConfigObj!.login! }
+        : item.handler === "signup"
+          ? { ...item, mode: authConfigObj!.signup! }
+          : item,
+    );
+  }
 
   // set userModelName in envs
   envs.userModelName = modelName as string;
@@ -46,7 +57,7 @@ const auth = (
           modelName,
           routeName,
           routeObj,
-          validationsObj,
+          validationsObj: builtInValidation || validationsObj,
         }),
       ),
     );

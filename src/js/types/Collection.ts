@@ -1,4 +1,5 @@
 import type { MongooseField } from "../lib/mongoose.fields.ts";
+import type { UnifiedField } from "../lib/unified.types.js";
 import type { OAuthProvider } from "../lib/OAuthProviders.ts";
 import type { Role } from "../lib/roles.ts";
 import type { ZodValidation } from "../lib/zod.fields.ts";
@@ -23,8 +24,8 @@ export interface Route {
   method: RouteMethod;
   path: RoutePath;
   handler: Handler;
-  validationKey: string | boolean;
-  authRole: AuthRole;
+  validationKey?: string | boolean;
+  authRole?: AuthRole;
   mongooseConfigObj?: {
     populateKey?: string | boolean;
     hiddenFieldsArray?: string[];
@@ -33,20 +34,34 @@ export interface Route {
   fileArray?: Upload[];
   // emailsArray?: Email | Email[];
   mode?: AuthMode;
-  encryptedFieldsArray: string[];
-  decryptedFieldsArray: string[];
+  encryptedFieldsArray?: string[];
+  decryptedFieldsArray?: string[];
 }
 
+/**
+ * A schema field can be either the old pure Mongoose field
+ * or the new UnifiedField ({ mongoose, zod })
+ */
+export type SchemaField = MongooseField | UnifiedField;
+
+/**
+ * Flexible schema type — no longer forces `status` and `role`
+ */
 export type MongooseSchema = {
-  status: "pending" | "accepted" | "rejected";
-  // provider: OAuthProvider;
-  role: Role;
-} & {
-  [key: string]: MongooseField;
+  [key: string]: SchemaField;
 };
 
-export type ValidationsObj = {} & {
-  [key: string]: ZodValidation;
+export type MongooseObj =  MongooseSchema | Record<string, SchemaField>
+
+/**
+ * A single validation field can be:
+ * - pure Zod schema (old style)
+ * - UnifiedField (new style) → we will extract .zod later
+ */
+export type ValidationField = ZodValidation | UnifiedField;
+
+export type ValidationsObj = {
+  [key: string]: Record<string, ValidationField> | ValidationField;
 };
 
 export type ReqType = "auth" | "health" | "crud";
@@ -57,6 +72,6 @@ export interface Collection {
   routeName: string;
   routesArray: Route[];
   modelName?: string;
-  mongooseSchemaObj?: MongooseSchema;
+  mongooseSchemaObj?: MongooseObj;
   validationsObj?: ValidationsObj;
 }

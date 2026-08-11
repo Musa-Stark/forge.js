@@ -1,9 +1,77 @@
-import type { InternalConstructor } from "../types/Constructor.ts";
+import type { AuthConfig, InternalConstructor } from "../types/Constructor.ts";
+import AppLog from "../utils/AppLog.js";
 import { defaultConfig } from "./defaultConfig.js";
 
-let envs = { ...defaultConfig };
+let envs: InternalConstructor = { ...defaultConfig };
+
+// validateAuthConfigError handling
+const vAError = (str: string): void => {
+  throw new Error(`authConfigObj.${str} is requried in StarkForge({}) ->  authConfigObj.`);
+};
+
+const placeholderError = (key: string, value: string): void => {
+  if (typeof value === "string" && value.startsWith("[")) {
+    throw new Error(
+      `"${value}" is just a placeholder, use a valid value for the key "${key}" in StarkForge({}) ->  authConfigObj.`,
+    );
+  }
+};
+
+// validateAuthConfigError
+const validateAuth = (config: AuthConfig): void => {
+  try {
+    // if mode is manual -> return;
+    if (config.mode === "manual") return;
+
+    // if config.fieldsObj isn't found -> error
+    if (!config.fieldsObj) vAError("fieldsObj");
+
+    // keys that are required
+    const requiredKeys = ["otp", "purpose"];
+
+    // loop for missing keys
+    for (const key of requiredKeys) {
+      if (!(key in config.fieldsObj!)) vAError(`fieldsObj.${key}`);
+    }
+
+    // if value -> [placeholder]
+    for (const [key, value] of Object.entries(config.fieldsObj!)) {
+      placeholderError(key, value);
+    }
+
+    // if config.schemaObj isn't found -> error
+    if (!config.schemaObj) vAError("schemaObj");
+
+    // if modelName is missing
+    if (!config.schemaObj?.modelName) vAError("schemaObj.modelName");
+
+    // if modelName -> [modelName]
+    placeholderError("modelName", config.schemaObj?.modelName!);
+
+    // if schema is missing
+    if (!config.schemaObj?.schema) vAError("schemaObj.schema");
+
+    // auth modes
+    const authMethods = ["credentials", "otp"];
+
+    // if signup or login not found
+    if (!config.signup) vAError("signup");
+    if (!config.login) vAError("login");
+
+    if (!authMethods.includes(config.signup!))
+      vAError(`signup as ${authMethods.join(" or ")}`);
+
+    if (!authMethods.includes(config.login!))
+      vAError(`login as ${authMethods.join(" or ")}`);
+  } catch (error) {
+    AppLog("x", "authConfigObj", (error as Error).message);
+    process.exit(1);
+  }
+};
 
 const setEnvs = (values: InternalConstructor): void => {
+  validateAuth(values.authConfigObj!);
+
   envs = values;
 };
 
