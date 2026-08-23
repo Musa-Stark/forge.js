@@ -24,12 +24,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Musa-Stark/stark-forge.git"
+    "url": "git+https://github.com/Musa-Stark/forge.js.git"
   },
   "bugs": {
-    "url": "https://github.com/Musa-Stark/stark-forge/issues"
+    "url": "https://github.com/Musa-Stark/forge.js/issues"
   },
-  "homepage": "https://github.com/Musa-Stark/stark-forge#readme",
+  "homepage": "https://github.com/Musa-Stark/forge.js.git#readme",
   "keywords": [
     "stark-forge",
     "starklabs",
