@@ -6,6 +6,7 @@ export interface AppResponse {
   message: string;
   statusCode?: number;
   accessToken?: string | undefined
+  purpose?: string
 }
 
 const appResponse = ({
@@ -13,13 +14,15 @@ const appResponse = ({
   data = undefined,
   message,
   statusCode = 200,
-  accessToken
+  accessToken,
+  purpose
 }: AppResponse): void => {
   res.status(statusCode).json({
     success: true,
     data,
     message,
-    accessToken
+    accessToken,
+    purpose
   });
 };
 

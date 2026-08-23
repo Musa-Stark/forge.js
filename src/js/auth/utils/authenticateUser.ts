@@ -86,6 +86,7 @@ const authenticateUser = async ({
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
     accessToken: authConfigObj?.returnAccessToken ? token : undefined,
+    purpose: body.purpose
   });
 };
 

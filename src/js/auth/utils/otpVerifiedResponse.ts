@@ -27,6 +27,7 @@ const otpVerifiedResponse = ({
   appResponse({
     res,
     message: `${body.purpose}: OTP verified successfully!`,
+    purpose: body.purpose
   });
 };
 
