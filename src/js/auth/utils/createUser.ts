@@ -8,6 +8,7 @@ import getOTPModel from "./getOTPModel.js";
 import handleIsVerified from "./handleIsVerified.js";
 import { sendCookie } from "./sendCookie.js";
 import type { Route } from "../../types/Collection.js";
+import { getEnvs } from "../../config/envs.js";
 
 const createUser = async ({
   body,
@@ -22,8 +23,12 @@ const createUser = async ({
   routeName: string;
   routeObj: Route;
 }) => {
+  // models
   const Model = getModel({ modelName, routeName, routeObj });
   const OTPModel = getOTPModel(routeObj);
+
+  // returnAccessToken
+  const { authConfigObj } = getEnvs();
 
   // isVerified - mode:otp
   let isVerified: boolean = false;
@@ -32,7 +37,7 @@ const createUser = async ({
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "signup",
-      routeObj
+      routeObj,
     }));
 
   // delete body._id | hash password
@@ -54,7 +59,12 @@ const createUser = async ({
   const { _id } = newUser.toObject();
 
   // send cookied
-  sendCookie({ res, cookieName: "authToken", payload: { sub: _id }, routeObj });
+  const token = sendCookie({
+    res,
+    cookieName: "authToken",
+    payload: { sub: _id },
+    routeObj,
+  });
 
   // send res
   appResponse({
@@ -62,6 +72,7 @@ const createUser = async ({
     message: "Your account has been created successfully!",
     statusCode: 201,
     data: sanitizeOne(newUser.toObject(), routeObj),
+    accessToken: authConfigObj?.returnAccessToken ? token : undefined,
   });
 };
 

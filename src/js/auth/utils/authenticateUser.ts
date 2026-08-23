@@ -9,7 +9,7 @@ import getUser from "./getUser.js";
 import { sendCookie } from "./sendCookie.js";
 import type { Route } from "../../types/Collection.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
-
+import { getEnvs } from "../../config/envs.js";
 
 const authenticateUser = async ({
   body,
@@ -27,6 +27,9 @@ const authenticateUser = async ({
   // otp model
   const OTPModel = getOTPModel(routeObj);
 
+  // returnAccessToken
+  const { authConfigObj } = getEnvs();
+
   // handle is verified
   let isVerified = false;
   let isOTPUser: any = null;
@@ -35,7 +38,7 @@ const authenticateUser = async ({
     ({ isVerified, isOTPUser } = await handleIsVerified({
       email: body.email as string,
       purpose: "login",
-      routeObj
+      routeObj,
     }));
 
   // user
@@ -44,7 +47,7 @@ const authenticateUser = async ({
     routeName,
     email: body.email as string,
     needPassword: true,
-    routeObj
+    routeObj,
   });
 
   // invalid password - credentials mode
@@ -54,7 +57,7 @@ const authenticateUser = async ({
     if (!isValid)
       throw new AppError({
         message: "Invalid password.",
-        statusCode: 401,
+        statusCode: 409,
         hint: "Verify your password and try again.",
         details: getErrorDetail(routeObj),
       });
@@ -69,7 +72,7 @@ const authenticateUser = async ({
   const { _id } = user.toObject();
 
   // send cookie
-  sendCookie({
+  const token = sendCookie({
     res,
     cookieName: "authToken",
     payload: { sub: _id },
@@ -82,6 +85,7 @@ const authenticateUser = async ({
     message: "Authenticated successfully!",
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
+    accessToken: authConfigObj?.returnAccessToken ? token : undefined,
   });
 };
 

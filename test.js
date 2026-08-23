@@ -18,6 +18,8 @@ new StarkNexus({
   authConfigObj: {
     mode: "builtin",
 
+    returnAccessToken: true,
+
     fieldsObj: {
       otp: "otp",
       purpose: "purpose"
@@ -31,7 +33,7 @@ new StarkNexus({
         password: fields.password,
       },
     },
-    login: "otp",
+    login: "credentials",
     signup: "credentials",
   },
   collections: [crudCollection, testCollection],

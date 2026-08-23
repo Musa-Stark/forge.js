@@ -7,6 +7,8 @@ export type authMode = "credentials" | "otp";
 export interface AuthConfig {
   mode: "builtin" | "manual";
 
+  returnAccessToken?: boolean;
+
   fieldsObj?: {
     otp: "otp" | "[field name]" | (string & {});
     purpose: "purpose" | "[field name]" | (string & {})
@@ -21,7 +23,7 @@ export interface AuthConfig {
 }
 
 export interface Constructor {
-  authConfigObj?: AuthConfig;
+  authConfigObj: AuthConfig;
   apiVersion: number;
   backendURL: string;
   cloudinaryAPIKey?: string;
