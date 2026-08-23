@@ -51,6 +51,8 @@ export const sendCookie = ({
     secure: ENV === "production",
     domain: ENV === "production" ? domain : undefined,
   });
+
+  return token;
 };
 
 export const clearCookie = ({

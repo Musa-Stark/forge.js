@@ -5,6 +5,7 @@ export interface AppResponse {
   data?: unknown;
   message: string;
   statusCode?: number;
+  accessToken?: string | undefined
 }
 
 const appResponse = ({
@@ -12,11 +13,13 @@ const appResponse = ({
   data = undefined,
   message,
   statusCode = 200,
+  accessToken
 }: AppResponse): void => {
   res.status(statusCode).json({
     success: true,
     data,
     message,
+    accessToken
   });
 };
 
