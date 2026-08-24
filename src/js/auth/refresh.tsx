@@ -17,11 +17,12 @@ const refresh = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    const { authConfigObj, userModelName } = getEnvs();
+
     // refreshToken
-    const token = req.cookies.refresh_token;
+    const token = req.cookies?.[authConfigObj.refreshTokenName!];
 
     // authConfigObj
-    const { authConfigObj, userModelName } = getEnvs();
 
     // token not found - re-login
     if (!token)
