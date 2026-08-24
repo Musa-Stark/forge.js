@@ -75,7 +75,7 @@ const createUser = async ({
     statusCode: 201,
     data: sanitizeOne(newUser.toObject(), routeObj),
     accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
-    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken : undefined,
+    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body.purpose,
   });
 };

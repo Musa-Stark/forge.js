@@ -16,6 +16,7 @@ import {
   forgotPassword,
   resetPassword,
   logout,
+  refresh
 } from "../auth/bunch.auth.js";
 
 // crud handlers
@@ -45,6 +46,7 @@ const handlerMap: Record<string, any> = {
   forgotPassword,
   resetPassword,
   logout,
+  refresh,
   read,
   create,
   readAll,

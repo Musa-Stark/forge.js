@@ -43,28 +43,6 @@ handlers/
 └── utils/
 
 === ACCESS TOKEN + REFRESH TOKEN ===
-
-Flow:
-  auth.middleware -> Only checks access_token(authToken)
-    if !token expired
-      code: 401
-      message: access_token expired
-      hint: send req to /refresh
-
-  /refresh:
-    checks refresh_token
-      if invalid || expired:
-        code: 409
-        message: Invalid or expired refresh token
-        hint: re-login
-
-      if user account deleted:
-        code: 409
-        message: user no longer exists
-        hint: create your account
-      
-      else if valid:
-        create new access_token
 auth.middleware:
   if authConfig.verifyAccessUser = true, then look in database for it only then.
 

@@ -7,7 +7,7 @@ import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 
-const findUser = async (id: string, routeObj: Route) => {
+export const findUser = async (id: string, routeObj: Route) => {
   const { userModelName } = getEnvs();
 
   if (!userModelName) {
@@ -35,21 +35,17 @@ const findUser = async (id: string, routeObj: Route) => {
 
 const protect =
   (routeObj: Route) =>
-  async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      console.log(req.cookies)
-      const token = req.cookies?.authToken;
+      const token = req.cookies?.access_token;
 
       if (!token) {
         return next(
           new AppError({
-            message: "Authentication required",
+            message: "Access token is missing",
+            code: "ACCESS_TOKEN_MISSING",
             statusCode: 401,
-            hint: "Log in to access this resource.",
+            hint: "Request a new access token using the /auth/refresh-token endpoint.",
             details: getErrorDetail(routeObj),
           }),
         );
@@ -63,9 +59,10 @@ const protect =
       if (typeof payload === "string" || !payload.sub) {
         return next(
           new AppError({
-            message: "Invalid JWT payload",
+            message: "Access token payload is invalid",
+            code: "ACCESS_TOKEN_PAYLOAD_INVALID",
             statusCode: 401,
-            hint: "Sign in again to obtain a valid authentication token.",
+            hint: "Sign in again to obtain a valid access token.",
             details: getErrorDetail(routeObj),
           }),
         );
@@ -76,9 +73,10 @@ const protect =
       if (!user) {
         return next(
           new AppError({
-            message: "This account no longer exists",
+            message: "User associated with the access token was not found",
+            code: "ACCESS_USER_NOT_FOUND",
             statusCode: 401,
-            hint: "Sign in with an existing account.",
+            hint: "Sign in again with an existing account.",
             details: getErrorDetail(routeObj),
           }),
         );
@@ -100,7 +98,7 @@ const protect =
 
       return next(
         new AppError({
-          message: "Authentication failed",
+          message: "Authentication middleware failed",
           statusCode: 500,
           hint: "This issue requires a fix from the framework developer.",
           details: getErrorDetail(routeObj),

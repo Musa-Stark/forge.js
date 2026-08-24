@@ -56,6 +56,11 @@ export const authCollection = collection({
       handler: "logout",
       path: "/logout",
     },
+    {
+      method: "get",
+      handler: "refresh",
+      path: "/refresh-token"
+    }
   ],
 });
 

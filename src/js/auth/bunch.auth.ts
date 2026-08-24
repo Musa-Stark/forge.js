@@ -5,3 +5,4 @@ export { default as resendOTP } from "./resendOTP.js";
 export { default as forgotPassword } from "./forgotPassword.js";
 export { default as resetPassword } from "./resetPassword.js";
 export { default as logout } from "./logout.js";
+export { default as refresh } from "./refresh.js";
