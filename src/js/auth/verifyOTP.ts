@@ -122,6 +122,7 @@ const verifyOTP = ({
       routeName,
       modelName,
       routeObj,
+      req
     });
   };
 };

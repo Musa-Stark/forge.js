@@ -12,13 +12,13 @@ export interface SealResult {
 }
 
 // Hash password
-export const hash = async (str: string, routeObj: Route): Promise<string> => {
+export const hash = async (str: string, routeObj?: Route): Promise<string> => {
   if (!str) {
     throw new AppError({
       message: "string is required to hash",
       statusCode: 404,
       hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(routeObj),
+      details: getErrorDetail(routeObj!),
     });
   }
 

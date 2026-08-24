@@ -1,9 +1,10 @@
 import createModel from "../lib/model.factory.js";
 import mongoose from "mongoose";
+import registerModel from "../lib/model.registry.js";
 
-const RequiredString = {
+const NullString = {
   type: String,
-  required: true,
+  default: null
 };
 
 const refreshModelDefinition = {
@@ -13,17 +14,17 @@ const refreshModelDefinition = {
     required: true,
   },
 
-  refreshTokenHash: RequiredString,
+  refreshTokenHash: NullString,
 
-  deviceType: RequiredString,
+  deviceType: NullString,
 
-  deviceName: RequiredString,
+  deviceName: NullString,
 
-  ipAddress: RequiredString,
+  ipAddress: NullString,
 
-  os: RequiredString,
+  os: NullString,
 
-  browser: RequiredString,
+  browser: NullString,
 
   lastUsedAt: {
     type: Date,
@@ -32,7 +33,7 @@ const refreshModelDefinition = {
 
   expiresAt: {
     type: Date,
-    required: true,
+    default: null,
     index: true,
   },
 
@@ -43,7 +44,11 @@ const refreshModelDefinition = {
   },
 };
 
+// create refresh model
 const createRefreshModel = async () =>
-  createModel("RefreshToken", refreshModelDefinition);
+  (registerModel["RefreshToken"] = createModel(
+    "RefreshToken",
+    refreshModelDefinition,
+  ));
 
 export default createRefreshModel;

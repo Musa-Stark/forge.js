@@ -65,22 +65,6 @@ Flow:
       
       else if valid:
         create new access_token
-
-Refresh schema:
-{
-    userId,
-    refreshTokenHash,
-
-    deviceType: "mobile",
-    deviceName: "Android",
-    
-    createdAt,
-    lastUsedAt,
-    expiresAt,
-
-    revokedAt
-}
-
 auth.middleware:
   if authConfig.verifyAccessUser = true, then look in database for it only then.
 

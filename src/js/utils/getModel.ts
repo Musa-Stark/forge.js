@@ -9,15 +9,15 @@ const getModel = ({
   routeObj,
 }: {
   modelName: string;
-  routeName: string;
-  routeObj: Route;
+  routeName?: string;
+  routeObj?: Route;
 }) => {
   if (!modelName) {
     throw new AppError({
       message: `Model name is required for routeObj '${routeName}'`,
       statusCode: 500,
       hint: "Provide a valid modelName when configuring the collection.",
-      details: getErrorDetail(routeObj),
+      details: getErrorDetail(routeObj!),
     });
   }
 
@@ -28,7 +28,7 @@ const getModel = ({
       message: `Model '${modelName}' is not registered`,
       statusCode: 500,
       hint: "Register the model before using it in a collection.",
-      details: getErrorDetail(routeObj),
+      details: getErrorDetail(routeObj!),
     });
   }
 

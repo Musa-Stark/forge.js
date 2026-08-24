@@ -25,8 +25,6 @@ export const sendCookie = ({
 
   const { accessTokenAge, refreshTokenAge } = authConfigObj;
 
-  console.log({accessTokenAge, refreshTokenAge})
-
   if (ENV === "production" && !domain)
     throw new AppError({
       message: "domain is required in production.",
@@ -66,7 +64,7 @@ export const sendCookie = ({
       domain: ENV === "production" ? domain : undefined,
     });
 
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, refreshTokenAge };
 };
 
 // clear cookie

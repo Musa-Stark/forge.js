@@ -1,5 +1,5 @@
 import AppError from "../../utils/AppError.js";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import appResponse from "../../utils/response.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import { sanitizeOne } from "../../utils/sanitize.js";
@@ -10,17 +10,20 @@ import { sendCookie } from "./sendCookie.js";
 import type { Route } from "../../types/Collection.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 import { getEnvs } from "../../config/envs.js";
+import saveRefreshToken from "../../utils/saveRefreshToken.js";
 
 const authenticateUser = async ({
   body,
   modelName,
   res,
+  req,
   routeName,
   routeObj,
 }: {
   body: any;
   modelName: string;
   res: Response;
+  req: Request;
   routeName: string;
   routeObj: Route;
 }) => {
@@ -72,7 +75,7 @@ const authenticateUser = async ({
   const { _id } = user.toObject();
 
   // send cookie
-  const { accessToken, refreshToken } = sendCookie({
+  const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
     accessTokenName: "access_token",
     refreshTokenName: "refresh_token",
@@ -80,6 +83,9 @@ const authenticateUser = async ({
     refreshTokenPayload: { sub: _id },
     routeObj,
   });
+
+  // save refreshToken
+  await saveRefreshToken({ req, refreshToken, refreshTokenAge, _id, routeObj });
 
   // send response
   appResponse({
