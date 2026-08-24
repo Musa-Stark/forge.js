@@ -6,7 +6,9 @@ let envs: InternalConstructor = { ...defaultConfig };
 
 // validateAuthConfigError handling
 const vAError = (str: string): void => {
-  throw new Error(`authConfigObj.${str} is requried in StarkForge({}) ->  authConfigObj.`);
+  throw new Error(
+    `authConfigObj.${str} is requried in StarkForge({}) ->  authConfigObj.`,
+  );
 };
 
 const placeholderError = (key: string, value: string): void => {
@@ -54,15 +56,15 @@ const validateAuth = (config: AuthConfig): void => {
     // auth modes
     const authMethods = ["credentials", "otp"];
 
-    // if signup or login not found
-    if (!config.signup) vAError("signup");
-    if (!config.login) vAError("login");
+    // if signupMode or loginMode not found
+    if (!config.signupMode) vAError("signupMode");
+    if (!config.loginMode) vAError("loginMode");
 
-    if (!authMethods.includes(config.signup!))
-      vAError(`signup as ${authMethods.join(" or ")}`);
+    if (!authMethods.includes(config.signupMode!))
+      vAError(`signupMode as ${authMethods.join(" or ")}`);
 
-    if (!authMethods.includes(config.login!))
-      vAError(`login as ${authMethods.join(" or ")}`);
+    if (!authMethods.includes(config.loginMode!))
+      vAError(`loginMode as ${authMethods.join(" or ")}`);
   } catch (error) {
     AppLog("x", "authConfigObj", (error as Error).message);
     process.exit(1);
@@ -71,6 +73,12 @@ const validateAuth = (config: AuthConfig): void => {
 
 const setEnvs = (values: InternalConstructor): void => {
   validateAuth(values.authConfigObj!);
+
+  if (!values.authConfigObj.accessTokenAge)
+    values.authConfigObj.accessTokenAge = "5m";
+
+  if (!values.authConfigObj.refreshTokenAge)
+    values.authConfigObj.refreshTokenAge = "30d";
 
   envs = values;
 };

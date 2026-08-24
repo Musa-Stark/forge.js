@@ -1,6 +1,6 @@
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import AppError from "./AppError.js";
-import getDuration from "../config/duration.js";
+import getDuration, { type DurationType } from "../config/duration.js";
 import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
@@ -8,9 +8,11 @@ import type { Route } from "../types/Collection.js";
 export const signJWT = ({
   payload,
   routeObj,
+  age
 }: {
   payload: string | object | Buffer;
   routeObj: Route;
+  age: DurationType
 }): string => {
   try {
     if (!payload) {
@@ -22,7 +24,7 @@ export const signJWT = ({
       });
     }
 
-    const { jwtSecret, tokenExpiry } = getEnvs();
+    const { jwtSecret } = getEnvs();
 
     if (!jwtSecret) {
       throw new AppError({
@@ -33,17 +35,17 @@ export const signJWT = ({
       });
     }
 
-    if (!tokenExpiry) {
+    if (!age) {
       throw new AppError({
-        message: "Token expiry is required",
+        message: "Token age is required",
         statusCode: 500,
-        hint: "Configure 'tokenExpiry' in your environment variables.",
+        hint: "Configure 'access or refresh token age' in your authConfigObj in StarkForge({}).",
         details: getErrorDetail(routeObj),
       });
     }
 
     return jwt.sign(payload, jwtSecret, {
-      expiresIn: Math.floor(getDuration(tokenExpiry, routeObj) / 1000),
+      expiresIn: Math.floor(getDuration(age, routeObj) / 1000),
     });
   } catch (error) {
     if (error instanceof AppError) throw error;

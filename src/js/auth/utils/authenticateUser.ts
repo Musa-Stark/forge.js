@@ -72,10 +72,12 @@ const authenticateUser = async ({
   const { _id } = user.toObject();
 
   // send cookie
-  const token = sendCookie({
+  const { accessToken, refreshToken } = sendCookie({
     res,
-    cookieName: "authToken",
-    payload: { sub: _id },
+    accessTokenName: "access_token",
+    refreshTokenName: "refresh_token",
+    accessTokenPayload: { sub: _id },
+    refreshTokenPayload: { sub: _id },
     routeObj,
   });
 
@@ -85,8 +87,9 @@ const authenticateUser = async ({
     message: "Authenticated successfully!",
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? token : undefined,
-    purpose: body.purpose
+    accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
+    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken : undefined,
+    purpose: body.purpose,
   });
 };
 

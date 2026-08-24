@@ -8,18 +8,22 @@ export interface AuthConfig {
   mode: "builtin" | "manual";
 
   returnAccessToken?: boolean;
+  returnRefreshToken?: boolean;
 
   fieldsObj?: {
     otp: "otp" | "[field name]" | (string & {});
-    purpose: "purpose" | "[field name]" | (string & {})
+    purpose: "purpose" | "[field name]" | (string & {});
   };
   schemaObj?: {
     modelName: "User" | "[Model Name]" | (string & {});
     schema: Record<string, UnifiedField>;
   };
 
-  signup?: authMode;
-  login?: authMode;
+  accessTokenAge?: DurationType;
+  refreshTokenAge?: DurationType;
+
+  signupMode?: authMode;
+  loginMode?: authMode;
 }
 
 export interface Constructor {
@@ -47,7 +51,6 @@ export interface Constructor {
   rateLimitMsg: string;
   adminEmailSender?: string;
   resendAPIKey?: string;
-  tokenExpiry: DurationType;
 }
 
 export interface InternalConstructor extends Constructor {

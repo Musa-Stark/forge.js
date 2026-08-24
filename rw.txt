@@ -17,9 +17,6 @@
   },
 ]; ===
 
-=== cloudinary custom folder name ===
-=== Unexpected file field: backgroundImage. File field must match collection's fileArray -> fieldName | When formdata/... is sent instead of app/json and it is not needed. ===
-
 === COLLECTION ===
 Skips:
 Route:
@@ -45,57 +42,59 @@ handlers/
 ├── system/        // internal framework handlers
 └── utils/
 
-automating auth + manual option
+=== ACCESS TOKEN + REFRESH TOKEN ===
 
-console:
-auth -> http://localhost:10000/api/v1/auth/[login, signup, forgot-password, verify-otp, reset-password]
+Flow:
+  login -> 2fa:
 
-StarkForge:
-import { fields } from "forge.js";
+    1. issue 2 tokens i.e. access_token and refresh_token
+    2. a. access_token:
+          default age: 10 mints.
+          HTTPOnly: true
+       b. refresh_token:
+          default age: 30 days.
+          HTTPOnly: true
 
-const authConfig = {
-  mode: "builtIn",
-  user: {
-    modelName: "User",
-    schema: {
-      name: fields.requiredString,
-      email: fields.email,
-      password: fields.password,
-      role: fields.role,
-      isVerified: fields.booleanFalse,
-      // any extra fields they want
-    },
-  },
-  authMode: "credentials", // or "otp" | "magic-link"
-};
+  auth.middleware -> Only checks access_token(authToken)
+    if !token expired
+      code: 401
+      message: access_token expired
+      hint: send req to /refresh
 
-=== Forge using it unified fields ===
-// Inside built-in auth setup
-const mongooseSchema = buildMongooseSchema(authConfig.user.schema);
-const User = mongoose.model(authConfig.user.modelName, mongooseSchema);
+  /refresh:
+    checks refresh_token
+      if invalid || expired:
+        code: 409
+        message: Invalid or expired refresh token
+        hint: re-login
 
-// For signup validation
-const signupSchema = buildZodObject(authConfig.user.schema, [
-  "name",
-  "email",
-  "password",
-]);
+      if user account deleted:
+        code: 409
+        message: user no longer exists
+        hint: create your account
+      
+      else if valid:
+        create new access_token
 
-// For login
-const loginSchema = buildZodObject(authConfig.user.schema, ["email", "password"]);
+Refresh schema:
+{
+    userId,
+    refreshTokenHash,
 
-// For forgot password
-const forgotSchema = buildZodObject(authConfig.user.schema, ["email"]);
+    deviceType: "mobile",
+    deviceName: "Android",
+    
+    createdAt,
+    lastUsedAt,
+    expiresAt,
 
- password: {
-    mongoose: {
-      type: [Function: String],
-      select: false
-    },
-    zod: ZodString {
-      toJSONSchema: [Function (anonymous)],
-      def: [Object],
-    }
-  }
+    revokedAt
 }
-[ 'name', 'email', 'password', 'otp' ]
+
+auth.middleware:
+  if authConfig.verifyAccessUser = true, then look in database for it only then.
+
+authConfig:
+  verifyAccessUser: boolean
+  accessTokenAge: "10m"
+  refreshTokenAge: "30d"

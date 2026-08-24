@@ -49,8 +49,6 @@ const handleEncryption = async (body: any, routeObj: Route) => {
         });
       }
 
-    console.log(field);
-
     encrypted[field] = await seal(body[field], routeObj);
   }
 

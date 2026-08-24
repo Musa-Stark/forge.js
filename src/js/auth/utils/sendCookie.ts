@@ -5,30 +5,27 @@ import AppError from "../../utils/AppError.js";
 import { signJWT } from "../../utils/handleJWT.js";
 import type { Route } from "../../types/Collection.js";
 
+// send cookie
 export const sendCookie = ({
   res,
-  cookieName,
-  payload,
+  accessTokenName,
+  refreshTokenName,
+  accessTokenPayload,
+  refreshTokenPayload,
   routeObj,
 }: {
   res: Response;
-  cookieName: string;
-  payload: string | object;
+  accessTokenName: string;
+  refreshTokenName: string;
+  accessTokenPayload: string | object;
+  refreshTokenPayload: string | object;
   routeObj: Route;
 }) => {
-  const { tokenExpiry, ENV, domain } = getEnvs();
+  const { ENV, domain, authConfigObj } = getEnvs();
 
-  if (!tokenExpiry || !ENV)
-    throw new AppError({
-      message: "tokenExpiry and ENV are required.",
-      statusCode: 500,
-      hint: "Define tokenExpiry and ENV in your environment configuration.",
-      details: {
-        handler: routeObj.handler,
-        method: routeObj.method,
-        path: routeObj.path,
-      },
-    });
+  const { accessTokenAge, refreshTokenAge } = authConfigObj;
+
+  console.log({accessTokenAge, refreshTokenAge})
 
   if (ENV === "production" && !domain)
     throw new AppError({
@@ -42,19 +39,37 @@ export const sendCookie = ({
       },
     });
 
-  const token = signJWT({ payload, routeObj });
-
-  res.cookie(cookieName, token, {
-    httpOnly: true,
-    maxAge: getDuration(tokenExpiry, routeObj),
-    sameSite: ENV === "production" ? "none" : "lax",
-    secure: ENV === "production",
-    domain: ENV === "production" ? domain : undefined,
+  const accessToken = signJWT({
+    payload: accessTokenPayload,
+    routeObj,
+    age: accessTokenAge!,
+  });
+  const refreshToken = signJWT({
+    payload: refreshTokenPayload,
+    routeObj,
+    age: refreshTokenAge!,
   });
 
-  return token;
+  res
+    .cookie(accessTokenName, accessToken, {
+      httpOnly: true,
+      maxAge: getDuration(accessTokenAge!, routeObj),
+      sameSite: ENV === "production" ? "none" : "lax",
+      secure: ENV === "production",
+      domain: ENV === "production" ? domain : undefined,
+    })
+    .cookie(refreshTokenName, refreshToken, {
+      httpOnly: true,
+      maxAge: getDuration(refreshTokenAge!, routeObj),
+      sameSite: ENV === "production" ? "none" : "lax",
+      secure: ENV === "production",
+      domain: ENV === "production" ? domain : undefined,
+    });
+
+  return { accessToken, refreshToken };
 };
 
+// clear cookie
 export const clearCookie = ({
   res,
   cookieName,

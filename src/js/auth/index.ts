@@ -26,9 +26,9 @@ const auth = (
     builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!);
     routes = routes.map((item: Route) =>
       item.handler === "login"
-        ? { ...item, mode: authConfigObj!.login! }
+        ? { ...item, mode: authConfigObj!.loginMode! }
         : item.handler === "signup"
-          ? { ...item, mode: authConfigObj!.signup! }
+          ? { ...item, mode: authConfigObj!.signupMode! }
           : item,
     );
   }

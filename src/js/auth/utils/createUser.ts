@@ -59,10 +59,12 @@ const createUser = async ({
   const { _id } = newUser.toObject();
 
   // send cookied
-  const token = sendCookie({
+  const { accessToken, refreshToken } = sendCookie({
     res,
-    cookieName: "authToken",
-    payload: { sub: _id },
+    accessTokenName: "access_token",
+    refreshTokenName: "refresh_token",
+    accessTokenPayload: { sub: _id },
+    refreshTokenPayload: { sub: _id },
     routeObj,
   });
 
@@ -72,8 +74,9 @@ const createUser = async ({
     message: "Your account has been created successfully!",
     statusCode: 201,
     data: sanitizeOne(newUser.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? token : undefined,
-    purpose: body.purpose
+    accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
+    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken : undefined,
+    purpose: body.purpose,
   });
 };
 
