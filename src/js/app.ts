@@ -1,5 +1,6 @@
-import express from "express";
-const app = express();
+import express  from "express";
+import type { Express } from "express";
+const app: Express = express();
 import { getEnvs } from "./config/envs.js";
 import type { Collection } from "./types/Collection.js";
 import handleReqType from "./config/handleReqType.js";
@@ -15,6 +16,7 @@ import authCollection from "./auth/builtin/auth.collection.js";
 import { setAppInfo } from "./terminal/appInfo.js";
 import printInfo from "./terminal/loggerConfig.js";
 import type { AuthConfig } from "./types/Constructor.js";
+import createRefreshModel from "./config/refreshModel.js";
 
 // body - middlewares
 const jsonParser = express.json();
@@ -59,7 +61,7 @@ const handleCollection = (
     }
 
     if (modelName) {
-      const MODEL = createModel(routeName, modelName, mongooseSchemaObj!);
+      const MODEL = createModel(modelName, mongooseSchemaObj!, routeName);
       registerModel[modelName] = MODEL;
     }
 
@@ -87,6 +89,7 @@ const startServer = async (): Promise<void> => {
   } = getEnvs();
   // connect db
   await connectDB({ isOffline, mongoDBURI, databaseName });
+  await createRefreshModel()
 
   // collectionsArray
   const collectionArray = [healthCollection];

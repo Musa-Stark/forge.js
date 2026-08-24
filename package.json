@@ -72,6 +72,7 @@
     "multer": "^2.2.0",
     "resend": "^6.16.0",
     "streamifier": "^0.1.1",
+    "ua-parser-js": "^2.0.10",
     "zod": "^4.4.3"
   },
   "devDependencies": {

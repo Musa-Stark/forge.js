@@ -31,21 +31,25 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
 
   const optionalSchema = makeOptional(mongooseSchemaObj);
 
-  return createModel(routeName, "otpUser", {
-    ...optionalSchema,
+  return createModel(
+    "otpUser",
+    {
+      ...optionalSchema,
 
-    otpCount: { type: Number, default: 0 },
-    OTP: { type: String },
-    otpExpiry: { type: Date },
-    isVerified: { type: Boolean, default: false },
-    maxOTPTries: { type: Number, default: 10 },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
-    purpose: {
-      type: String,
-      enum: otpPurposes,
-      required: true,
+      otpCount: { type: Number, default: 0 },
+      OTP: { type: String },
+      otpExpiry: { type: Date },
+      isVerified: { type: Boolean, default: false },
+      maxOTPTries: { type: Number, default: 10 },
+      role: { type: String, enum: ["user", "admin"], default: "user" },
+      purpose: {
+        type: String,
+        enum: otpPurposes,
+        required: true,
+      },
     },
-  });
+    routeName,
+  );
 };
 
 export default createOTPModel;

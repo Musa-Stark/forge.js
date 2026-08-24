@@ -81,9 +81,9 @@ const normalizeDefinition = (
  * Creates (or returns existing) Mongoose model.
  */
 const createModel = (
-  routeName: string,
   name: string,
   definition: ModelDefinition,
+  routeName?: string
 ): any => {
   // Return existing model if already registered
   if (mongoose.modelNames().includes(name)) {

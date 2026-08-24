@@ -45,16 +45,6 @@ handlers/
 === ACCESS TOKEN + REFRESH TOKEN ===
 
 Flow:
-  login -> 2fa:
-
-    1. issue 2 tokens i.e. access_token and refresh_token
-    2. a. access_token:
-          default age: 10 mints.
-          HTTPOnly: true
-       b. refresh_token:
-          default age: 30 days.
-          HTTPOnly: true
-
   auth.middleware -> Only checks access_token(authToken)
     if !token expired
       code: 401
@@ -96,5 +86,3 @@ auth.middleware:
 
 authConfig:
   verifyAccessUser: boolean
-  accessTokenAge: "10m"
-  refreshTokenAge: "30d"
