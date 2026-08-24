@@ -77,8 +77,8 @@ const authenticateUser = async ({
   // send cookie
   const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
-    accessTokenName: "access_token",
-    refreshTokenName: "refresh_token",
+    accessTokenName: authConfigObj.accessTokenName!,
+    refreshTokenName: authConfigObj.refreshTokenName!,
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,

@@ -74,11 +74,21 @@ const validateAuth = (config: AuthConfig): void => {
 const setEnvs = (values: InternalConstructor): void => {
   validateAuth(values.authConfigObj!);
 
+  // set default access_token age
   if (!values.authConfigObj.accessTokenAge)
-    values.authConfigObj.accessTokenAge = "5m";
+    values.authConfigObj.accessTokenAge = "10m";
 
+  // set default refresh_token age
   if (!values.authConfigObj.refreshTokenAge)
     values.authConfigObj.refreshTokenAge = "30d";
+
+  // set default access_token name
+  if (!values.authConfigObj.accessTokenName)
+    values.authConfigObj.accessTokenName = "access_token";
+
+  // set default refresh_token name
+  if (!values.authConfigObj.refreshTokenName)
+    values.authConfigObj.refreshTokenName = "refresh_token";
 
   envs = values;
 };

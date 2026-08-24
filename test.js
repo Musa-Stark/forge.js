@@ -18,6 +18,8 @@ new StarkNexus({
     mode: "builtin",
 
     returnAccessToken: true,
+    accessTokenName: "testing_access_token",
+    refreshTokenName: "testing_refresh_token",
 
     fieldsObj: {
       otp: "otp",

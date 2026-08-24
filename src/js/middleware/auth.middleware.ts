@@ -7,9 +7,11 @@ import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 
-export const findUser = async (id: string, routeObj: Route) => {
-  const { userModelName } = getEnvs();
-
+export const findUser = async (
+  id: string,
+  routeObj: Route,
+  userModelName: string,
+) => {
   if (!userModelName) {
     throw new AppError({
       message: "User model is required for authentication",
@@ -37,7 +39,9 @@ const protect =
   (routeObj: Route) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const token = req.cookies?.access_token;
+      const { userModelName, authConfigObj } = getEnvs();
+
+      const token = req.cookies?.[authConfigObj.accessTokenName!];
 
       if (!token) {
         return next(
@@ -68,7 +72,11 @@ const protect =
         );
       }
 
-      const user = await findUser(payload.sub as string, routeObj);
+      const user = await findUser(
+        payload.sub as string,
+        routeObj,
+        userModelName as string,
+      );
 
       if (!user) {
         return next(

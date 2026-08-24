@@ -20,12 +20,16 @@ const refresh = ({
     // refreshToken
     const token = req.cookies.refresh_token;
 
+    // authConfigObj
+    const { authConfigObj, userModelName } = getEnvs();
+
     // token not found - re-login
     if (!token)
       throw new AppError({
-        message: "Token not found - re-login",
+        message: "Refresh token is missing",
+        code: "REFRESH_TOKEN_MISSING",
         details: getErrorDetail(routeObj),
-        hint: "Re-login",
+        hint: "Sign in again to create a new authentication session.",
         statusCode: 401,
       });
 
@@ -38,36 +42,39 @@ const refresh = ({
     // if payload is not as string or sub isn't found in it
     if (typeof payload === "string" || !payload.sub)
       throw new AppError({
-        message: "Invalid JWT payload - re-login",
+        message: "Refresh token payload is invalid",
+        code: "REFRESH_TOKEN_PAYLOAD_INVALID",
         statusCode: 401,
-        hint: "Sign in again to obtain a valid token.",
+        hint: "Sign in again to obtain a valid refresh token.",
         details: getErrorDetail(routeObj),
       });
 
     // find user
-    const user = await findUser(payload.sub as string, routeObj);
+    const user = await findUser(
+      payload.sub as string,
+      routeObj,
+      userModelName as string,
+    );
 
     // if user not found
     if (!user)
-      new AppError({
-        message: "This account no longer exists",
+      throw new AppError({
+        message: "User associated with the refresh token was not found",
+        code: "REFRESH_USER_NOT_FOUND",
         statusCode: 401,
-        hint: "Sign in with an existing account or create new one.",
+        hint: "Sign in again with an existing account.",
         details: getErrorDetail(routeObj),
       });
 
     // cookie
     const { accessToken } = sendCookie({
       res,
-      accessTokenName: "access_token",
+      accessTokenName: authConfigObj.accessTokenName!,
       accessTokenPayload: {
         sub: payload.sub,
       },
       routeObj,
     });
-
-    // authConfigObj
-    const { authConfigObj } = getEnvs();
 
     // response
     appResponse({
