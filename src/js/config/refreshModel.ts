@@ -4,7 +4,7 @@ import registerModel from "../lib/model.registry.js";
 
 const NullString = {
   type: String,
-  default: null
+  default: null,
 };
 
 const refreshModelDefinition = {
@@ -33,8 +33,8 @@ const refreshModelDefinition = {
 
   expiresAt: {
     type: Date,
-    default: null,
-    index: true,
+    required: true,
+    index: { expires: 0 },
   },
 
   revoked: {

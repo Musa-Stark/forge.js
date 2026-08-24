@@ -41,6 +41,7 @@ const protect =
     next: NextFunction,
   ): Promise<void> => {
     try {
+      console.log(req.cookies)
       const token = req.cookies?.authToken;
 
       if (!token) {
