@@ -1,3 +1,4 @@
+import { getEnvs } from "../config/envs.js";
 import type { Collection } from "../types/Collection.js";
 
 export interface AppInfo {
@@ -15,7 +16,7 @@ export interface AppInfo {
 }
 
 let appInfo: AppInfo = {
-  modelsCount: 1,
+  modelsCount: 2,
   validationsCount: 0,
   routesCount: 0,
   authentication: false,
@@ -28,14 +29,22 @@ let appInfo: AppInfo = {
   dbConnectionStatus: null,
 };
 
-const resources: string[] = ["OTP Model"];
+const resources: string[] = ["OTP", "RefreshToken"];
 
 const setAppInfo = (req: Collection) => {
+  const { authConfigObj } = getEnvs();
+
   if (req.modelName && !resources.includes(req.modelName)) {
     if (req.mongooseSchemaObj) appInfo.modelsCount!++;
 
     resources.push(req.modelName);
   }
+
+  if (
+    authConfigObj.mode === "builtin" &&
+    !resources.includes(authConfigObj.schemaObj?.modelName || "User")
+  )
+    appInfo.modelsCount!++;
 
   if (req.validationsObj) appInfo.validationsCount!++;
 
