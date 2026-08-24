@@ -19,7 +19,7 @@ export type RoutePath =
   | "/signup"
   | "/login"
   | "/logout"
-  // | "/refresh-token"
+  | "/refresh-token"
   | "/forgot-password"
   | "/reset-password"
   // | "/change-password"

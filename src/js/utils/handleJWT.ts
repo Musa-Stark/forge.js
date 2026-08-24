@@ -8,18 +8,19 @@ import type { Route } from "../types/Collection.js";
 export const signJWT = ({
   payload,
   routeObj,
-  age
+  age,
 }: {
   payload: string | object | Buffer;
   routeObj: Route;
-  age: DurationType
+  age: DurationType;
 }): string => {
   try {
     if (!payload) {
       throw new AppError({
-        message: "Payload is required to sign a JWT",
+        message: "JWT payload is missing",
+        code: "JWT_PAYLOAD_MISSING",
         statusCode: 400,
-        hint: "Provide a valid payload for JWT generation.",
+        hint: "Provide a valid payload to generate the JWT.",
         details: getErrorDetail(routeObj),
       });
     }
@@ -28,18 +29,20 @@ export const signJWT = ({
 
     if (!jwtSecret) {
       throw new AppError({
-        message: "JWT secret is required",
+        message: "JWT secret is not configured",
+        code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in your environment variables.",
+        hint: "Configure 'jwtSecret' in the environment variables.",
         details: getErrorDetail(routeObj),
       });
     }
 
     if (!age) {
       throw new AppError({
-        message: "Token age is required",
+        message: "JWT expiration time is not configured",
+        code: "JWT_AGE_MISSING",
         statusCode: 500,
-        hint: "Configure 'access or refresh token age' in your authConfigObj in StarkForge({}).",
+        hint: "Configure the access or refresh token age in 'authConfigObj'.",
         details: getErrorDetail(routeObj),
       });
     }
@@ -53,9 +56,10 @@ export const signJWT = ({
     console.error(error);
 
     throw new AppError({
-      message: "Failed to sign JWT",
+      message: "Failed to generate JWT",
+      code: "JWT_SIGN_FAILED",
       statusCode: 500,
-      hint: "This issue requires a fix from the framework developer.",
+      hint: "This is an internal framework error. Check the server logs for details.",
       details: getErrorDetail(routeObj),
     });
   }
@@ -69,25 +73,25 @@ export const verifyJWT = ({
   routeObj: Route;
 }): string | JwtPayload => {
   try {
-    if (!token) {
+    if (!token)
       throw new AppError({
-        message: "JWT token is required",
+        message: "JWT is missing",
+        code: "JWT_MISSING",
         statusCode: 400,
-        hint: "Provide a valid JWT for verification.",
+        hint: "Provide a JWT to verify.",
         details: getErrorDetail(routeObj),
       });
-    }
 
     const { jwtSecret } = getEnvs();
 
-    if (!jwtSecret) {
+    if (!jwtSecret)
       throw new AppError({
-        message: "JWT secret is required",
+        message: "JWT secret is not configured",
+        code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in your environment variables.",
+        hint: "Configure 'jwtSecret' in the environment variables.",
         details: getErrorDetail(routeObj),
       });
-    }
 
     return jwt.verify(token, jwtSecret);
   } catch (error) {
@@ -96,9 +100,10 @@ export const verifyJWT = ({
     console.error(error);
 
     throw new AppError({
-      message: "Invalid or expired JWT",
+      message: "JWT is invalid or has expired",
+      code: "JWT_INVALID",
       statusCode: 401,
-      hint: "Ensure the token is valid, has not expired, and was signed using the correct secret.",
+      hint: "Provide a valid, unexpired JWT.",
       details: getErrorDetail(routeObj),
     });
   }

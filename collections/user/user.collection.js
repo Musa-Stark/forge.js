@@ -6,7 +6,7 @@ const userCollection = collection({
   modelName: "User",
   routesArray: [
     {
-      authRole: "public",
+      authRole: "adminOrOwner",
       handler: "readAll",
       method: "get",
       path: "/",

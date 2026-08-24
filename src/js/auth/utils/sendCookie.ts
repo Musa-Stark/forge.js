@@ -9,16 +9,16 @@ import type { Route } from "../../types/Collection.js";
 export const sendCookie = ({
   res,
   accessTokenName,
-  refreshTokenName,
   accessTokenPayload,
+  refreshTokenName,
   refreshTokenPayload,
   routeObj,
 }: {
   res: Response;
   accessTokenName: string;
-  refreshTokenName: string;
   accessTokenPayload: string | object;
-  refreshTokenPayload: string | object;
+  refreshTokenName?: string;
+  refreshTokenPayload?: string | object;
   routeObj: Route;
 }) => {
   const { ENV, domain, authConfigObj } = getEnvs();
@@ -42,21 +42,27 @@ export const sendCookie = ({
     routeObj,
     age: accessTokenAge!,
   });
-  const refreshToken = signJWT({
-    payload: refreshTokenPayload,
-    routeObj,
-    age: refreshTokenAge!,
+
+  // if refreshToken to send
+  let refreshToken = null;
+  if (refreshTokenName)
+    refreshToken = signJWT({
+      payload: refreshTokenPayload!,
+      routeObj,
+      age: refreshTokenAge!,
+    });
+
+  res.cookie(accessTokenName, accessToken, {
+    httpOnly: true,
+    maxAge: getDuration(accessTokenAge!, routeObj),
+    sameSite: ENV === "production" ? "none" : "lax",
+    secure: ENV === "production",
+    domain: ENV === "production" ? domain : undefined,
   });
 
-  res
-    .cookie(accessTokenName, accessToken, {
-      httpOnly: true,
-      maxAge: getDuration(accessTokenAge!, routeObj),
-      sameSite: ENV === "production" ? "none" : "lax",
-      secure: ENV === "production",
-      domain: ENV === "production" ? domain : undefined,
-    })
-    .cookie(refreshTokenName, refreshToken, {
+  // if refreshToken to send
+  if (refreshToken)
+    res.cookie(refreshTokenName!, refreshToken, {
       httpOnly: true,
       maxAge: getDuration(refreshTokenAge!, routeObj),
       sameSite: ENV === "production" ? "none" : "lax",

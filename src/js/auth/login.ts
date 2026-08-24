@@ -5,7 +5,6 @@ import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-import { getEnvs } from "../config/envs.js";
 
 const login = ({
   modelName,

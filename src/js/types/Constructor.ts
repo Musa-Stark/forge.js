@@ -19,6 +19,9 @@ export interface AuthConfig {
     schema: Record<string, UnifiedField>;
   };
 
+  accessTokenName?: "access_token" | "[choose a custom name]" | (string & {});
+  refreshTokenName?: "refresh_token" | "[choose a custom name]" | (string & {});
+
   accessTokenAge?: DurationType;
   refreshTokenAge?: DurationType;
 

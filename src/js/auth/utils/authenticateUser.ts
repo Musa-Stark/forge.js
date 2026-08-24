@@ -77,15 +77,15 @@ const authenticateUser = async ({
   // send cookie
   const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
-    accessTokenName: "access_token",
-    refreshTokenName: "refresh_token",
+    accessTokenName: authConfigObj.accessTokenName!,
+    refreshTokenName: authConfigObj.refreshTokenName!,
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,
   });
 
   // save refreshToken
-  await saveRefreshToken({ req, refreshToken, refreshTokenAge, _id, routeObj });
+  await saveRefreshToken({ req, refreshToken: refreshToken!, refreshTokenAge, _id, routeObj });
 
   // send response
   appResponse({
@@ -94,7 +94,7 @@ const authenticateUser = async ({
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
     accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
-    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken : undefined,
+    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body.purpose,
   });
 };

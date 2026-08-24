@@ -27,17 +27,31 @@ const saveRefreshToken = async ({
   // info
   const parser = new UAParser(req.get("user-agent"));
   const result = parser.getResult();
+  const deviceType = result.device.type || "desktop";
 
+  // hashedToken
   const hashedToken = await hash(refreshToken);
 
+  // check if old token
+  await RefreshToken.updateMany(
+    {
+      owner: _id,
+      refreshTokenHash: { $ne: hashedToken },
+      deviceType,
+      revoked: false,
+    },
+    { $set: { revoked: true } },
+  );
+
+  // create token
   await RefreshToken.create({
     owner: _id,
     refreshTokenHash: hashedToken,
-    deviceType: result.device.type || "desktop",
+    deviceType,
     deviceName: result.device.model,
     ipAddress: req.ip,
     os: `${result.os.name} ${result.os.version || ""}`,
-    expiresAt: getDuration(refreshTokenAge!, routeObj) || null,
+    expiresAt: getDuration(refreshTokenAge!, routeObj),
   });
 };
 export default saveRefreshToken;

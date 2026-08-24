@@ -22,7 +22,7 @@ const crudCollection = collection({
       handler: "readAll",
       authRole: "public",
       validationKey: false,
-      decryptedFieldsArray: ["cardNumber", "cvv"],
+      decryptedFieldsArray: ["cardNumber", "cvv?"],
       mongooseConfigObj: {
         populateKey: "owner",
         hiddenFieldsArray: ["__v", "updatedAt"],

@@ -5,4 +5,5 @@ export type authHandlers =
   | "resendOTP"
   | "forgotPassword"
   | "resetPassword"
-  | "logout";
+  | "logout"
+  | "refresh";
