@@ -18,9 +18,9 @@ new StarkNexus({
     returnRefreshToken: true,
 
     rotateRefreshToken: true,
-    refreshTokenRotationInterval: "2m",
+    refreshTokenRotationInterval: "24h",
 
-    accessTokenAge: "1m",
+    accessTokenAge: "10m",
     refreshTokenAge: "30d",
 
     fieldsObj: {

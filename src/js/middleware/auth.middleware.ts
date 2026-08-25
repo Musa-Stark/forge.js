@@ -41,7 +41,9 @@ const protect =
     try {
       const { userModelName, authConfigObj } = getEnvs();
 
-      const token = req.cookies?.[authConfigObj.accessTokenName!];
+      const { accessTokenName, verifyAccessUser } = authConfigObj;
+
+      const token = req.cookies?.[accessTokenName!];
 
       if (!token) {
         return next(
@@ -72,28 +74,28 @@ const protect =
         );
       }
 
-      const user = await findUser(
-        payload.sub as string,
-        routeObj,
-        userModelName as string,
-      );
-
-      if (!user) {
-        return next(
-          new AppError({
-            message: "User associated with the access token was not found",
-            code: "ACCESS_USER_NOT_FOUND",
-            statusCode: 401,
-            hint: "Sign in again with an existing account.",
-            details: getErrorDetail(routeObj),
-          }),
+      if (verifyAccessUser) {
+        const user = await findUser(
+          payload.sub as string,
+          routeObj,
+          userModelName as string,
         );
+
+        if (!user) {
+          return next(
+            new AppError({
+              message: "User associated with the access token was not found",
+              code: "ACCESS_USER_NOT_FOUND",
+              statusCode: 401,
+              hint: "Sign in again with an existing account.",
+              details: getErrorDetail(routeObj),
+            }),
+          );
+        }
       }
 
       req.user = {
-        email: user.email,
-        role: user.role,
-        _id: user._id,
+        _id: payload.sub,
       };
 
       next();
