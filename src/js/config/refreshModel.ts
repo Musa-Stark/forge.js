@@ -14,7 +14,23 @@ const refreshModelDefinition = {
     required: true,
   },
 
-  refreshTokenHash: NullString,
+  refreshTokenHash: {
+    type: String,
+    required: true,
+  },
+
+  familyId: {
+    type: String,
+    required: true,
+    index: true,
+  },
+
+  jti: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true,
+  },
 
   deviceType: NullString,
 

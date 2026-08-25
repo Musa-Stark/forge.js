@@ -6,10 +6,7 @@ import StarkNexus, {
   fields,
 } from "./dist/js/index.js";
 
-import {
-  crudCollection,
-  userCollection,
-} from "./collections/index.js";
+import { crudCollection, userCollection } from "./collections/index.js";
 
 import "dotenv/config";
 
@@ -18,12 +15,17 @@ new StarkNexus({
     mode: "builtin",
 
     returnAccessToken: true,
-    accessTokenName: "testing_access_token",
-    refreshTokenName: "testing_refresh_token",
+    returnRefreshToken: true,
+
+    rotateRefreshToken: true,
+    refreshTokenRotationInterval: "24h",
+
+    accessTokenAge: "10m",
+    refreshTokenAge: "30d",
 
     fieldsObj: {
       otp: "otp",
-      purpose: "purpose"
+      purpose: "purpose",
     },
 
     schemaObj: {
@@ -37,7 +39,7 @@ new StarkNexus({
     loginMode: "credentials",
     signupMode: "credentials",
   },
-  collections: [crudCollection],
+  collections: [crudCollection, userCollection],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",

@@ -5,6 +5,18 @@ import AppError from "../../utils/AppError.js";
 import { signJWT } from "../../utils/handleJWT.js";
 import type { Route } from "../../types/Collection.js";
 
+export interface SendCookie {
+  res: Response;
+  accessTokenName?: string;
+  accessTokenPayload?: string | object;
+  refreshTokenName?: string;
+  refreshTokenPayload?: string | object;
+  routeObj: Route;
+  jti?: string;
+  deviceType?: string;
+  familyId?: string | undefined;
+}
+
 // send cookie
 export const sendCookie = ({
   res,
@@ -13,18 +25,17 @@ export const sendCookie = ({
   refreshTokenName,
   refreshTokenPayload,
   routeObj,
-}: {
-  res: Response;
-  accessTokenName: string;
-  accessTokenPayload: string | object;
-  refreshTokenName?: string;
-  refreshTokenPayload?: string | object;
-  routeObj: Route;
-}) => {
+  jti,
+  familyId,
+  deviceType,
+}: SendCookie) => {
+  // envs
   const { ENV, domain, authConfigObj } = getEnvs();
 
+  // authConfigObj
   const { accessTokenAge, refreshTokenAge } = authConfigObj;
 
+  // if domain not found in production
   if (ENV === "production" && !domain)
     throw new AppError({
       message: "domain is required in production.",
@@ -37,28 +48,39 @@ export const sendCookie = ({
       },
     });
 
-  const accessToken = signJWT({
-    payload: accessTokenPayload,
-    routeObj,
-    age: accessTokenAge!,
-  });
+  // sign accessToken
+  let accessToken = null;
+  if (accessTokenName)
+    accessToken = signJWT({
+      payload: accessTokenPayload!,
+      routeObj,
+      age: accessTokenAge!,
+    });
 
   // if refreshToken to send
   let refreshToken = null;
   if (refreshTokenName)
+    // sign refreshToken
     refreshToken = signJWT({
-      payload: refreshTokenPayload!,
       routeObj,
       age: refreshTokenAge!,
+      payload: {
+        jti,
+        familyId,
+        deviceType,
+        ...(refreshTokenPayload! as object),
+      },
     });
 
-  res.cookie(accessTokenName, accessToken, {
-    httpOnly: true,
-    maxAge: getDuration(accessTokenAge!, routeObj),
-    sameSite: ENV === "production" ? "none" : "lax",
-    secure: ENV === "production",
-    domain: ENV === "production" ? domain : undefined,
-  });
+  // send access token cookie
+  if (accessToken)
+    res.cookie(accessTokenName!, accessToken, {
+      httpOnly: true,
+      maxAge: getDuration(accessTokenAge!, routeObj),
+      sameSite: ENV === "production" ? "none" : "lax",
+      secure: ENV === "production",
+      domain: ENV === "production" ? domain : undefined,
+    });
 
   // if refreshToken to send
   if (refreshToken)
@@ -70,7 +92,11 @@ export const sendCookie = ({
       domain: ENV === "production" ? domain : undefined,
     });
 
-  return { accessToken, refreshToken, refreshTokenAge };
+  return {
+    accessToken,
+    refreshToken,
+    refreshTokenAge,
+  };
 };
 
 // clear cookie

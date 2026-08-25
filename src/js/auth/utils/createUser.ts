@@ -1,4 +1,4 @@
-import type { Response } from "express";
+import type { Response, Request } from "express";
 import appResponse from "../../utils/response.js";
 import { sanitizeOne } from "../../utils/sanitize.js";
 import mongoose from "mongoose";
@@ -9,6 +9,8 @@ import handleIsVerified from "./handleIsVerified.js";
 import { sendCookie } from "./sendCookie.js";
 import type { Route } from "../../types/Collection.js";
 import { getEnvs } from "../../config/envs.js";
+import tokenInfo from "./UAParser.js";
+import saveRefreshToken from "../../utils/saveRefreshToken.js";
 
 const createUser = async ({
   body,
@@ -16,16 +18,23 @@ const createUser = async ({
   res,
   routeName,
   routeObj,
+  req,
 }: {
   body: any;
   modelName: string;
   res: Response;
   routeName: string;
   routeObj: Route;
+  req: Request;
 }) => {
   // models
   const Model = getModel({ modelName, routeName, routeObj });
   const OTPModel = getOTPModel(routeObj);
+
+  // ua parser
+  // token info
+  const { deviceType, familyId, jti, deviceName, ipAddress, os } =
+    tokenInfo(req);
 
   // returnAccessToken
   const { authConfigObj } = getEnvs();
@@ -59,13 +68,31 @@ const createUser = async ({
   const { _id } = newUser.toObject();
 
   // send cookied
-  const { accessToken, refreshToken } = sendCookie({
+  const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
     accessTokenName: authConfigObj.accessTokenName!,
     refreshTokenName: authConfigObj.refreshTokenName!,
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,
+    deviceType,
+    familyId,
+    jti,
+  });
+
+  // save refreshToken
+  const hashedToken = await hash(refreshToken!)
+  await saveRefreshToken({
+    hashedToken,
+    refreshTokenAge,
+    _id,
+    routeObj,
+    jti: jti as string,
+    familyId,
+    deviceName,
+    deviceType,
+    os,
+    ipAddress,
   });
 
   // send res
@@ -74,7 +101,7 @@ const createUser = async ({
     message: "Your account has been created successfully!",
     statusCode: 201,
     data: sanitizeOne(newUser.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
+    accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
     refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body.purpose,
   });

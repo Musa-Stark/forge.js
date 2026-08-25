@@ -10,6 +10,11 @@ export interface AuthConfig {
   returnAccessToken?: boolean;
   returnRefreshToken?: boolean;
 
+  rotateRefreshToken?: boolean;
+  refreshTokenRotationInterval?: DurationType;
+
+  verifyAccessUser?: boolean;
+
   fieldsObj?: {
     otp: "otp" | "[field name]" | (string & {});
     purpose: "purpose" | "[field name]" | (string & {});

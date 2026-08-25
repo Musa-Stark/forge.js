@@ -1,28 +1,27 @@
-import type { Route, ValidationsObj } from "../types/Collection.ts";
+import type { Route } from "../types/Collection.ts";
 import type { Request, Response } from "express";
 import AppError from "../utils/AppError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import { verifyJWT } from "../utils/handleJWT.js";
-import { findUser } from "../middleware/auth.middleware.js";
 import { sendCookie } from "./utils/sendCookie.js";
 import appResponse from "../utils/response.js";
 import { getEnvs } from "../config/envs.js";
+import tokenInfo from "./utils/UAParser.js";
+import findRefreshToken from "./utils/findRefreshToken.js";
+import handleRefreshTokenValidation from "./utils/handleRefreshTokenValidation.js";
+import findRefreshTokenUser from "./utils/findRefreshTokenUser.js";
+import handleRotateRefreshToken from "./utils/handleRotateRefreshToken.js";
 
-const refresh = ({
-  routeObj,
-}: {
-  modelName: string;
-  routeObj: Route;
-  routeName: string;
-  validationsObj: ValidationsObj;
-}) => {
+const refresh = ({ routeObj }: { routeObj: Route }) => {
   return async (req: Request, res: Response) => {
     const { authConfigObj, userModelName } = getEnvs();
 
-    // refreshToken
-    const token = req.cookies?.[authConfigObj.refreshTokenName!];
+    // token info
+    const { deviceType, jti, deviceName, os, ipAddress, familyId } =
+      tokenInfo(req);
 
-    // authConfigObj
+    // refreshToken
+    let token = req.cookies?.[authConfigObj.refreshTokenName!];
 
     // token not found - re-login
     if (!token)
@@ -41,7 +40,7 @@ const refresh = ({
     });
 
     // if payload is not as string or sub isn't found in it
-    if (typeof payload === "string" || !payload.sub)
+    if (typeof payload === "string" || !payload.sub || !payload.jti)
       throw new AppError({
         message: "Refresh token payload is invalid",
         code: "REFRESH_TOKEN_PAYLOAD_INVALID",
@@ -50,38 +49,56 @@ const refresh = ({
         details: getErrorDetail(routeObj),
       });
 
-    // find user
-    const user = await findUser(
-      payload.sub as string,
+    // find same device tokens
+    const foundRefreshToken = await findRefreshToken(
+      payload.sub,
+      payload.jti,
       routeObj,
-      userModelName as string,
     );
 
-    // if user not found
-    if (!user)
-      throw new AppError({
-        message: "User associated with the refresh token was not found",
-        code: "REFRESH_USER_NOT_FOUND",
-        statusCode: 401,
-        hint: "Sign in again with an existing account.",
-        details: getErrorDetail(routeObj),
-      });
+    // check if valid token
+    await handleRefreshTokenValidation(
+      token,
+      foundRefreshToken.refreshTokenHash,
+      routeObj,
+      payload.owner,
+      payload.jti,
+    );
 
-    // cookie
+    // find user - if exists
+    await findRefreshTokenUser(payload.sub, routeObj);
+
+    // send access cookie
     const { accessToken } = sendCookie({
       res,
       accessTokenName: authConfigObj.accessTokenName!,
+      routeObj,
       accessTokenPayload: {
         sub: payload.sub,
       },
+    });
+
+    // rotateRefreshToken or update last used
+    await handleRotateRefreshToken({
+      deviceName: deviceName!,
+      deviceType,
+      familyId,
+      ipAddress: ipAddress!,
+      currentTokenJTI: payload.jti,
+      rotateTokenJTI: jti,
+      os,
+      owner: payload.sub,
+      res,
       routeObj,
+      iat: payload.iat as number,
     });
 
     // response
     appResponse({
       res,
-      message: "Access token renewed successfully!",
-      accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
+      message: "Access token refreshed successfully",
+      accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
+      refreshToken: authConfigObj?.returnRefreshToken ? token! : undefined,
     });
   };
 };

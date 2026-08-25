@@ -41,10 +41,3 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
-
-=== ACCESS TOKEN + REFRESH TOKEN ===
-auth.middleware:
-  if authConfig.verifyAccessUser = true, then look in database for it only then.
-
-authConfig:
-  verifyAccessUser: boolean
