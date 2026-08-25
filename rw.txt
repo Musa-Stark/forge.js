@@ -48,3 +48,8 @@ auth.middleware:
 
 authConfig:
   verifyAccessUser: boolean
+
+refreshTokenRotationInterval:
+  if found:
+    refreshToken.createdAt + getDurationKey(RTRI) - Date.now() > 0:
+      return

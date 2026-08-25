@@ -6,10 +6,7 @@ import StarkNexus, {
   fields,
 } from "./dist/js/index.js";
 
-import {
-  crudCollection,
-  userCollection,
-} from "./collections/index.js";
+import { crudCollection, userCollection } from "./collections/index.js";
 
 import "dotenv/config";
 
@@ -21,13 +18,14 @@ new StarkNexus({
     returnRefreshToken: true,
 
     rotateRefreshToken: true,
+    refreshTokenRotationInterval: "2m",
 
-    refreshTokenAge: "5m",
     accessTokenAge: "1m",
+    refreshTokenAge: "30d",
 
     fieldsObj: {
       otp: "otp",
-      purpose: "purpose"
+      purpose: "purpose",
     },
 
     schemaObj: {

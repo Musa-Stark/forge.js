@@ -90,6 +90,10 @@ const setEnvs = (values: InternalConstructor): void => {
   if (!values.authConfigObj.refreshTokenName)
     values.authConfigObj.refreshTokenName = "refresh_token";
 
+  // set default refreshTokenRotationInterval
+  if (!values.authConfigObj.refreshTokenRotationInterval)
+    values.authConfigObj.refreshTokenRotationInterval = "0s"
+
   envs = values;
 };
 

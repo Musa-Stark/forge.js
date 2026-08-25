@@ -84,11 +84,13 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
       deviceType,
       familyId,
       ipAddress: ipAddress!,
-      jti,
+      currentTokenJTI: payload.jti,
+      rotateTokenJTI: jti,
       os,
       owner: payload.sub,
       res,
       routeObj,
+      iat: payload.iat as number,
     });
 
     // response
