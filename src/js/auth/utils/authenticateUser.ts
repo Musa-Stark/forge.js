@@ -11,6 +11,8 @@ import type { Route } from "../../types/Collection.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 import { getEnvs } from "../../config/envs.js";
 import saveRefreshToken from "../../utils/saveRefreshToken.js";
+import tokenInfo from "./UAParser.js";
+import { hash } from "../../utils/libsodium.js";
 
 const authenticateUser = async ({
   body,
@@ -29,6 +31,10 @@ const authenticateUser = async ({
 }) => {
   // otp model
   const OTPModel = getOTPModel(routeObj);
+
+  // token info
+  const { deviceType, familyId, jti, deviceName, ipAddress, os } =
+    tokenInfo(req);
 
   // returnAccessToken
   const { authConfigObj } = getEnvs();
@@ -82,10 +88,25 @@ const authenticateUser = async ({
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,
+    deviceType,
+    familyId,
+    jti,
   });
 
   // save refreshToken
-  await saveRefreshToken({ req, refreshToken: refreshToken!, refreshTokenAge, _id, routeObj });
+   const hashedToken = await hash(refreshToken!)
+  await saveRefreshToken({
+    hashedToken,
+    refreshTokenAge,
+    _id,
+    routeObj,
+    jti: jti as string,
+    familyId,
+    deviceName,
+    deviceType,
+    ipAddress,
+    os,
+  });
 
   // send response
   appResponse({
@@ -93,7 +114,7 @@ const authenticateUser = async ({
     message: "Authenticated successfully!",
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? accessToken : undefined,
+    accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
     refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body.purpose,
   });

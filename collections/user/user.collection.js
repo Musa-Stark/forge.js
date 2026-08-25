@@ -16,7 +16,7 @@ const userCollection = collection({
       },
     },
     {
-      authRole: "public",
+      authRole: "adminOrOwner",
       handler: "read",
       method: "get",
       path: "/:id",

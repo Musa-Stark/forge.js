@@ -18,8 +18,10 @@ new StarkNexus({
     mode: "builtin",
 
     returnAccessToken: true,
-    accessTokenName: "testing_access_token",
-    refreshTokenName: "testing_refresh_token",
+    returnRefreshToken: true,
+
+    refreshTokenAge: "5m",
+    accessTokenAge: "1m",
 
     fieldsObj: {
       otp: "otp",
@@ -37,7 +39,7 @@ new StarkNexus({
     loginMode: "credentials",
     signupMode: "credentials",
   },
-  collections: [crudCollection],
+  collections: [crudCollection, userCollection],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",
