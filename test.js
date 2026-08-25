@@ -20,6 +20,8 @@ new StarkNexus({
     returnAccessToken: true,
     returnRefreshToken: true,
 
+    rotateRefreshToken: true,
+
     refreshTokenAge: "5m",
     accessTokenAge: "1m",
 
