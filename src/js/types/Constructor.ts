@@ -64,5 +64,5 @@ export interface Constructor {
 }
 
 export interface InternalConstructor extends Constructor {
-  userModelName?: String;
+  userModelName?: string;
 }

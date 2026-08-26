@@ -16,8 +16,11 @@ import {
   forgotPassword,
   resetPassword,
   logout,
-  refresh
+  refresh,
 } from "../auth/bunch.auth.js";
+
+// account handlers
+import {getMe} from "../account/bunch.account.js"
 
 // crud handlers
 import {
@@ -57,6 +60,7 @@ const handlerMap: Record<string, any> = {
   updateFile,
   deleteFile,
   addFile,
+  getMe
 };
 
 export default handlerMap;

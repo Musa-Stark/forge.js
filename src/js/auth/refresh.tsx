@@ -11,18 +11,22 @@ import findRefreshToken from "./utils/findRefreshToken.js";
 import handleRefreshTokenValidation from "./utils/handleRefreshTokenValidation.js";
 import findRefreshTokenUser from "./utils/findRefreshTokenUser.js";
 import handleRotateRefreshToken from "./utils/handleRotateRefreshToken.js";
-import getRefreshToken from "./utils/handleGetRefreshToken.js";
+import getRefreshToken from "./utils/handleGetToken.js";
 
 const refresh = ({ routeObj }: { routeObj: Route }) => {
   return async (req: Request, res: Response) => {
-    const { authConfigObj, userModelName } = getEnvs();
+    const { authConfigObj } = getEnvs();
 
     // token info
-    const { deviceType, jti, deviceName, os, ipAddress, familyId, reqMethod } =
+    const { deviceType, jti, deviceName, os, ipAddress, familyId } =
       tokenInfo(req);
 
     // refreshToken
-    let token = getRefreshToken({reqMethod, req, routeObj})
+    let token = getRefreshToken({
+      req,
+      routeObj,
+      type: "refreshTokenName",
+    });
 
     // payload
     const payload = verifyJWT({

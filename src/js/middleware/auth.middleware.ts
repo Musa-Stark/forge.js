@@ -6,6 +6,7 @@ import registerModel from "../lib/model.registry.js";
 import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
+import handleGetToken from "../auth/utils/handleGetToken.js"
 
 export const findUser = async (
   id: string,
@@ -41,9 +42,9 @@ const protect =
     try {
       const { userModelName, authConfigObj } = getEnvs();
 
-      const { accessTokenName, verifyAccessUser } = authConfigObj;
+      const { verifyAccessUser } = authConfigObj;
 
-      const token = req.cookies?.[accessTokenName!];
+      const token = handleGetToken({req, routeObj, type: "accessTokenName"});
 
       if (!token) {
         return next(
@@ -51,7 +52,7 @@ const protect =
             message: "Access token is missing",
             code: "ACCESS_TOKEN_MISSING",
             statusCode: 401,
-            hint: "Request a new access token using the /auth/refresh-token endpoint.",
+            hint: "Request a new access token using the  endpoint. Default: /auth/refresh-token",
             details: getErrorDetail(routeObj),
           }),
         );
@@ -78,7 +79,7 @@ const protect =
         const user = await findUser(
           payload.sub as string,
           routeObj,
-          userModelName as string,
+          userModelName!
         );
 
         if (!user) {

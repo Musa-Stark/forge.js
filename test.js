@@ -10,6 +10,7 @@ import {
   crudCollection,
   userCollection,
   authCollection,
+  accountCollection,
 } from "./collections/index.js";
 
 import "dotenv/config";
@@ -48,7 +49,12 @@ new StarkNexus({
     loginMode: "credentials",
     signupMode: "credentials",
   },
-  collections: [crudCollection, userCollection, authCollection],
+  collections: [
+    crudCollection,
+    userCollection,
+    authCollection,
+    accountCollection,
+  ],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",
