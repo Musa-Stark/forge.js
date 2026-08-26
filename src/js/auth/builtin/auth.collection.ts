@@ -59,8 +59,13 @@ export const authCollection = collection({
     {
       method: "get",
       handler: "refresh",
-      path: "/refresh-token"
-    }
+      path: "/refresh-token",
+    },
+    {
+      method: "post",
+      handler: "refresh",
+      path: "/refresh-token",
+    },
   ],
 });
 
