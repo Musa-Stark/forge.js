@@ -41,3 +41,12 @@ handlers/
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
 └── utils/
+
+=== GIT COMMANDS ===
+git switch main
+git pull origin main
+git push
+git switch feature
+git pull origin main
+git push
+git diff main
