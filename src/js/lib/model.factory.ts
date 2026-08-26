@@ -83,7 +83,7 @@ const normalizeDefinition = (
 const createModel = (
   name: string,
   definition: ModelDefinition,
-  routeName?: string
+  routeName?: string,
 ): any => {
   // Return existing model if already registered
   if (mongoose.modelNames().includes(name)) {
@@ -91,10 +91,14 @@ const createModel = (
   }
 
   if (!definition) {
+    console.log(name);
     throw new AppError({
       message: `mongooseSchema for ${routeName} is required`,
       statusCode: 409,
-      hint: "This issue requires a fix from the framework developer.",
+      hint:
+        name.toLowerCase() === "users" || name.toLowerCase() === "user"
+          ? "If modelName for User model is written in auth collection, make sure mongooseSchema is written there too."
+          : `Make sure mongooseSchema is also written in ${routeName?.endsWith("s") ? routeName.slice(0, -1) : routeName} collection.`,
       details: {
         handler: "",
         method: "",

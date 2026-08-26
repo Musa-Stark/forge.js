@@ -29,6 +29,15 @@ const authenticateUser = async ({
   routeName: string;
   routeObj: Route;
 }) => {
+  // get dynamic auth field keys
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const emailKey = fieldsObj?.email;
+  const passwordKey = fieldsObj?.password;
+  const otpKey = fieldsObj?.otp;
+  const purposeKey = fieldsObj?.purpose;
+
   // otp model
   const OTPModel = getOTPModel(routeObj);
 
@@ -36,16 +45,13 @@ const authenticateUser = async ({
   const { deviceType, familyId, jti, deviceName, ipAddress, os } =
     tokenInfo(req);
 
-  // returnAccessToken
-  const { authConfigObj } = getEnvs();
-
   // handle is verified
   let isVerified = false;
   let isOTPUser: any = null;
 
   if ("isVerified" in body)
     ({ isVerified, isOTPUser } = await handleIsVerified({
-      email: body.email as string,
+      email: body[emailKey!] as string,
       purpose: "login",
       routeObj,
     }));
@@ -54,20 +60,24 @@ const authenticateUser = async ({
   const user = await getUser({
     modelName,
     routeName,
-    email: body.email as string,
+    email: body[emailKey!] as string,
     needPassword: true,
     routeObj,
   });
 
   // invalid password - credentials mode
   if (!isOTPUser) {
-    const isValid = await verifyHash(body.password, user.password, routeObj);
+    const isValid = await verifyHash(
+      body[passwordKey!],
+      user.password,
+      routeObj
+    );
 
     if (!isValid)
       throw new AppError({
         message: "Invalid password.",
         statusCode: 409,
-        hint: "Verify your password and try again.",
+        hint: `Verify your ${passwordKey} and try again.`,
         details: getErrorDetail(routeObj),
       });
   }
@@ -94,7 +104,8 @@ const authenticateUser = async ({
   });
 
   // save refreshToken
-   const hashedToken = await hash(refreshToken!)
+  const hashedToken = await hash(refreshToken!);
+
   await saveRefreshToken({
     hashedToken,
     refreshTokenAge,
@@ -116,7 +127,7 @@ const authenticateUser = async ({
     data: sanitizeOne(user.toObject(), routeObj),
     accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
     refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
-    purpose: body.purpose,
+    purpose: body[purposeKey!],
   });
 };
 

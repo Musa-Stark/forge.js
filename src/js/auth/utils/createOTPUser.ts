@@ -7,6 +7,7 @@ import getOTPModel from "./getOTPModel.js";
 import verifyCredentials from "./verifyCredentials.js";
 import type { Route } from "../../types/Collection.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
+import { getEnvs } from "../../config/envs.js";
 
 const createOTPUser = async ({
   body,
@@ -23,15 +24,24 @@ const createOTPUser = async ({
   modelName: string;
   routeObj: Route;
 }) => {
+  // get dynamic auth field keys
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const emailKey = fieldsObj?.email;
+  const passwordKey = fieldsObj?.password;
+  const otpKey = fieldsObj?.otp;
+  const purposeKey = fieldsObj?.purpose;
+
   // otp model
   const OTPModel = getOTPModel(routeObj)!;
 
   // if no purpose
   if (!purpose)
     throw new AppError({
-      message: "purpose is required.",
+      message: `${purposeKey} is required.`,
       statusCode: 400,
-      hint: "Provide purpose before creating an OTP request.",
+      hint: `Provide ${purposeKey} before creating an OTP request.`,
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -40,10 +50,12 @@ const createOTPUser = async ({
     });
 
   // if already requested otp
-  const existingOTPs = await OTPModel.find({ email: body.email });
+  const existingOTPs = await OTPModel.find({
+    [emailKey!]: body[emailKey!],
+  });
 
   for (const el of existingOTPs) {
-    if (el.toObject().purpose === purpose)
+    if (el.toObject()[purposeKey!] === purpose)
       throw new AppError({
         message: "OTP has already been requested.",
         statusCode: 409,
@@ -62,18 +74,22 @@ const createOTPUser = async ({
     });
 
   // send otp + handle hashing
-  const { OTP, otpExpiry } = await sendOTP(body.email, routeObj);
+  const { OTP, otpExpiry } = await sendOTP(
+    body[emailKey!],
+    routeObj
+  );
 
   const hashedOTP = await hash(OTP, routeObj);
 
-  if (body?.password) body.password = await hash(body.password, routeObj);
+  if (body?.[passwordKey!])
+    body[passwordKey!] = await hash(body[passwordKey!], routeObj);
 
   // create otp
   await OTPModel.create({
     ...body,
-    OTP: hashedOTP,
+    [otpKey!]: hashedOTP,
     otpExpiry,
-    purpose,
+    [purposeKey!]: purpose,
   });
 
   // send response
@@ -82,7 +98,7 @@ const createOTPUser = async ({
     message: "OTP sent successfully!",
     statusCode: 200,
     data: {
-      nextStep: `go to /verify-otp with purpose: ${purpose}`,
+      nextStep: `go to /verify-otp with ${purposeKey}: ${purpose}`,
     },
   });
 };

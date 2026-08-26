@@ -1,8 +1,17 @@
 import createModel from "../../lib/model.factory.js";
 import type { OTPSchema } from "../../types/MongooseOTPSchemaObj.js";
 import otpPurposes from "../../utils/otpPurposes.js";
+import { getEnvs } from "../../config/envs.js";
 
 const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
+  // get dynamic auth field keys
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const emailKey = fieldsObj?.email;
+  const otpKey = fieldsObj?.otp;
+  const purposeKey = fieldsObj?.purpose;
+
   // Make all fields from the original schema optional
   const makeOptional = (field: any): any => {
     // Array schema
@@ -37,12 +46,12 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
       ...optionalSchema,
 
       otpCount: { type: Number, default: 0 },
-      OTP: { type: String },
+      [otpKey!]: { type: String },
       otpExpiry: { type: Date },
       isVerified: { type: Boolean, default: false },
       maxOTPTries: { type: Number, default: 10 },
       role: { type: String, enum: ["user", "admin"], default: "user" },
-      purpose: {
+      [purposeKey!]: {
         type: String,
         enum: otpPurposes,
         required: true,

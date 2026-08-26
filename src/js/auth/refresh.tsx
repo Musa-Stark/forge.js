@@ -29,7 +29,7 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
         message: "Refresh token is missing",
         code: "REFRESH_TOKEN_MISSING",
         details: getErrorDetail(routeObj),
-        hint: "Sign in again to create a new authentication session.",
+        hint: "Log in again to create a new authentication session.",
         statusCode: 401,
       });
 
@@ -45,7 +45,7 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
         message: "Refresh token payload is invalid",
         code: "REFRESH_TOKEN_PAYLOAD_INVALID",
         statusCode: 401,
-        hint: "Sign in again to obtain a valid refresh token.",
+        hint: "Log in again to obtain a valid refresh token.",
         details: getErrorDetail(routeObj),
       });
 
