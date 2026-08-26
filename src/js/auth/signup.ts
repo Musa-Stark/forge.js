@@ -6,7 +6,7 @@ import modeMap from "./utils/modeMap.js";
 import getModel from "../utils/getModel.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import { getEnvs } from "../config/envs.js";
 
 const signup = ({
   modelName,
@@ -20,6 +20,12 @@ const signup = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic email and password
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+    const emailKey = fieldsObj?.email;
+    const passwordKey = fieldsObj?.password;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
@@ -27,9 +33,9 @@ const signup = ({
     const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password
-    if (!req.body.email || !req.body.password)
+    if (!req.body?.[emailKey!] || !req.body?.[passwordKey!])
       throw new AppError({
-        message: "email and password are required.",
+        message: `${emailKey} and ${passwordKey} are required.`,
         statusCode: 400,
         hint: "Provide email and password in the request body.",
         details: getErrorDetail(routeObj),
@@ -55,7 +61,7 @@ const signup = ({
       modelName,
       purpose: "signup",
       routeObj,
-      req
+      req,
     });
   };
 };

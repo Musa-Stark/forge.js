@@ -16,6 +16,8 @@ export interface AuthConfig {
   verifyAccessUser?: boolean;
 
   fieldsObj?: {
+    email: "email" | "write_a_custom_field_name" | (string & {});
+    password: "password" | "write_a_custom_field_name" | (string & {});
     otp: "otp" | "write_a_custom_field_name" | (string & {});
     purpose: "purpose" | "write_a_custom_field_name" | (string & {});
   };

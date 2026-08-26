@@ -29,7 +29,7 @@ const validateAuth = (config: AuthConfig): void => {
     if (!config.fieldsObj) vAError("fieldsObj");
 
     // keys that are required
-    const requiredKeys = ["otp", "purpose"];
+    const requiredKeys = ["email", "password", "otp", "purpose"];
 
     // loop for missing keys
     for (const key of requiredKeys) {
