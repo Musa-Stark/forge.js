@@ -16,16 +16,16 @@ export interface AuthConfig {
   verifyAccessUser?: boolean;
 
   fieldsObj?: {
-    otp: "otp" | "[field name]" | (string & {});
-    purpose: "purpose" | "[field name]" | (string & {});
+    otp: "otp" | "write_a_custom_field_name" | (string & {});
+    purpose: "purpose" | "write_a_custom_field_name" | (string & {});
   };
   schemaObj?: {
-    modelName: "User" | "[Model Name]" | (string & {});
+    modelName: "User" | "WRITE_A_CUSTOM_USER_Model_Name" | (string & {});
     schema: Record<string, UnifiedField>;
   };
 
-  accessTokenName?: "access_token" | "[choose a custom name]" | (string & {});
-  refreshTokenName?: "refresh_token" | "[choose a custom name]" | (string & {});
+  accessTokenName?: "access_token" | "write_a_custom_name" | (string & {});
+  refreshTokenName?: "refresh_token" | "write_a_custom_name" | (string & {});
 
   accessTokenAge?: DurationType;
   refreshTokenAge?: DurationType;

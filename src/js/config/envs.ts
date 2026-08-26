@@ -84,11 +84,11 @@ const setEnvs = (values: InternalConstructor): void => {
 
   // set default access_token name
   if (!values.authConfigObj.accessTokenName)
-    values.authConfigObj.accessTokenName = "access_token";
+    values.authConfigObj.accessTokenName = "accessToken";
 
   // set default refresh_token name
   if (!values.authConfigObj.refreshTokenName)
-    values.authConfigObj.refreshTokenName = "refresh_token";
+    values.authConfigObj.refreshTokenName = "refreshToken";
 
   // set default refreshTokenRotationInterval
   if (!values.authConfigObj.refreshTokenRotationInterval)

@@ -1,13 +1,14 @@
 import type { Response } from "express";
+import { getEnvs } from "../config/envs.js";
 
 export interface AppResponse {
   res: Response;
   data?: unknown;
   message: string;
   statusCode?: number;
-  accessToken?: string | undefined
-  refreshToken?: string | undefined
-  purpose?: string
+  accessToken?: string | undefined;
+  refreshToken?: string | undefined;
+  purpose?: string;
 }
 
 const appResponse = ({
@@ -17,15 +18,17 @@ const appResponse = ({
   statusCode = 200,
   accessToken,
   refreshToken,
-  purpose
+  purpose,
 }: AppResponse): void => {
+  const { authConfigObj } = getEnvs();
+
   res.status(statusCode).json({
     success: true,
     data,
     message,
-    accessToken,
-    refreshToken,
-    purpose
+    [authConfigObj.accessTokenName ?? "accessToken"]: accessToken,
+    [authConfigObj.refreshTokenName ?? "refreshToken"]: refreshToken,
+    purpose,
   });
 };
 
