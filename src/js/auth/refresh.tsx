@@ -11,27 +11,18 @@ import findRefreshToken from "./utils/findRefreshToken.js";
 import handleRefreshTokenValidation from "./utils/handleRefreshTokenValidation.js";
 import findRefreshTokenUser from "./utils/findRefreshTokenUser.js";
 import handleRotateRefreshToken from "./utils/handleRotateRefreshToken.js";
+import getRefreshToken from "./utils/handleGetRefreshToken.js";
 
 const refresh = ({ routeObj }: { routeObj: Route }) => {
   return async (req: Request, res: Response) => {
     const { authConfigObj, userModelName } = getEnvs();
 
     // token info
-    const { deviceType, jti, deviceName, os, ipAddress, familyId } =
+    const { deviceType, jti, deviceName, os, ipAddress, familyId, reqMethod } =
       tokenInfo(req);
 
     // refreshToken
-    let token = req.cookies?.[authConfigObj.refreshTokenName!];
-
-    // token not found - re-login
-    if (!token)
-      throw new AppError({
-        message: "Refresh token is missing",
-        code: "REFRESH_TOKEN_MISSING",
-        details: getErrorDetail(routeObj),
-        hint: "Log in again to create a new authentication session.",
-        statusCode: 401,
-      });
+    let token = getRefreshToken({reqMethod, req, routeObj})
 
     // payload
     const payload = verifyJWT({
