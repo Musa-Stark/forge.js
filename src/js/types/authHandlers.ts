@@ -6,4 +6,5 @@ export type authHandlers =
   | "forgotPassword"
   | "resetPassword"
   | "logout"
-  | "refresh";
+  | "refresh"
+  | "me";

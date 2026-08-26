@@ -7,10 +7,11 @@ import type { RoutePath } from "./Routepath.ts";
 import type { authHandlers } from "./authHandlers.ts";
 import type { crudHandlers } from "./crudHandlers.ts";
 import type { uploadHandlers } from "./uploadHandlers.js";
+import type { accountHandlers } from "./accountHandlers.js";
 import type { Email } from "./email.ts";
 import type { Upload } from "./upload.ts";
 
-export type Handler = authHandlers | crudHandlers | uploadHandlers;
+export type Handler = authHandlers | crudHandlers | uploadHandlers | accountHandlers;
 
 // export type Middleware = "upload";
 // export type MiddlewareInput = Middleware | Middleware[];
@@ -64,7 +65,7 @@ export type ValidationsObj = {
   [key: string]: Record<string, ValidationField> | ValidationField;
 };
 
-export type ReqType = "auth" | "health" | "crud";
+export type ReqType = "auth" | "health" | "crud" | "account";
 // | "realtime"
 
 export interface Collection {

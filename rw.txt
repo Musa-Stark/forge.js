@@ -40,7 +40,33 @@ handlers/
 ├── admin/         // dashboard/admin-only handlers
 ├── health/        // health, ping, metrics
 ├── system/        // internal framework handlers
-└── utils/
+├── utils/
+├── account/
+│   ├── me/
+│   │   ├── get.ts
+│   │   ├── update.ts
+│   │   └── delete.ts
+│   │
+│   ├── password/
+│   │   ├── change.ts
+│   │   └── ...
+│   │
+│   ├── email/
+│   │   ├── change.ts
+│   │   └── ...
+│   │
+│   ├── sessions/
+│   │   ├── list.ts
+│   │   ├── revoke.ts
+│   │   └── revokeAll.ts
+│   │
+│   ├── devices/
+│   │   ├── list.ts
+│   │   └── revoke.ts
+│   │
+│   └── preferences/
+│       ├── get.ts
+│       └── update.ts
 
 === GIT COMMANDS ===
 git switch main
@@ -50,3 +76,9 @@ git switch feature
 git pull origin main
 git push
 git diff main
+
+=== me ===
+write token type in handleGetRefreshToken, it will handle getting token access or refresh based on the type.
+once the item is gotten, auth.middleware will do the rest till req.user.
+me.ts.
+use func: getItem, clean, appresponse

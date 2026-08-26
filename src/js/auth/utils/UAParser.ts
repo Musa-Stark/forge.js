@@ -13,7 +13,6 @@ const tokenInfo = (req: Request) => {
     os: `${result.os.name} ${result.os.version || ""}`,
     jti: crypto.randomBytes(16).toString("hex"),
     familyId: crypto.randomBytes(16).toString("hex"),
-    reqMethod: req.method
   };
 };
 

@@ -4,18 +4,20 @@ import type { Route } from "../../types/Collection.js";
 import { getEnvs } from "../../config/envs.js";
 import type { Request } from "express";
 
-const getRefreshToken = ({
+const getToken = ({
   req,
-  reqMethod,
   routeObj,
+  type,
 }: {
   req: Request;
-  reqMethod: string;
   routeObj: Route;
+  type: "accessTokenName" | "refreshTokenName";
 }) => {
   const { authConfigObj } = getEnvs();
 
-  const tokenName = authConfigObj.refreshTokenName;
+  const reqMethod = req.method;
+
+  const tokenName = authConfigObj[type];
 
   // if method isn't get or post
   if (reqMethod !== "GET" && reqMethod !== "POST")
@@ -36,8 +38,8 @@ const getRefreshToken = ({
 
     if (!bodyToken || typeof bodyToken !== "string")
       throw new AppError({
-        message: "Refresh token is missing",
-        code: "REFRESH_TOKEN_MISSING",
+        message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
+        code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
         details: getErrorDetail(routeObj),
         hint: `With POST method, '${tokenName}' is required in body as string.`,
         statusCode: 401,
@@ -49,13 +51,13 @@ const getRefreshToken = ({
   // token not found - re-login
   if (!token)
     throw new AppError({
-      message: "Refresh token is missing",
-      code: "REFRESH_TOKEN_MISSING",
+      message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
+       code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
       details: getErrorDetail(routeObj),
-      hint: "Log in again to create a new authentication session.",
+      hint: type === "accessTokenName" ? "Hit the refresh endpoint to get a new access_token. Default: /auth/refresh-token" :  "Log in again to create a new authentication session.",
       statusCode: 401,
     });
 
   return token;
 };
-export default getRefreshToken;
+export default getToken;

@@ -28,7 +28,7 @@ export type RoutePath =
   | "/resend-otp"
 
   // Current User
-  // | "/me"
+  | "/me"
   // | "/profile"
 
   // Search & Filters
