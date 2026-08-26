@@ -2,6 +2,7 @@ import type { Response } from "express";
 import appResponse from "../../utils/response.js";
 import AppError from "../../utils/AppError.js";
 import type { Route } from "../../types/Collection.js";
+import { getEnvs } from "../../config/envs.js";
 
 const otpVerifiedResponse = ({
   res,
@@ -12,11 +13,17 @@ const otpVerifiedResponse = ({
   body: any;
   routeObj: Route;
 }) => {
-  if (!body.purpose)
+  // get dynamic auth field key
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const purposeKey = fieldsObj?.purpose;
+
+  if (!body?.[purposeKey!])
     throw new AppError({
-      message: "purpose is required.",
+      message: `${purposeKey} is required.`,
       statusCode: 400,
-      hint: "Provide purpose before sending the OTP verification response.",
+      hint: `Provide ${purposeKey} before sending the OTP verification response.`,
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -26,8 +33,8 @@ const otpVerifiedResponse = ({
 
   appResponse({
     res,
-    message: `${body.purpose}: OTP verified successfully!`,
-    purpose: body.purpose
+    message: `${body[purposeKey!]}: OTP verified successfully!`,
+    purpose: body[purposeKey!],
   });
 };
 

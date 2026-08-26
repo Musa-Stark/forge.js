@@ -33,24 +33,26 @@ const signup = ({
     const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password
-    if (!req.body?.[emailKey!] || !req.body?.[passwordKey!])
+    if (!req.body[emailKey!] || !req.body[passwordKey!])
       throw new AppError({
         message: `${emailKey} and ${passwordKey} are required.`,
         statusCode: 400,
-        hint: "Provide email and password in the request body.",
+        hint: `Provide ${emailKey} and ${passwordKey} in the request body.`,
         details: getErrorDetail(routeObj),
       });
 
     // if existing user
     const Model = getModel({ modelName, routeName, routeObj })!;
 
-    const existing = await Model.findOne({ email: body.email });
+    const existing = await Model.findOne({
+      [emailKey!]: body[emailKey!],
+    });
 
     if (existing)
       throw new AppError({
-        message: "User with this email already exists.",
+        message: `User with this ${emailKey} already exists.`,
         statusCode: 409,
-        hint: "Login with the existing account or use a different email address.",
+        hint: `Login with the existing account or use a different ${emailKey}.`,
         details: getErrorDetail(routeObj),
       });
 

@@ -36,6 +36,8 @@ const auth = (
   // set userModelName in envs
   envs.userModelName = modelName as string;
 
+  if (!mongooseSchemaObj) throw new Error("User model schema should also be written in auth collection")
+
   // === create otp model ===
   // const otpRoute = routes.some((r) => r.mode === "otp");
   // if (otpRoute) {

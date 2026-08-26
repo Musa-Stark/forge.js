@@ -9,7 +9,7 @@ import getOTPUser from "./utils/getOTPUser.js";
 import getUser from "./utils/getUser.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import { getEnvs } from "../config/envs.js";
 
 const resendOTP = ({
   modelName,
@@ -23,18 +23,31 @@ const resendOTP = ({
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic auth field keys
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+
+    const emailKey = fieldsObj?.email;
+    const passwordKey = fieldsObj?.password;
+    const otpKey = fieldsObj?.otp;
+    const purposeKey = fieldsObj?.purpose;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
 
-    // if body.purpose not found
-    if (!req.body.purpose || !req.body.email)
+    // if required fields not found
+    if (
+      !req.body?.[emailKey!] ||
+      !req.body?.[otpKey!] ||
+      !req.body?.[purposeKey!]
+    )
       throw new AppError({
-        message: "email and purpose are required.",
+        message: `${emailKey}, ${otpKey}, and ${purposeKey} are required.`,
         statusCode: 400,
-        hint: 'Provide email and purpose (e.g. "login", "signup", "password_reset") in the request body.',
+        hint: `Provide ${emailKey}, ${otpKey}, and ${purposeKey} in the request body.`,
         details: getErrorDetail(routeObj),
       });
 
@@ -42,14 +55,14 @@ const resendOTP = ({
     await getUser({
       modelName,
       routeName,
-      email: body.email as string,
-      routeObj
+      email: body[emailKey!] as string,
+      routeObj,
     });
 
     // get otp user
     const OTPUser = await getOTPUser({
-      email: body.email as string,
-      purpose: body.purpose as string,
+      email: body[emailKey!] as string,
+      purpose: body[purposeKey!] as string,
       routeObj,
     });
 
@@ -57,18 +70,22 @@ const resendOTP = ({
     if (OTPUser.isVerified) {
       appResponse({
         res,
-        message: `${body.purpose}: OTP has already been verified.`,
+        message: `${body[purposeKey!]}: OTP has already been verified.`,
         data: undefined,
       });
       return;
     }
 
     // send OTP
-    const { OTP, otpExpiry } = await sendOTP(body.email as string, routeObj);
+    const { OTP, otpExpiry } = await sendOTP(
+      body[emailKey!] as string,
+      routeObj
+    );
+
     const hashedOTP = await hash(OTP, routeObj);
 
     OTPUser.otpCount = 0;
-    OTPUser.OTP = hashedOTP;
+    OTPUser[otpKey!] = hashedOTP;
     OTPUser.otpExpiry = otpExpiry;
     OTPUser.isVerified = false;
 
@@ -81,7 +98,7 @@ const resendOTP = ({
       message: "OTP resent successfully!",
       statusCode: 200,
       data: {
-        nextStep: `go to /verify-otp with purpose: ${req.body.purpose}`,
+        nextStep: `go to /verify-otp with ${purposeKey}: ${req.body[purposeKey!]}`,
       },
     });
   };

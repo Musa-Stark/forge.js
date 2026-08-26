@@ -3,7 +3,6 @@ import getOTPUser from "./getOTPUser.js";
 import type { Route } from "../../types/Collection.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 
-
 const handleIsVerified = async ({
   email,
   purpose,

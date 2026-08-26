@@ -22,14 +22,14 @@ const placeholderError = (key: string, value: string): void => {
 // validateAuthConfigError
 const validateAuth = (config: AuthConfig): void => {
   try {
-    // if mode is manual -> return;
-    if (config.mode === "manual") return;
-
     // if config.fieldsObj isn't found -> error
     if (!config.fieldsObj) vAError("fieldsObj");
-
+    
     // keys that are required
     const requiredKeys = ["email", "password", "otp", "purpose"];
+    
+    // if mode is manual -> return;
+    if (config.mode === "manual") return;
 
     // loop for missing keys
     for (const key of requiredKeys) {

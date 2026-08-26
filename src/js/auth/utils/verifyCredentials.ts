@@ -2,6 +2,7 @@ import AppError from "../../utils/AppError.js";
 import { verifyHash } from "../../utils/libsodium.js";
 import getUser from "./getUser.js";
 import type { Route } from "../../types/Collection.js";
+import { getEnvs } from "../../config/envs.js";
 
 const verifyCredentials = async ({
   modelName,
@@ -14,6 +15,13 @@ const verifyCredentials = async ({
   routeName: string;
   routeObj: Route;
 }) => {
+  // get dynamic auth field keys
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const emailKey = fieldsObj?.email;
+  const passwordKey = fieldsObj?.password;
+
   if (!modelName || !body)
     throw new AppError({
       message: "modelName and body are required.",
@@ -30,18 +38,22 @@ const verifyCredentials = async ({
   const user = await getUser({
     modelName,
     routeName,
-    email: body.email as string,
+    email: body[emailKey!] as string,
     needPassword: true,
-    routeObj
+    routeObj,
   });
 
-  const isValid = await verifyHash(body.password, user.password, routeObj);
+  const isValid = await verifyHash(
+    body[passwordKey!],
+    user[passwordKey!],
+    routeObj
+  );
 
   if (!isValid)
     throw new AppError({
       message: "Invalid password.",
       statusCode: 401,
-      hint: "Verify your password and try again.",
+      hint: `Verify your ${passwordKey} and try again.`,
       details: {
         handler: routeObj.handler,
         method: routeObj.method,

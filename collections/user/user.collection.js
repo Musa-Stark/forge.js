@@ -4,6 +4,14 @@ const userCollection = collection({
   reqType: "crud",
   routeName: "users",
   modelName: "User",
+  mongooseSchemaObj: {
+    name: mongooseFields.requiredString,
+    Email: mongooseFields.email,
+    password: mongooseFields.password,
+    role: mongooseFields.role,
+    profileImage: mongooseFields.fileMetaData,
+    test: mongooseFields.fileMetaData,
+  },
   routesArray: [
     {
       authRole: "adminOrOwner",
@@ -44,12 +52,14 @@ const userCollection = collection({
       handler: "addFile",
       method: "patch",
       path: "/:id/addFile",
-      fileArray: [{
-        fieldName: "gallery",
-        mongooseSchemaFieldName: "test",
-        multiple: true
-      }]
-    }
+      fileArray: [
+        {
+          fieldName: "gallery",
+          mongooseSchemaFieldName: "test",
+          multiple: true,
+        },
+      ],
+    },
   ],
 
   validationsObj: {

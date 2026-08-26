@@ -10,7 +10,7 @@ import otpVerifiedResponse from "./utils/otpVerifiedResponse.js";
 import appResponse from "../utils/response.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import { getEnvs } from "../config/envs.js";
 
 const verifyOTP = ({
   modelName,
@@ -24,27 +24,39 @@ const verifyOTP = ({
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic auth field keys
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+
+    const emailKey = fieldsObj?.email;
+    const otpKey = fieldsObj?.otp;
+    const purposeKey = fieldsObj?.purpose;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
 
-    // if body.purpose not found
-    if (!req.body.purpose || !req.body.email || !req.body.otp)
+    // if required fields not found
+    if (
+      !req.body?.[emailKey!] ||
+      !req.body?.[otpKey!] ||
+      !req.body?.[purposeKey!]
+    )
       throw new AppError({
-        message: "email, otp and purpose are required.",
+        message: `${emailKey}, ${otpKey} and ${purposeKey} are required.`,
         statusCode: 400,
-        hint: `Checkout if email, otp or purpose is missing in collection -> validationsObj -> ${routeObj.validationKey}.`,
+        hint: `Check if ${emailKey}, ${otpKey} or ${purposeKey} is missing in collection -> validationsObj -> ${routeObj.validationKey}.`,
         details: getErrorDetail(routeObj),
       });
 
     // OTPModel: otp model
     const OTPModel = getOTPModel(routeObj)!;
 
-    const OTPData = await OTPModel?.findOne({
-      email: body.email,
-      purpose: body.purpose,
+    const OTPData = await OTPModel.findOne({
+      [emailKey!]: body[emailKey!],
+      [purposeKey!]: body[purposeKey!],
     }).select("+password");
 
     // if otp request not found
@@ -52,7 +64,7 @@ const verifyOTP = ({
       throw new AppError({
         message: "OTP request not found.",
         statusCode: 404,
-        hint: "Request a new OTP or verify the provided email and purpose.",
+        hint: `Request a new OTP or verify the provided ${emailKey} and ${purposeKey}.`,
         details: getErrorDetail(routeObj),
       });
 
@@ -60,9 +72,9 @@ const verifyOTP = ({
     if (OTPData.isVerified) {
       appResponse({
         res,
-        message: `${body.purpose}: OTP has already been verified.`,
+        message: `${body[purposeKey!]}: OTP has already been verified.`,
         data:
-          body.purpose === "password_reset"
+          body[purposeKey!] === "password_reset"
             ? {
                 nextStep: "go to /reset-password",
               }
@@ -89,10 +101,20 @@ const verifyOTP = ({
         details: getErrorDetail(routeObj),
       });
 
-    // if otp didn't matched
-    const isValid = await verifyHash(body.otp as string, OTPData.OTP, routeObj);
+
+
+    // if otp didn't match
+    const isValid = await verifyHash(
+      body[otpKey!] as string,
+      OTPData[otpKey!],
+      routeObj
+    );
+
     if (!isValid) {
-      await OTPModel.updateOne({ _id: OTPData._id }, { $inc: { otpCount: 1 } });
+      await OTPModel.updateOne(
+        { _id: OTPData._id },
+        { $inc: { otpCount: 1 } }
+      );
 
       throw new AppError({
         message: "Invalid OTP.",
@@ -105,7 +127,7 @@ const verifyOTP = ({
     // update - isVerified: true
     await OTPModel.updateOne(
       { _id: OTPData._id },
-      { $set: { isVerified: true } },
+      { $set: { isVerified: true } }
     );
 
     // purpose: func - map
@@ -116,13 +138,13 @@ const verifyOTP = ({
     };
 
     // call func via map
-    purposeMap[OTPData.purpose as keyof typeof purposeMap]({
+    purposeMap[OTPData[purposeKey!] as keyof typeof purposeMap]({
       body: OTPData,
       res,
       routeName,
       modelName,
       routeObj,
-      req
+      req,
     });
   };
 };

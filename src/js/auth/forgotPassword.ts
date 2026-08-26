@@ -6,6 +6,7 @@ import createOTPUser from "./utils/createOTPUser.js";
 import getUser from "./utils/getUser.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
+import { getEnvs } from "../config/envs.js";
 
 const forgotPassword = ({
   modelName,
@@ -19,17 +20,23 @@ const forgotPassword = ({
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic email and password
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+    const emailKey = fieldsObj?.email;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
 
-    if (!req.body.email)
+    // if no email
+    if (!req.body?.[emailKey!])
       throw new AppError({
-        message: "Email is required",
+        message: `${emailKey} is required.`,
         statusCode: 409,
-        hint: 'Provide email your email for resetting password',
+        hint: `Provide your ${emailKey} for resetting password.`,
         details: getErrorDetail(routeObj),
       });
 
@@ -37,8 +44,8 @@ const forgotPassword = ({
     await getUser({
       modelName,
       routeName,
-      email: body.email as string,
-      routeObj
+      email: body[emailKey!] as string,
+      routeObj,
     });
 
     // send + create otp user

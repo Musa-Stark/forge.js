@@ -10,7 +10,7 @@ import getOTPModel from "./utils/getOTPModel.js";
 import appResponse from "../utils/response.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import { getEnvs } from "../config/envs.js";
 
 const resetPassword = ({
   modelName,
@@ -24,6 +24,15 @@ const resetPassword = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic auth field keys
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+
+    const emailKey = fieldsObj?.email;
+    const passwordKey = fieldsObj?.password;
+    const otpKey = fieldsObj?.otp;
+    const purposeKey = fieldsObj?.purpose;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
@@ -31,38 +40,44 @@ const resetPassword = ({
     const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password in request
-    if (!req.body.email || !req.body.password)
+    if (!req.body?.[emailKey!] || !req.body?.[passwordKey!])
       throw new AppError({
-        message: "email and password are required.",
+        message: `${emailKey} and ${passwordKey} are required.`,
         statusCode: 400,
-        hint: "Provide email and password in the request body.",
+        hint: `Provide ${emailKey} and ${passwordKey} in the request body.`,
         details: getErrorDetail(routeObj),
       });
 
+    // password reset purpose
+    const purpose = "password_reset";
+
     // OTPUser
     await getOTPUser({
-      email: body.email as string,
-      purpose: "password_reset",
+      email: body[emailKey!] as string,
+      purpose,
       routeObj,
     });
 
     // handle is verified or not
     const { isVerified } = await handleIsVerified({
-      email: body.email as string,
-      purpose: "password_reset",
-      routeObj
+      email: body[emailKey!] as string,
+      purpose,
+      routeObj,
     });
 
     // user
     const user = await getUser({
       modelName,
       routeName,
-      email: body.email as string,
-      routeObj
+      email: body[emailKey!] as string,
+      routeObj,
     });
 
     // update password
-    user.password = await hash(body.password as string, routeObj);
+    user[passwordKey!] = await hash(
+      body[passwordKey!] as string,
+      routeObj
+    );
 
     // save user
     await user.save();
@@ -71,8 +86,8 @@ const resetPassword = ({
 
     if (isVerified)
       await OTPModel.deleteOne({
-        email: body.email as string,
-        purpose: "password_reset",
+        [emailKey!]: body[emailKey!] as string,
+        [purposeKey!]: purpose,
       });
 
     appResponse({

@@ -5,6 +5,7 @@ import validate from "../utils/validate.js";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
+import { getEnvs } from "../config/envs.js";
 
 const login = ({
   modelName,
@@ -18,6 +19,12 @@ const login = ({
   validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
+    // get dynamic email and password
+    const { authConfigObj } = getEnvs();
+    const { fieldsObj } = authConfigObj;
+    const emailKey = fieldsObj?.email;
+    const passwordKey = fieldsObj?.password;
+
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
@@ -25,11 +32,11 @@ const login = ({
     const body = validate(validationObj, req.body, routeObj);
 
     // if no email or password in validation
-    if (!req.body.email || !req.body.password)
+    if (!req.body?.[emailKey!] || !req.body?.[passwordKey!])
       throw new AppError({
-         message: "Email and password are required",
+        message: `${emailKey} and ${passwordKey} are required.`,
         statusCode: 409,
-        hint: 'Provide email and password to login',
+        hint: `Provide ${emailKey} and ${passwordKey} to login.`,
         details: getErrorDetail(routeObj),
       });
 
@@ -40,7 +47,7 @@ const login = ({
       routeName,
       modelName,
       routeObj,
-      req
+      req,
     });
   };
 };

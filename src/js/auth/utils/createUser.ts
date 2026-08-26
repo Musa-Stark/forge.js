@@ -27,24 +27,30 @@ const createUser = async ({
   routeObj: Route;
   req: Request;
 }) => {
+  // get dynamic auth field keys
+  const { authConfigObj } = getEnvs();
+  const { fieldsObj } = authConfigObj;
+
+  const emailKey = fieldsObj?.email;
+  const passwordKey = fieldsObj?.password;
+  const otpKey = fieldsObj?.otp;
+  const purposeKey = fieldsObj?.purpose;
+
   // models
   const Model = getModel({ modelName, routeName, routeObj });
   const OTPModel = getOTPModel(routeObj);
 
-  // ua parser
   // token info
   const { deviceType, familyId, jti, deviceName, ipAddress, os } =
     tokenInfo(req);
 
-  // returnAccessToken
-  const { authConfigObj } = getEnvs();
-
   // isVerified - mode:otp
   let isVerified: boolean = false;
   let isOTPUser: any = null;
+
   if ("isVerified" in body)
     ({ isVerified, isOTPUser } = await handleIsVerified({
-      email: body.email as string,
+      email: body[emailKey!] as string,
       purpose: "signup",
       routeObj,
     }));
@@ -55,7 +61,7 @@ const createUser = async ({
     body.role = "user";
     delete body._id;
   } else {
-    body.password = await hash(body.password, routeObj);
+    body[passwordKey!] = await hash(body[passwordKey!], routeObj);
     body.role = "user";
   }
 
@@ -63,11 +69,12 @@ const createUser = async ({
   const newUser = await Model.create(body);
 
   // if from otp, remove it
-  if (isVerified) await OTPModel.deleteOne({ _id: isOTPUser._id });
+  if (isVerified)
+    await OTPModel.deleteOne({ _id: isOTPUser._id });
 
   const { _id } = newUser.toObject();
 
-  // send cookied
+  // send cookie
   const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
     accessTokenName: authConfigObj.accessTokenName!,
@@ -81,7 +88,8 @@ const createUser = async ({
   });
 
   // save refreshToken
-  const hashedToken = await hash(refreshToken!)
+  const hashedToken = await hash(refreshToken!);
+
   await saveRefreshToken({
     hashedToken,
     refreshTokenAge,
@@ -95,7 +103,7 @@ const createUser = async ({
     ipAddress,
   });
 
-  // send res
+  // send response
   appResponse({
     res,
     message: "Your account has been created successfully!",
@@ -103,7 +111,7 @@ const createUser = async ({
     data: sanitizeOne(newUser.toObject(), routeObj),
     accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
     refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
-    purpose: body.purpose,
+    purpose: body[purposeKey!],
   });
 };
 
