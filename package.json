@@ -1,6 +1,6 @@
 {
   "name": "@starklabs/forge",
-  "version": "1.3.9",
+  "version": "1.3.10",
   "description": "A TypeScript-first Express framework for building production-ready APIs with zero boilerplate.",
   "type": "module",
   "main": "./dist/js/index.js",

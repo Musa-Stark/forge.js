@@ -44,7 +44,7 @@ const handleEncryption = async (body: any, routeObj: Route) => {
         throw new AppError({
           details: getErrorDetail(routeObj),
           hint: `Make sure '${field}' is included in the request body.`,
-          message: `The required field '${field}' is missing.`,
+          message: `The required field '${field}' is missing to encrypt.`,
           statusCode: 400,
         });
       }

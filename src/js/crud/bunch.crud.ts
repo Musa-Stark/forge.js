@@ -5,6 +5,7 @@ export { default as createBulk } from "./createBulk.js";
 export { default as create } from "./create.js";
 export { default as update } from "./update.js";
 export { default as remove } from "./remove.js";
+export {default as removeMultiple} from "./removeMultiple.js"
 export { default as removeAll } from "./removeAll.js";
 
 // ./files

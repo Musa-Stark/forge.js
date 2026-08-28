@@ -15,36 +15,30 @@ const getToken = ({
 }) => {
   const { authConfigObj } = getEnvs();
 
-  const reqMethod = req.method;
-
   const tokenName = authConfigObj[type];
 
-  let token = null;
+  let token = req.cookies[tokenName!];
+  if (!token) token = req.body[tokenName!];
 
-  if (reqMethod === "GET") {
-    token = req.cookies[tokenName!];
-  } else {
-    const bodyToken = req.body[tokenName!];
-
-    if (!bodyToken || typeof bodyToken !== "string")
-      throw new AppError({
-        message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
-        code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
-        details: getErrorDetail(routeObj),
-        hint: `With methods other than GET, '${tokenName}' is required in body as string.`,
-        statusCode: 401,
-      });
-
-    token = bodyToken;
-  }
+  if (!token || typeof token !== "string")
+    throw new AppError({
+      message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
+      code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
+      details: getErrorDetail(routeObj),
+      hint: `If frontend is in browser, make sure you have '${tokenName}' in console cookies section and 'credentials: include' in request options. If frontend is in mobile device, make sure to include in cookie req.body.`,
+      statusCode: 401,
+    });
 
   // token not found - re-login
   if (!token)
     throw new AppError({
       message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
-       code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
+      code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
       details: getErrorDetail(routeObj),
-      hint: type === "accessTokenName" ? "Hit the refresh endpoint to get a new access_token. Default: /auth/refresh-token" :  "Log in again to create a new authentication session.",
+      hint:
+        type === "accessTokenName"
+          ? "Hit the refresh endpoint to get a new access_token. Default: /auth/refresh-token"
+          : "Log in again to create a new authentication session.",
       statusCode: 401,
     });
 
