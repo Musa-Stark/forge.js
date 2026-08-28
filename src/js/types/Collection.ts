@@ -11,7 +11,11 @@ import type { accountHandlers } from "./accountHandlers.js";
 import type { Email } from "./email.ts";
 import type { Upload } from "./upload.ts";
 
-export type Handler = authHandlers | crudHandlers | uploadHandlers | accountHandlers;
+export type Handler =
+  | authHandlers
+  | crudHandlers
+  | uploadHandlers
+  | accountHandlers;
 
 // export type Middleware = "upload";
 // export type MiddlewareInput = Middleware | Middleware[];
@@ -30,6 +34,7 @@ export interface Route {
   mongooseConfigObj?: {
     populateKey?: string | boolean;
     hiddenFieldsArray?: string[];
+    removeMultipleFieldKey?: "ids" | "write_the_field_name" | (string & {});
   };
   // middlewareArray?: MiddlewareInput;
   fileArray?: Upload[];
@@ -52,7 +57,7 @@ export type MongooseSchema = {
   [key: string]: SchemaField;
 };
 
-export type MongooseObj =  MongooseSchema | Record<string, SchemaField>
+export type MongooseObj = MongooseSchema | Record<string, SchemaField>;
 
 /**
  * A single validation field can be:

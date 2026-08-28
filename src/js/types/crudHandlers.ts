@@ -5,4 +5,5 @@ export type crudHandlers =
   | "readAll"
   | "update"
   | "remove"
-  | "removeAll"
+  | "removeMultiple"
+  | "removeAll";

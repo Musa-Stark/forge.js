@@ -34,7 +34,7 @@ new StarkNexus({
     rotateRefreshToken: true,
     refreshTokenRotationInterval: "24h",
 
-    accessTokenAge: "10m",
+    accessTokenAge: "1h",
     refreshTokenAge: "30d",
 
     schemaObj: {

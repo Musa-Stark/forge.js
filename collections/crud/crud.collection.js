@@ -12,8 +12,8 @@ const crudCollection = collection({
     description: mongooseFields.optionalString,
     owner: mongooseFields.userRef,
     // profileImage: mongooseFields.fileMetaData,
-    cardNumber: mongooseFields.encryptedString,
-    cvv: mongooseFields.encryptedString
+    // cardNumber: mongooseFields.encryptedString,
+    // cvv: mongooseFields.encryptedString,
   },
   routesArray: [
     {
@@ -22,7 +22,7 @@ const crudCollection = collection({
       handler: "readAll",
       authRole: "public",
       validationKey: false,
-      decryptedFieldsArray: ["cardNumber", "cvv"],
+      // decryptedFieldsArray: ["cardNumber", "cvv"],
       mongooseConfigObj: {
         populateKey: "owner",
         hiddenFieldsArray: ["__v", "updatedAt"],
@@ -34,11 +34,11 @@ const crudCollection = collection({
       handler: "read",
       authRole: "adminOrOwner",
       validationKey: false,
-      decryptedFieldsArray: ["cardNumber", "cvv"],
+      // decryptedFieldsArray: ["cardNumber", "cvv"],
       mongooseConfigObj: {
         populateKey: "owner",
-        hiddenFieldsArray: ["__v"]
-      }
+        hiddenFieldsArray: ["__v"],
+      },
     },
     {
       method: "post",
@@ -46,7 +46,7 @@ const crudCollection = collection({
       handler: "create",
       authRole: "authenticated",
       validationKey: "createProduct",
-      encryptedFieldsArray: ["cardNumber", "cvv"]
+      // encryptedFieldsArray: ["cardNumber", "cvv"],
     },
     {
       method: "post",
@@ -97,6 +97,16 @@ const crudCollection = collection({
     {
       method: "delete",
       path: "/",
+      handler: "removeMultiple",
+      authRole: "adminOrOwner",
+      validationKey: "removeMultiple",
+      mongooseConfigObj: {
+        removeMultipleFieldKey: "ids"
+      }
+    },
+    {
+      method: "delete",
+      path: "/all",
       handler: "removeAll",
       authRole: "admin",
       validationKey: false,
@@ -122,7 +132,6 @@ const crudCollection = collection({
       category: zodFields.objectArray,
       isAvailable: zodFields.booleanFalse,
       description: zodFields.optionalString,
-      cardNumber: zodFields.requiredString,
     },
     update: {
       name: zodFields.requiredString,
@@ -137,6 +146,9 @@ const crudCollection = collection({
     },
     deleteAvatar: {
       stark: zodFields.requiredString,
+    },
+    removeMultiple: {
+      ids: zodFields.requiredStringArray
     },
   },
 });

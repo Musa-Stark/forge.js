@@ -11,7 +11,6 @@ const read = ({
   modelName,
   routeName,
   routeObj,
-  validationsObj,
 }: {
   modelName: string;
   routeName: string;
