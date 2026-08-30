@@ -34,14 +34,14 @@ const authorizeAccess = ({
     });
 
   // vars
-  const ownerId = item?.owner?._id;
-  const isOwner = ownerId && req.user && ownerId.equals(req.user._id);
+  const ownerId = routeObj.ownerShip === "self" ? item._id : item?.owner?._id;
+  const isOwner = !!ownerId && !!req.user && ownerId.equals(req.user._id);
   const isAdmin = req.user.role === "admin";
 
   // if owner id in item not found
   if (!ownerId)
     AppLog(
-      "x",
+      "warn",
       "authorization",
       `owner not found in item for routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
     );

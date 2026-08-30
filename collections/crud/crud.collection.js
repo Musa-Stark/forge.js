@@ -11,7 +11,7 @@ const crudCollection = collection({
     isAvailable: mongooseFields.boolean,
     description: mongooseFields.optionalString,
     owner: mongooseFields.userRef,
-    // profileImage: mongooseFields.fileMetaData,
+    profileImage: mongooseFields.fileMetaData,
     // cardNumber: mongooseFields.encryptedString,
     // cvv: mongooseFields.encryptedString,
   },
