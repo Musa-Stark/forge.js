@@ -20,7 +20,7 @@ new StarkNexus({
     fieldsObj: {
       otp: "otp",
       purpose: "purpose",
-      email: "Email",
+      email: "email",
       password: "password",
     },
 
@@ -41,9 +41,8 @@ new StarkNexus({
       modelName: "User",
       schema: {
         name: fields.requiredString,
-        Email: fields.requiredString,
+        email: fields.email,
         password: fields.password,
-        stark: fields.booleanTrue,
       },
     },
     loginMode: "credentials",
