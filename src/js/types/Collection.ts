@@ -31,6 +31,7 @@ export interface Route {
   handler: Handler;
   validationKey?: string | boolean;
   authRole?: AuthRole;
+  ownerShip?: "self" | "owner";
   mongooseConfigObj?: {
     populateKey?: string | boolean;
     hiddenFieldsArray?: string[];
