@@ -39,12 +39,18 @@ const authorizeAccess = ({
   const isAdmin = req.user.role === "admin";
 
   // if owner id in item not found
-  if (!ownerId)
+  if (!ownerId) {
+    AppLog(
+      "x",
+      "authorization",
+      `owner not found in item.`,
+    );
     AppLog(
       "warn",
       "authorization",
-      `owner not found in item for routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
+      `If it doesn't have owner, use ownerShip: "self" in routesArray -> route. routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
     );
+  }
 
   // allow only admin
   if (routeObj.authRole === "admin") {
