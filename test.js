@@ -20,7 +20,7 @@ new StarkNexus({
     fieldsObj: {
       otp: "otp",
       purpose: "purpose",
-      email: "Email",
+      email: "email",
       password: "password",
     },
 
@@ -38,12 +38,11 @@ new StarkNexus({
     refreshTokenAge: "30d",
 
     schemaObj: {
-      modelName: "Stark",
+      modelName: "User",
       schema: {
         name: fields.requiredString,
-        Email: fields.requiredString,
+        email: fields.email,
         password: fields.password,
-        stark: fields.booleanTrue,
       },
     },
     loginMode: "credentials",

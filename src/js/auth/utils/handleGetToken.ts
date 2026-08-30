@@ -22,23 +22,10 @@ const getToken = ({
 
   if (!token || typeof token !== "string")
     throw new AppError({
-      message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
+      message: `'${tokenName}' is missing`,
       code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
       details: getErrorDetail(routeObj),
-      hint: `If frontend is in browser, make sure you have '${tokenName}' in console cookies section and 'credentials: include' in request options. If frontend is in mobile device, make sure to include in cookie req.body.`,
-      statusCode: 401,
-    });
-
-  // token not found - re-login
-  if (!token)
-    throw new AppError({
-      message: `${type === "accessTokenName" ? "Access" : "Refresh"} token is missing`,
-      code: `${type === "accessTokenName" ? "ACCESS" : "REFRESH"}_TOKEN_MISSING`,
-      details: getErrorDetail(routeObj),
-      hint:
-        type === "accessTokenName"
-          ? "Hit the refresh endpoint to get a new access_token. Default: /auth/refresh-token"
-          : "Log in again to create a new authentication session.",
+      hint: `If frontend is in browser, make sure you have '${tokenName}' in console cookies section and 'credentials: include' in request options. If frontend is in mobile device, make sure to include in cookie req.body with 'POST' method.`,
       statusCode: 401,
     });
 

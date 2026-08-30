@@ -6,6 +6,7 @@ import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import getValidationKey from "../utils/validationKeyError.js";
+import { sanitizeOne } from "../utils/sanitize.js";
 
 const remove = ({
   modelName,
@@ -30,7 +31,7 @@ const remove = ({
       modelName,
       routeName,
       _id: id as string,
-      routeObj
+      routeObj,
     });
 
     // authorize access
@@ -40,13 +41,22 @@ const remove = ({
     const Model = getModel({ modelName, routeName, routeObj });
 
     // delete
-    await Model.findByIdAndDelete(id);
+    const deletedItem = await Model.findByIdAndDelete(id);
+
+    // clean
+    const cleaned = sanitizeOne(deletedItem!.toObject(), routeObj);
+
+    // if '_id' excluded
+    const idExcluded =
+      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+    if (idExcluded) delete cleaned["_id"];
 
     // return response
     appResponse({
       res,
       message: "Item deleted successfully!",
       statusCode: 202,
+      data: cleaned
     });
   };
 };

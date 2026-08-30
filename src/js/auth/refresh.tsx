@@ -44,19 +44,11 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
         details: getErrorDetail(routeObj),
       });
 
-    // find same device tokens
-    const foundRefreshToken = await findRefreshToken(
-      payload.sub,
-      payload.jti,
-      routeObj,
-    );
-
     // check if valid token
     await handleRefreshTokenValidation(
       token,
-      foundRefreshToken.refreshTokenHash,
       routeObj,
-      payload.owner,
+      payload.sub,
       payload.jti,
     );
 

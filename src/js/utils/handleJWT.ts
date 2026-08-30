@@ -97,8 +97,6 @@ export const verifyJWT = ({
   } catch (error) {
     if (error instanceof AppError) throw error;
 
-    console.error(error);
-
     throw new AppError({
       message: "JWT is invalid or has expired",
       code: "JWT_INVALID",

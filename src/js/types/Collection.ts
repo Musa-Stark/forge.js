@@ -43,6 +43,7 @@ export interface Route {
   mode?: AuthMode;
   encryptedFieldsArray?: string[];
   decryptedFieldsArray?: string[];
+  hashedFieldsArray?: string[]
 }
 
 /**

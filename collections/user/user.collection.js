@@ -29,8 +29,9 @@ const userCollection = collection({
       method: "get",
       path: "/:id",
       validationKey: false,
+      ownerShip: "self",
       mongooseConfigObj: {
-        hiddenFieldsArray: ["_id"],
+        hiddenFieldsArray: ["_id", "!password"],
       },
     },
     {
@@ -60,10 +61,27 @@ const userCollection = collection({
         },
       ],
     },
+    {
+      authRole: "adminOrOwner",
+      handler: "update",
+      method: "patch",
+      path: "/:id",
+      hashedFieldsArray: ["password"],
+      ownerShip: "self",
+      validationKey: "update",
+      mongooseConfigObj: {
+        hiddenFieldsArray: ["_id", "!password"]
+      }
+    },
   ],
 
   validationsObj: {
     create: {
+      name: zodFields.requiredString,
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+    update: {
       name: zodFields.requiredString,
       email: zodFields.email,
       password: zodFields.password,

@@ -34,10 +34,15 @@ const read = ({
         req,
       });
     }
+    // if '_id' excluded
+    const idExcluded =
+      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
 
     // Decrypt fields
     const decryptedItems = await Promise.all(
       items.map(async (item: any) => {
+        if (idExcluded) delete item["_id"];
+
         const decryption = await handleDecryption(item, routeObj);
 
         return {

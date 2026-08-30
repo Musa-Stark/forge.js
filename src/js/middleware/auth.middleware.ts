@@ -6,7 +6,7 @@ import registerModel from "../lib/model.registry.js";
 import { getEnvs } from "../config/envs.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
-import handleGetToken from "../auth/utils/handleGetToken.js"
+import handleGetToken from "../auth/utils/handleGetToken.js";
 
 export const findUser = async (
   id: string,
@@ -44,7 +44,7 @@ const protect =
 
       const { verifyAccessUser } = authConfigObj;
 
-      const token = handleGetToken({req, routeObj, type: "accessTokenName"});
+      const token = handleGetToken({ req, routeObj, type: "accessTokenName" });
 
       if (!token) {
         return next(
@@ -79,7 +79,7 @@ const protect =
         const user = await findUser(
           payload.sub as string,
           routeObj,
-          userModelName!
+          userModelName!,
         );
 
         if (!user) {

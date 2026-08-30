@@ -20,6 +20,7 @@ const read = ({
   return async (req: Request, res: Response): Promise<void> => {
     // get /:parameter
     const id = getParam({ req, routeObj });
+    
 
     // findById item
     const item = await getItem({
@@ -34,13 +35,18 @@ const read = ({
     if (routeObj.authRole !== "public")
       authorizeAccess({ routeObj, routeName, item, req });
 
+    // if '_id' excluded
+    const idExcluded =
+      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+    if (idExcluded) delete item["_id"];
+
     // if decryption
-    const decryption = await handleDecryption(item, routeObj)
+    const decryption = await handleDecryption(item, routeObj);
 
     // return response
     appResponse({
       res,
-      data: {...item, ...decryption},
+      data: { ...item, ...decryption },
       message: "Item found successfully!",
     });
   };

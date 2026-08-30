@@ -3,6 +3,7 @@ import AppError from "./AppError.js";
 import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 import { getEnvs } from "../config/envs.js";
+import AppLog from "./AppLog.js";
 
 export interface SealResult {
   str: string;
@@ -44,50 +45,56 @@ export const verifyHash = async (
   storedHash: string,
   routeObj: Route,
 ): Promise<boolean> => {
-  if (!password) {
-    throw new AppError({
-      message: "string is required to verify",
-      statusCode: 404,
-      hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(routeObj),
-    });
+  try {
+    if (!password) {
+      throw new AppError({
+        message: "string is required to verify",
+        statusCode: 404,
+        hint: "This issue requires a fix from the framework developer.",
+        details: getErrorDetail(routeObj),
+      });
+    }
+
+    if (!storedHash) {
+      throw new AppError({
+        message: "storedHash is required to verify",
+        statusCode: 404,
+        hint: "This issue requires a fix from the framework developer.",
+        details: getErrorDetail(routeObj),
+      });
+    }
+
+    await sodium.ready;
+
+    const [saltB64, hashB64] = storedHash.split(":");
+
+    if (!saltB64 || !hashB64) {
+      throw new AppError({
+        message: "Invalid stored hash format",
+        statusCode: 404,
+        hint: "This issue requires a fix from the framework developer.",
+        details: getErrorDetail(routeObj),
+      });
+    }
+
+    const salt = sodium.from_base64(saltB64);
+    const originalHash = sodium.from_base64(hashB64);
+
+    const testHash = sodium.crypto_pwhash(
+      32,
+      password,
+      salt,
+      sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+      sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+      sodium.crypto_pwhash_ALG_DEFAULT,
+    );
+
+    return sodium.memcmp(originalHash, testHash);
+  } catch (error) {
+    const err = error as AppError;
+    AppLog("x", "hash-verify", err.message || "Error while verifying hash.");
+    return false;
   }
-
-  if (!storedHash) {
-    throw new AppError({
-      message: "storedHash is required to verify",
-      statusCode: 404,
-      hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(routeObj),
-    });
-  }
-
-  await sodium.ready;
-
-  const [saltB64, hashB64] = storedHash.split(":");
-
-  if (!saltB64 || !hashB64) {
-    throw new AppError({
-      message: "Invalid stored has format",
-      statusCode: 404,
-      hint: "This issue requires a fix from the framework developer.",
-      details: getErrorDetail(routeObj),
-    });
-  }
-
-  const salt = sodium.from_base64(saltB64);
-  const originalHash = sodium.from_base64(hashB64);
-
-  const testHash = sodium.crypto_pwhash(
-    32,
-    password,
-    salt,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_ALG_DEFAULT,
-  );
-
-  return sodium.memcmp(originalHash, testHash);
 };
 
 // Generate master key
