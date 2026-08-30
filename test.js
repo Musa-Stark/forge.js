@@ -38,7 +38,7 @@ new StarkNexus({
     refreshTokenAge: "30d",
 
     schemaObj: {
-      modelName: "Stark",
+      modelName: "User",
       schema: {
         name: fields.requiredString,
         Email: fields.requiredString,

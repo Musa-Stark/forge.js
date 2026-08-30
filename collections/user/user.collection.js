@@ -61,10 +61,27 @@ const userCollection = collection({
         },
       ],
     },
+    {
+      authRole: "adminOrOwner",
+      handler: "update",
+      method: "patch",
+      path: "/:id",
+      hashedFieldsArray: ["password"],
+      ownerShip: "self",
+      validationKey: "update",
+      mongooseConfigObj: {
+        hiddenFieldsArray: ["!password"]
+      }
+    },
   ],
 
   validationsObj: {
     create: {
+      name: zodFields.requiredString,
+      email: zodFields.email,
+      password: zodFields.password,
+    },
+    update: {
       name: zodFields.requiredString,
       email: zodFields.email,
       password: zodFields.password,

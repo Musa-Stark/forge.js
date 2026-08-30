@@ -49,6 +49,8 @@ const update = ({
     // if hashedFields
     const hashedFields = await handleHashing(req.body, routeObj);
 
+    // console.log("hashedFields: ", hashedFields)
+
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
@@ -59,7 +61,9 @@ const update = ({
       {
         returnDocument: "after",
       },
-    );
+    ).select("+password");
+
+    console.log("updatedItem: ", updatedItem)
 
     // if '_id' excluded
     const idExcluded =

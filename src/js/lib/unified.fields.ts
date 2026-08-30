@@ -25,6 +25,15 @@ const requiredString: UnifiedField = {
 const optionalString: UnifiedField = {
   mongoose: {
     type: String,
+    trim: true,
+    default: ""
+  },
+  zod: z.string().trim(),
+};
+
+const optionalEmptyString: UnifiedField = {
+  mongoose: {
+    type: String,
     default: "",
     trim: true,
   },
@@ -61,7 +70,6 @@ const password: UnifiedField = {
     type: String,
     required: true,
     minlength: 6,
-    select: false, // important security default
   },
   zod: z.string().min(6, "Password must be at least 6 characters"),
 };
@@ -387,6 +395,7 @@ const encryptedString: UnifiedField = {
 export const fields = {
   requiredString,
   optionalString,
+  optionalEmptyString,
   requiredUniqueString,
   email,
   password,

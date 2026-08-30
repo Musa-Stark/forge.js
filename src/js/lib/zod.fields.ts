@@ -14,6 +14,8 @@ export const requiredString = z
   .trim()
   .min(1, "At least 1 character in string is required");
 
+export const optionalEmptyString = z.string().trim().default("");
+
 export const optionalString = z.string().trim().default("");
 
 /**
