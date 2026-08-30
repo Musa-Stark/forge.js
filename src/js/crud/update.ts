@@ -8,6 +8,8 @@ import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authroizeAccess.js";
 import getValidationKey from "../utils/validationKeyError.js";
+import handleEncryption from "./encryption/handleEncryption.js";
+import handleHashing from "./security/handleHashing.js";
 
 const update = ({
   modelName,
@@ -35,19 +37,29 @@ const update = ({
       modelName,
       routeName,
       _id: id as string,
-      routeObj
+      routeObj,
     });
 
     // authorize access
     authorizeAccess({ item, req, routeObj, routeName });
 
+    // if encryptedFields
+    const encryptedFields = await handleEncryption(req.body, routeObj);
+
+    // if hashedFields
+    const hashedFields = await handleHashing(req.body, routeObj);
+
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
     // update
-    const updatedItem = await Model.findByIdAndUpdate(id, body, {
-      returnDocument: "after",
-    });
+    const updatedItem = await Model.findByIdAndUpdate(
+      id,
+      { ...body, encryptedFields, hashedFields },
+      {
+        returnDocument: "after",
+      },
+    );
 
     // return response
     appResponse({

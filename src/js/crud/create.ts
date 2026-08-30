@@ -10,6 +10,7 @@ import { handleUploadFiles } from "../upload/index.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import handleEncryption from "./encryption/handleEncryption.js";
+import handleHashing from "./security/handleHashing.js";
 
 const create = ({
   modelName,
@@ -35,6 +36,9 @@ const create = ({
     // if encryptedFields
     const encryptedFields = await handleEncryption(req.body, routeObj);
 
+    // if hashedFields
+    const hashedFields = await handleHashing(req.body, routeObj)
+
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
@@ -56,6 +60,7 @@ const create = ({
         ...fileMetaData,
         ...body,
         ...encryptedFields,
+        ...hashedFields
       });
     } catch (err) {
       // err as Error
