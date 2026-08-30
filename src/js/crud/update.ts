@@ -61,6 +61,11 @@ const update = ({
       },
     );
 
+    // if '_id' excluded
+    const idExcluded =
+      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+    if (idExcluded) delete updatedItem["_id"];
+
     // return response
     appResponse({
       res,

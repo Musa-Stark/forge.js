@@ -29,9 +29,9 @@ const userCollection = collection({
       method: "get",
       path: "/:id",
       validationKey: false,
-      // ownerShip: "self",
+      ownerShip: "self",
       mongooseConfigObj: {
-        hiddenFieldsArray: ["_id"],
+        hiddenFieldsArray: ["_id", "!password"],
       },
     },
     {

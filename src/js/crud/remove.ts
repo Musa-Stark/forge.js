@@ -30,7 +30,7 @@ const remove = ({
       modelName,
       routeName,
       _id: id as string,
-      routeObj
+      routeObj,
     });
 
     // authorize access
@@ -40,7 +40,12 @@ const remove = ({
     const Model = getModel({ modelName, routeName, routeObj });
 
     // delete
-    await Model.findByIdAndDelete(id);
+    const deletedItem = await Model.findByIdAndDelete(id);
+
+    // if '_id' excluded
+    const idExcluded =
+      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+    if (idExcluded) delete deletedItem["_id"];
 
     // return response
     appResponse({
