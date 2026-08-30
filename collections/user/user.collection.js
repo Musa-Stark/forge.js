@@ -70,7 +70,7 @@ const userCollection = collection({
       ownerShip: "self",
       validationKey: "update",
       mongooseConfigObj: {
-        hiddenFieldsArray: ["!password"]
+        hiddenFieldsArray: ["_id", "!password"]
       }
     },
   ],

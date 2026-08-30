@@ -57,23 +57,24 @@ const update = ({
     // update
     const updatedItem = await Model.findByIdAndUpdate(
       id,
-      { ...body, encryptedFields, hashedFields },
+      { ...body, ...encryptedFields, ...hashedFields },
       {
         returnDocument: "after",
       },
-    ).select("+password");
+    )
 
-    console.log("updatedItem: ", updatedItem)
+    // cleaned
+    const cleaned = sanitizeOne(updatedItem!.toObject(), routeObj);
 
     // if '_id' excluded
     const idExcluded =
       routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
-    if (idExcluded) delete updatedItem["_id"];
+    if (idExcluded) delete cleaned["_id"];
 
     // return response
     appResponse({
       res,
-      data: sanitizeOne(updatedItem!.toObject(), routeObj),
+      data: cleaned,
       message: "Item updated successfully!",
     });
   };
