@@ -1,23 +1,21 @@
 import type { Request, Response } from "express";
 import type { ValidationsObj, Route } from "../types/Collection.js";
-import getParam from "./utils/getParam.js";
-import getItem from "./utils/getItem.js";
+import getItem from "../crud/utils/getItem.js";
 import validate from "../utils/validate.js";
 import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "./utils/authroizeAccess.js";
+import authorizeAccess from "../crud/utils/authroizeAccess.js";
 import getValidationKey from "../utils/validationKeyError.js";
-import handleEncryption from "./encryption/handleEncryption.js";
-import handleHashing from "./security/handleHashing.js";
+import handleEncryption from "../crud/encryption/handleEncryption.js";
+import handleHashing from "../crud/security/handleHashing.js";
+import { getEnvs } from "../config/envs.js";
 
 const update = ({
-  modelName,
   routeName,
   routeObj,
   validationsObj,
 }: {
-  modelName: string;
   routeName: string;
   routeObj: Route;
   validationsObj: ValidationsObj;
@@ -26,17 +24,21 @@ const update = ({
     // validationObj
     const validationObj = getValidationKey(routeObj, validationsObj);
 
-    // get /:parameter
-    const id = getParam({ req, routeObj });
-
     // validate
     const body = validate(validationObj, req.body, routeObj);
+
+    // user id
+    const id = req.user._id;
+
+    // user model
+    const { userModelName } = getEnvs();
+    const modelName = userModelName!;
 
     // ensure item exists
     const item = await getItem({
       modelName,
       routeName,
-      _id: id as string,
+      _id: id,
       routeObj,
     });
 
@@ -59,7 +61,7 @@ const update = ({
       {
         returnDocument: "after",
       },
-    )
+    );
 
     // cleaned
     const cleaned = sanitizeOne(updatedItem!.toObject(), routeObj);
@@ -73,7 +75,7 @@ const update = ({
     appResponse({
       res,
       data: cleaned,
-      message: "Item updated successfully!",
+      message: "Your data has been updated successfully!",
     });
   };
 };

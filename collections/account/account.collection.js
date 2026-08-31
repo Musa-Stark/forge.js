@@ -1,4 +1,4 @@
-import { collection } from "../../dist/js/index.js";
+import { collection, zodFields } from "../../dist/js/index.js";
 
 const accountCollection = collection({
   reqType: "account",
@@ -9,10 +9,29 @@ const accountCollection = collection({
       method: "get",
       path: "/me",
       mongooseConfigObj: {
-        hiddenFieldsArray: ["__v"]
+        hiddenFieldsArray: ["__v"],
+      },
+    },
+    {
+      handler: "updateMe",
+      method: "patch",
+      path: "/",
+      authRole: "adminOrOwner",
+      ownerShip: "self",
+      validationKey: "updateProfile",
+      hashedFieldsArray: ["password"],
+      mongooseConfigObj: {
+        hiddenFieldsArray: ["!password"]
       }
     },
   ],
+  validationsObj: {
+    updateProfile: {
+      firstName: zodFields.optionalString,
+      lastName: zodFields.optionalString,
+      password: zodFields.optionalString,
+    },
+  },
 });
 
 export default accountCollection;

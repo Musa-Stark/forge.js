@@ -84,7 +84,7 @@ const getItem = async ({
       hint: _id
         ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
         : "Hit a POST request and create an item",
-      details: getErrorDetail(routeObj),
+      details: getErrorDetail(routeObj, modelName),
     });
   }
 
