@@ -5,7 +5,7 @@ import getParam from "../utils/getParam.js";
 import appResponse from "../../utils/response.js";
 import { handleUploadFiles } from "../../upload/index.js";
 import AppError from "../../utils/AppError.js";
-import authorizeAccess from "../utils/authroizeAccess.js";
+import authorizeAccess from "../utils/authorizeAccess.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 
 

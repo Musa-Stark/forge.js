@@ -15,20 +15,26 @@ const accountCollection = collection({
     {
       handler: "updateMe",
       method: "patch",
-      path: "/",
+      path: "/me",
       authRole: "adminOrOwner",
       ownerShip: "self",
       validationKey: "updateProfile",
       hashedFieldsArray: ["password"],
       mongooseConfigObj: {
-        hiddenFieldsArray: ["!password"]
-      }
+        hiddenFieldsArray: ["!password"],
+      },
+    },
+    {
+      handler: "deleteMe",
+      method: "delete",
+      path: "/me",
+      authRole: "adminOrOwner",
+      ownerShip: "self"
     },
   ],
   validationsObj: {
     updateProfile: {
-      firstName: zodFields.optionalString,
-      lastName: zodFields.optionalString,
+      name: zodFields.optionalString,
       password: zodFields.optionalString,
     },
   },

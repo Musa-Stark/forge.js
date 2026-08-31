@@ -24,10 +24,10 @@ const validateAuth = (config: AuthConfig): void => {
   try {
     // if config.fieldsObj isn't found -> error
     if (!config.fieldsObj) vAError("fieldsObj");
-    
+
     // keys that are required
     const requiredKeys = ["email", "password", "otp", "purpose"];
-    
+
     // if mode is manual -> return;
     if (config.mode === "manual") return;
 
@@ -74,25 +74,19 @@ const validateAuth = (config: AuthConfig): void => {
 const setEnvs = (values: InternalConstructor): void => {
   validateAuth(values.authConfigObj!);
 
-  // set default access_token age
-  if (!values.authConfigObj.accessTokenAge)
-    values.authConfigObj.accessTokenAge = "10m";
+  const authConfig = values.authConfigObj;
 
-  // set default refresh_token age
-  if (!values.authConfigObj.refreshTokenAge)
-    values.authConfigObj.refreshTokenAge = "30d";
+  // Token expiration
+  authConfig.accessTokenAge ??= "10m";
+  authConfig.refreshTokenAge ??= "30d";
+  authConfig.refreshTokenRotationInterval ??= "0s";
 
-  // set default access_token name
-  if (!values.authConfigObj.accessTokenName)
-    values.authConfigObj.accessTokenName = "accessToken";
+  // Token names
+  authConfig.accessTokenName ??= "accessToken";
+  authConfig.refreshTokenName ??= "refreshToken";
 
-  // set default refresh_token name
-  if (!values.authConfigObj.refreshTokenName)
-    values.authConfigObj.refreshTokenName = "refreshToken";
-
-  // set default refreshTokenRotationInterval
-  if (!values.authConfigObj.refreshTokenRotationInterval)
-    values.authConfigObj.refreshTokenRotationInterval = "0s"
+  // User verification
+  authConfig.verifyAccessUser ??= true;
 
   envs = values;
 };

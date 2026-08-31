@@ -1,1 +1,1 @@
-export type accountHandlers = "getMe" | "updateMe";
+export type accountHandlers = "getMe" | "updateMe" | "deleteMe";

@@ -1,6 +1,6 @@
 import type { Request } from "express";
 import AppError from "../../utils/AppError.js";
-import type { Route } from "../../types/Collection.ts";
+import type { Route } from "../../types/Collection.js";
 import AppLog from "../../utils/AppLog.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 
@@ -40,15 +40,11 @@ const authorizeAccess = ({
 
   // if owner id in item not found
   if (!ownerId) {
-    AppLog(
-      "x",
-      "authorization",
-      `owner not found in item.`,
-    );
+    AppLog("x", "authorization", `owner not found in item.`);
     AppLog(
       "warn",
       "authorization",
-      `If it doesn't have owner, use ownerShip: "self" in routesArray -> route. routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
+      `If this route doesn't have owner, use ownerShip: "self" in routesArray -> route. routeObj: '/${routeName}', method: '${routeObj.method}' and path: '${routeObj.path}'`,
     );
   }
 
@@ -58,7 +54,7 @@ const authorizeAccess = ({
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
-        hint: "You are not the admin.",
+        hint: "You are not the admin. If this route doesn\'t have owner, use ownerShip: 'self' in routesArray -> route.",
         details: getErrorDetail(routeObj),
       });
   }
@@ -69,7 +65,7 @@ const authorizeAccess = ({
       throw new AppError({
         message: "Unauthorized",
         statusCode: 403,
-        hint: "You are not the owner.",
+        hint: "You are not the owner. If this route doesn\'t have owner, use ownerShip: 'self' in routesArray -> route.",
         details: getErrorDetail(routeObj),
       });
   }
