@@ -1,5 +1,6 @@
 import type { Constructor } from "./types/Constructor.ts";
 import type { Collection } from "./types/Collection.ts";
+import type { Route } from "./types/Collection.ts";
 import { defaultConfig } from "./config/defaultConfig.js";
 import { setEnvs } from "./config/envs.js";
 
@@ -26,5 +27,9 @@ export { default as getItem } from "./crud/utils/getItem.js";
 export const collection = (object: Collection): Collection => {
   return object;
 };
+
+export const defineRoutes = (array: Route[]) => {
+  return array;
+}
 
 export default StarkForge;

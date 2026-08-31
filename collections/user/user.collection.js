@@ -1,18 +1,11 @@
-import { collection, mongooseFields, zodFields } from "../../dist/js/index.js";
+import {
+  collection,
+  mongooseFields,
+  zodFields,
+  defineRoutes
+} from "../../dist/js/index.js";
 
-const userCollection = collection({
-  reqType: "crud",
-  routeName: "users",
-  modelName: "User",
-  mongooseSchemaObj: {
-    name: mongooseFields.requiredString,
-    Email: mongooseFields.email,
-    password: mongooseFields.password,
-    role: mongooseFields.role,
-    profileImage: mongooseFields.fileMetaData,
-    test: mongooseFields.fileMetaData,
-  },
-  routesArray: [
+const routes = defineRoutes([
     {
       authRole: "adminOrOwner",
       handler: "readAll",
@@ -70,10 +63,24 @@ const userCollection = collection({
       ownerShip: "self",
       validationKey: "update",
       mongooseConfigObj: {
-        hiddenFieldsArray: ["_id", "!password"]
-      }
+        hiddenFieldsArray: ["_id", "!password"],
+      },
     },
-  ],
+  ])
+
+const userCollection = collection({
+  reqType: "crud",
+  routeName: "users",
+  modelName: "User",
+  mongooseSchemaObj: {
+    name: mongooseFields.requiredString,
+    Email: mongooseFields.email,
+    password: mongooseFields.password,
+    role: mongooseFields.role,
+    profileImage: mongooseFields.fileMetaData,
+    test: mongooseFields.fileMetaData,
+  },
+  routesArray: routes,
 
   validationsObj: {
     create: {
