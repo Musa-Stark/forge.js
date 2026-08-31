@@ -1,5 +1,6 @@
 import { getEnvs } from "../../config/envs.js";
 import type { Collection } from "../../types/Collection.js";
+import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
   const { authConfigObj } = getEnvs();
@@ -8,11 +9,8 @@ const collection = (vals: Collection) => {
   return vals;
 };
 
-export const authCollection = collection({
-  modelName: "User",
-  reqType: "auth",
-  routeName: "auth",
-  routesArray: [
+const routes = (): Route[] => {
+  return [
     {
       method: "post",
       handler: "signup",
@@ -71,7 +69,14 @@ export const authCollection = collection({
       handler: "refresh",
       path: "/refresh-token",
     },
-  ],
+  ];
+};
+
+export const authCollection = collection({
+  modelName: "User",
+  reqType: "auth",
+  routeName: "auth",
+  routesArray: routes(),
 });
 
 export default authCollection;
