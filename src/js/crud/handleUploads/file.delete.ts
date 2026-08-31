@@ -59,6 +59,7 @@ const deleteFile = ({
     appResponse({
       res,
       message: "File deleted successfully!",
+      data: item
     });
   };
 };

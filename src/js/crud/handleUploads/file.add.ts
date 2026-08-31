@@ -76,6 +76,7 @@ const addFile = ({
     // response
     appResponse({
       res,
+      data: item,
       message: "File added successfully!",
     });
   };

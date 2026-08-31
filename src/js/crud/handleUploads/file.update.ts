@@ -56,7 +56,7 @@ const updateFile = ({
     await item.save();
 
     // app response
-    appResponse({ res, message: "File updated successfully!" });
+    appResponse({ res, message: "File updated successfully!", data: item });
   };
 };
 
