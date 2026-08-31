@@ -6,7 +6,7 @@ import validate from "../utils/validate.js";
 import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "./utils/authroizeAccess.js";
+import authorizeAccess from "./utils/authorizeAccess.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import handleEncryption from "./encryption/handleEncryption.js";
 import handleHashing from "./security/handleHashing.js";

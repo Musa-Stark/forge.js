@@ -4,7 +4,7 @@ import appResponse from "../utils/response.js";
 import getParam from "./utils/getParam.js";
 import type { Route, ValidationsObj } from "../types/Collection.js";
 import getValidationKey from "../utils/validationKeyError.js";
-import authorizeAccess from "./utils/authroizeAccess.js";
+import authorizeAccess from "./utils/authorizeAccess.js";
 import handleDecryption from "./encryption/handleDecryption.js";
 
 const read = ({

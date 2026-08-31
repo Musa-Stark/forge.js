@@ -1,32 +1,30 @@
 import type { Request, Response } from "express";
-import getParam from "./utils/getParam.js";
-import getItem from "./utils/getItem.js";
+import getItem from "../crud/utils/getItem.js";
 import getModel from "../utils/getModel.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "./utils/authorizeAccess.js";
+import authorizeAccess from "../crud/utils/authorizeAccess.js";
 import type { Route } from "../types/Collection.ts";
 import { sanitizeOne } from "../utils/sanitize.js";
+import { getEnvs } from "../config/envs.js";
+import { findUser } from "../middleware/auth.middleware.js";
 
 const remove = ({
-  modelName,
   routeName,
   routeObj,
 }: {
-  modelName: string;
   routeObj: Route;
   routeName: string;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
-    // get /:parameter
-    const id = getParam({ req, routeObj });
+    // user id
+    const id = req.user._id;
+
+    // user model
+    const { userModelName } = getEnvs();
+    const modelName = userModelName!;
 
     // ensure item exists
-    const item = await getItem({
-      modelName,
-      routeName,
-      _id: id as string,
-      routeObj,
-    });
+    const item = await findUser(id, routeObj, modelName)
 
     // authorize access
     authorizeAccess({ routeObj, routeName, item, req });
@@ -50,7 +48,7 @@ const remove = ({
       res,
       message: "Item deleted successfully!",
       statusCode: 202,
-      data: cleaned
+      data: cleaned,
     });
   };
 };

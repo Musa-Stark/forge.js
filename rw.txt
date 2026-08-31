@@ -76,6 +76,7 @@ git switch feature
 git pull origin main
 git push
 git diff main
+git switch main
 
 === me ===
 write token type in handleGetRefreshToken, it will handle getting token access or refresh based on the type.

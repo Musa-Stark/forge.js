@@ -20,7 +20,7 @@ import {
 } from "../auth/bunch.auth.js";
 
 // account handlers
-import { getMe, updateMe } from "../account/bunch.account.js";
+import { getMe, updateMe, deleteMe } from "../account/bunch.account.js";
 
 // crud handlers
 import {
@@ -63,7 +63,8 @@ const handlerMap: Record<string, any> = {
   deleteFile,
   addFile,
   getMe,
-  updateMe
+  updateMe,
+  deleteMe
 };
 
 export default handlerMap;

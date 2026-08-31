@@ -24,6 +24,11 @@ const requiredString: StringField = {
 
 const optionalString: StringField = {
   type: String,
+  trim: true,
+};
+
+const optionalEmptyString: StringField = {
+  type: String,
   default: "",
   trim: true,
 };
@@ -237,6 +242,7 @@ const fileMetaData: FileMetaDataField[] = [
 const mongooseFields = {
   requiredString,
   optionalString,
+  optionalEmptyString,
   requiredUniqueString,
   email,
   password,

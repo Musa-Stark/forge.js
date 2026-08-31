@@ -5,11 +5,12 @@ import validate from "../utils/validate.js";
 import getModel from "../utils/getModel.js";
 import { sanitizeOne } from "../utils/sanitize.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "../crud/utils/authroizeAccess.js";
+import authorizeAccess from "../crud/utils/authorizeAccess.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import handleEncryption from "../crud/encryption/handleEncryption.js";
 import handleHashing from "../crud/security/handleHashing.js";
 import { getEnvs } from "../config/envs.js";
+import { findUser } from "../middleware/auth.middleware.js";
 
 const update = ({
   routeName,
@@ -35,12 +36,7 @@ const update = ({
     const modelName = userModelName!;
 
     // ensure item exists
-    const item = await getItem({
-      modelName,
-      routeName,
-      _id: id,
-      routeObj,
-    });
+    const item = await findUser(id, routeObj, modelName)
 
     // authorize access
     authorizeAccess({ item, req, routeObj, routeName });

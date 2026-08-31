@@ -33,7 +33,8 @@ export const findUser = async (
     });
   }
 
-  return await Model.findById(id).select("+_id +email +role");
+  const user = await Model.findById(id).select("+_id +email +role");
+  return user;
 };
 
 const protect =
@@ -62,7 +63,7 @@ const protect =
         token,
         routeObj,
       });
-
+      
       if (typeof payload === "string" || !payload.sub) {
         return next(
           new AppError({

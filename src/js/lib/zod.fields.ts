@@ -16,7 +16,7 @@ export const requiredString = z
 
 export const optionalEmptyString = z.string().trim().default("");
 
-export const optionalString = z.string().trim().default("");
+export const optionalString = z.string().trim().optional();
 
 /**
  * =========================
@@ -205,6 +205,7 @@ const purposeOTP = z.enum(otpPurposes);
 export const zodValidations = {
   requiredString,
   optionalString,
+  optionalEmptyString,
   email,
   password,
   requiredNumber,

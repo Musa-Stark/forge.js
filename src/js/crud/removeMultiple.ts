@@ -1,7 +1,7 @@
 import type { Request, Response, Router } from "express";
 import getModel from "../utils/getModel.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "./utils/authroizeAccess.js";
+import authorizeAccess from "./utils/authorizeAccess.js";
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";

@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import getItem from "./utils/getItem.js";
 import appResponse from "../utils/response.js";
 import type { Route, ValidationsObj } from "../types/Collection.js";
-import authorizeAccess from "./utils/authroizeAccess.js";
+import authorizeAccess from "./utils/authorizeAccess.js";
 import handleDecryption from "./encryption/handleDecryption.js";
 
 const read = ({
