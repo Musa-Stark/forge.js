@@ -1,4 +1,4 @@
-import type { ErrorRequestHandler, Request, Response } from "express";
+import type {  Request, Response } from "express";
 import type { Route, ValidationsObj } from "../types/Collection.js";
 import AppError from "../utils/AppError.js";
 import validate from "../utils/validate.js";

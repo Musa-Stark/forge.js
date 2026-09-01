@@ -93,7 +93,7 @@ const update = ({
     // after action
     await runActions(routeObj.actions?.after, {
       ...ActionObj,
-      operation: "create",
+      operation: "update",
       item: updatedItem,
     });
 
