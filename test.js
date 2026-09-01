@@ -11,32 +11,15 @@ import {
   userCollection,
   authCollection,
   accountCollection,
+  actionCollection,
+  recentCollection
 } from "./collections/index.js";
 
 import "dotenv/config";
 
 new StarkNexus({
   authConfigObj: {
-    fieldsObj: {
-      otp: "otp",
-      purpose: "purpose",
-      email: "email",
-      password: "password",
-    },
-
     mode: "builtin",
-
-    returnAccessToken: true,
-    returnRefreshToken: true,
-
-    accessTokenName: "access_token",
-
-    rotateRefreshToken: true,
-    refreshTokenRotationInterval: "24h",
-
-    accessTokenAge: "1h",
-    refreshTokenAge: "30d",
-
     schemaObj: {
       modelName: "User",
       schema: {
@@ -45,14 +28,20 @@ new StarkNexus({
         password: fields.password,
       },
     },
+
+    accessTokenAge: "1d",
+
     loginMode: "credentials",
-    signupMode: "credentials",
+    signupMode: "credentials"
   },
+
   collections: [
     crudCollection,
     userCollection,
-    authCollection,
+    // authCollection,
     accountCollection,
+    actionCollection,
+    recentCollection
   ],
   port: 10000,
   apiVersion: 1,

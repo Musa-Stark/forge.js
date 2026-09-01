@@ -22,19 +22,8 @@ const placeholderError = (key: string, value: string): void => {
 // validateAuthConfigError
 const validateAuth = (config: AuthConfig): void => {
   try {
-    // if config.fieldsObj isn't found -> error
-    if (!config.fieldsObj) vAError("fieldsObj");
-
-    // keys that are required
-    const requiredKeys = ["email", "password", "otp", "purpose"];
-
     // if mode is manual -> return;
-    if (config.mode === "manual") return;
-
-    // loop for missing keys
-    for (const key of requiredKeys) {
-      if (!(key in config.fieldsObj!)) vAError(`fieldsObj.${key}`);
-    }
+    if (config.mode !== "builtin") return;
 
     // if value -> [placeholder]
     for (const [key, value] of Object.entries(config.fieldsObj!)) {
@@ -44,27 +33,22 @@ const validateAuth = (config: AuthConfig): void => {
     // if config.schemaObj isn't found -> error
     if (!config.schemaObj) vAError("schemaObj");
 
-    // if modelName is missing
-    if (!config.schemaObj?.modelName) vAError("schemaObj.modelName");
+    // keys that are required
+    const requiredKeys = ["email", "password", "otp", "purpose"];
+
+    // loop for missing keys
+    for (const key of requiredKeys) {
+      if (!(key in config.fieldsObj!)) vAError(`fieldsObj.${key}`);
+    }
 
     // if modelName -> [modelName]
     placeholderError("modelName", config.schemaObj?.modelName!);
 
+    // if modelName isn't found
+    if (!config.schemaObj?.modelName) vAError("schemaObj.modelName");
+
     // if schema is missing
     if (!config.schemaObj?.schema) vAError("schemaObj.schema");
-
-    // auth modes
-    const authMethods = ["credentials", "otp"];
-
-    // if signupMode or loginMode not found
-    if (!config.signupMode) vAError("signupMode");
-    if (!config.loginMode) vAError("loginMode");
-
-    if (!authMethods.includes(config.signupMode!))
-      vAError(`signupMode as ${authMethods.join(" or ")}`);
-
-    if (!authMethods.includes(config.loginMode!))
-      vAError(`loginMode as ${authMethods.join(" or ")}`);
   } catch (error) {
     AppLog("x", "authConfigObj", (error as Error).message);
     process.exit(1);
@@ -72,22 +56,49 @@ const validateAuth = (config: AuthConfig): void => {
 };
 
 const setEnvs = (values: InternalConstructor): void => {
-  validateAuth(values.authConfigObj!);
-
   const authConfig = values.authConfigObj;
 
   // Token expiration
   authConfig.accessTokenAge ??= "10m";
   authConfig.refreshTokenAge ??= "30d";
+
+  // Token rotation
+  authConfig.rotateRefreshToken ??= true;
   authConfig.refreshTokenRotationInterval ??= "0s";
 
   // Token names
   authConfig.accessTokenName ??= "accessToken";
   authConfig.refreshTokenName ??= "refreshToken";
 
+  // Return tokens
+  authConfig.returnAccessToken ??= false;
+  authConfig.returnRefreshToken ??= false;
+
   // User verification
   authConfig.verifyAccessUser ??= true;
 
+  // Modes
+  authConfig.loginMode ??= "otp";
+  authConfig.signupMode ??= "otp";
+
+  // Fields
+  authConfig.fieldsObj ??= {
+    email: "email",
+    otp: "otp",
+    password: "password",
+    purpose: "purpose",
+  };
+
+  // fieldNames
+  authConfig.fieldsObj.email ??= "email";
+  authConfig.fieldsObj.otp ??= "otp";
+  authConfig.fieldsObj.password ??= "password";
+  authConfig.fieldsObj.purpose ??= "purpose";
+
+  // Validation checkpoint
+  validateAuth(authConfig);
+
+  // Save final config
   envs = values;
 };
 

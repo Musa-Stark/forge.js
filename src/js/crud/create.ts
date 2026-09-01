@@ -11,6 +11,7 @@ import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import handleEncryption from "./encryption/handleEncryption.js";
 import handleHashing from "./security/handleHashing.js";
+import runActions from "./utils/runActions.js";
 
 const create = ({
   modelName,
@@ -37,7 +38,7 @@ const create = ({
     const encryptedFields = await handleEncryption(req.body, routeObj);
 
     // if hashedFields
-    const hashedFields = await handleHashing(req.body, routeObj)
+    const hashedFields = await handleHashing(req.body, routeObj);
 
     // model
     const Model = getModel({ modelName, routeName, routeObj });
@@ -52,6 +53,28 @@ const create = ({
         details: getErrorDetail(routeObj),
       });
 
+    // runActions
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+      Model,
+      data: {
+        owner,
+        body,
+        fileMetaData,
+        encryptedFields,
+        hashedFields,
+      },
+    };
+
+    // before action
+    await runActions(routeObj.actions?.before, {
+      operation: "create",
+      ...ActionObj,
+    });
+
     // create
     let newItem = null;
     try {
@@ -60,7 +83,7 @@ const create = ({
         ...fileMetaData,
         ...body,
         ...encryptedFields,
-        ...hashedFields
+        ...hashedFields,
       });
     } catch (err) {
       // err as Error
@@ -89,6 +112,13 @@ const create = ({
         details: getErrorDetail(routeObj),
       });
     }
+
+    // after action
+    await runActions(routeObj.actions?.after, {
+      ...ActionObj,
+      operation: "create",
+      item: newItem,
+    });
 
     // appresponse
     appResponse({
