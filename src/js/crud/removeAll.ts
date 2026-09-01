@@ -5,7 +5,7 @@ import authorizeAccess from "./utils/authorizeAccess.js";
 import type { Route } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
-
+import runActions from "./utils/runActions.js";
 
 const removeAll = ({
   modelName,
@@ -23,6 +23,21 @@ const removeAll = ({
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+      Model,
+    };
+
+    // before action
+    await runActions(routeObj.actions?.before, {
+      operation: "removeAll",
+      ...ActionObj,
+    });
+
     // delete all
     const result = await Model.deleteMany({});
 
@@ -37,6 +52,13 @@ const removeAll = ({
         details: getErrorDetail(routeObj),
       });
     }
+
+    // after action
+    await runActions(routeObj.actions?.before, {
+      operation: "removeAll",
+      ...ActionObj,
+      item: result,
+    });
 
     // return response
     appResponse({

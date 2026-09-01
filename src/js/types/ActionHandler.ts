@@ -6,7 +6,7 @@ export interface CreateContext {
   user: Request["user"];
 
   routeName: string;
-  operation: "create" | "update" | "remove";
+  operation: "create" | "update" | "remove" | "removeMultiple" | "removeAll";
   modelName: string;
   Model: any;
 

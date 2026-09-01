@@ -1,12 +1,12 @@
 import type { Request, Response, Router } from "express";
 import getModel from "../utils/getModel.js";
 import appResponse from "../utils/response.js";
-import authorizeAccess from "./utils/authorizeAccess.js";
 import type { Route, ValidationsObj } from "../types/Collection.ts";
 import AppError from "../utils/AppError.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import getErrorDetail from "../utils/getErrorDetail.js";
 import validate from "../utils/validate.js";
+import runActions from "./utils/runActions.js";
 
 const removeMultiple = ({
   modelName,
@@ -27,6 +27,21 @@ const removeMultiple = ({
 
     // model
     const Model = getModel({ modelName, routeName, routeObj });
+
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+      Model,
+    };
+
+    // before action
+    await runActions(routeObj.actions?.before, {
+      operation: "removeMultiple",
+      ...ActionObj,
+    });
 
     // body
     const body = validate(validationObj, req.body, routeObj);
@@ -58,6 +73,13 @@ const removeMultiple = ({
         details: getErrorDetail(routeObj),
       });
     }
+
+    // after action
+    await runActions(routeObj.actions?.before, {
+      operation: "removeMultiple",
+      ...ActionObj,
+      item: result,
+    });
 
     // return response
     appResponse({

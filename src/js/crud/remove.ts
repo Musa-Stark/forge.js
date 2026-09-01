@@ -64,7 +64,7 @@ const remove = ({
     // after action
     await runActions(routeObj.actions?.after, {
       ...ActionObj,
-      operation: "create",
+      operation: "remove",
       item: deletedItem,
     });
 
