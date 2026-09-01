@@ -10,8 +10,8 @@ export interface CreateContext {
   modelName: string;
   Model: any;
 
-  data: {
-    owner: string;
+  data?: {
+    owner?: string;
     body: any;
     fileMetaData?: any;
     encryptedFields?: any;

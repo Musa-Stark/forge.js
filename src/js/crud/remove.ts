@@ -6,6 +6,7 @@ import appResponse from "../utils/response.js";
 import authorizeAccess from "./utils/authorizeAccess.js";
 import type { Route } from "../types/Collection.ts";
 import { sanitizeOne } from "../utils/sanitize.js";
+import runActions from "./utils/runActions.js";
 
 const remove = ({
   modelName,
@@ -34,6 +35,21 @@ const remove = ({
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+      Model,
+    };
+
+    // before action
+    await runActions(routeObj.actions?.before, {
+      operation: "remove",
+      ...ActionObj,
+    });
+
     // delete
     const deletedItem = await Model.findByIdAndDelete(id);
 
@@ -45,12 +61,19 @@ const remove = ({
       routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
     if (idExcluded) delete cleaned["_id"];
 
+    // after action
+    await runActions(routeObj.actions?.after, {
+      ...ActionObj,
+      operation: "create",
+      item: deletedItem,
+    });
+
     // return response
     appResponse({
       res,
       message: "Item deleted successfully!",
       statusCode: 202,
-      data: cleaned
+      data: cleaned,
     });
   };
 };

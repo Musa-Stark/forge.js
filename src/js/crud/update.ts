@@ -10,6 +10,7 @@ import authorizeAccess from "./utils/authorizeAccess.js";
 import getValidationKey from "../utils/validationKeyError.js";
 import handleEncryption from "./encryption/handleEncryption.js";
 import handleHashing from "./security/handleHashing.js";
+import runActions from "./utils/runActions.js";
 
 const update = ({
   modelName,
@@ -52,6 +53,26 @@ const update = ({
     // model
     const Model = getModel({ modelName, routeName, routeObj });
 
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+      Model,
+      data: {
+        body,
+        encryptedFields,
+        hashedFields,
+      },
+    };
+
+    // before action
+    await runActions(routeObj.actions?.before, {
+      operation: "update",
+      ...ActionObj,
+    });
+
     // update
     const updatedItem = await Model.findByIdAndUpdate(
       id,
@@ -59,7 +80,7 @@ const update = ({
       {
         returnDocument: "after",
       },
-    )
+    );
 
     // cleaned
     const cleaned = sanitizeOne(updatedItem!.toObject(), routeObj);
@@ -68,6 +89,13 @@ const update = ({
     const idExcluded =
       routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
     if (idExcluded) delete cleaned["_id"];
+
+    // after action
+    await runActions(routeObj.actions?.after, {
+      ...ActionObj,
+      operation: "create",
+      item: updatedItem,
+    });
 
     // return response
     appResponse({
