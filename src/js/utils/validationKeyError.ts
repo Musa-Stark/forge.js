@@ -15,6 +15,14 @@ const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
         details: getErrorDetail(routeObj),
       });
     } else {
+      if (routeObj.method !== "get")
+        throw new AppError({
+          message: "validationKey is missing",
+          statusCode: 400,
+          hint: `body is required for method: '${routeObj.method}'`,
+          details: getErrorDetail(routeObj),
+        });
+
       return;
     }
 
@@ -23,7 +31,7 @@ const getValidationKey = (routeObj: Route, validationsObj: ValidationsObj) => {
     throw new AppError({
       message: "validationKey is required",
       statusCode: 400,
-      hint: "Provide it or make it false if this routeObj doesn't need validation",
+      hint: "Provide it or make it 'false' as boolean if this routeObj doesn't need validation",
       details: getErrorDetail(routeObj),
     });
 

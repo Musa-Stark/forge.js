@@ -32,6 +32,7 @@ const validateAuth = (config: AuthConfig): void => {
 
     // if config.schemaObj isn't found -> error
     if (!config.schemaObj) vAError("schemaObj");
+
     // keys that are required
     const requiredKeys = ["email", "password", "otp", "purpose"];
 
@@ -42,6 +43,9 @@ const validateAuth = (config: AuthConfig): void => {
 
     // if modelName -> [modelName]
     placeholderError("modelName", config.schemaObj?.modelName!);
+
+    // if modelName isn't found
+    if (!config.schemaObj?.modelName) vAError("schemaObj.modelName");
 
     // if schema is missing
     if (!config.schemaObj?.schema) vAError("schemaObj.schema");
@@ -73,7 +77,6 @@ const setEnvs = (values: InternalConstructor): void => {
   // User verification
   authConfig.verifyAccessUser ??= true;
 
-
   // Modes
   authConfig.loginMode ??= "otp";
   authConfig.signupMode ??= "otp";
@@ -86,6 +89,7 @@ const setEnvs = (values: InternalConstructor): void => {
     purpose: "purpose",
   };
 
+  // fieldNames
   authConfig.fieldsObj.email ??= "email";
   authConfig.fieldsObj.otp ??= "otp";
   authConfig.fieldsObj.password ??= "password";

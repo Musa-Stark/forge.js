@@ -11,6 +11,7 @@ import {
   userCollection,
   authCollection,
   accountCollection,
+  actionCollection
 } from "./collections/index.js";
 
 import "dotenv/config";
@@ -19,12 +20,18 @@ new StarkNexus({
   authConfigObj: {
     mode: "builtin",
     schemaObj: {
+      modelName: "User",
       schema: {
         name: fields.requiredString,
         email: fields.email,
         password: fields.password,
       },
     },
+
+    accessTokenAge: "1d",
+
+    loginMode: "credentials",
+    signupMode: "credentials"
   },
 
   collections: [
@@ -32,6 +39,7 @@ new StarkNexus({
     userCollection,
     // authCollection,
     accountCollection,
+    actionCollection
   ],
   port: 10000,
   apiVersion: 1,

@@ -5,6 +5,7 @@ import type { crudHandlers } from "./crudHandlers.ts";
 import type { uploadHandlers } from "./uploadHandlers.js";
 import type { accountHandlers } from "./accountHandlers.js";
 export type AuthRole = "admin" | "adminOrOwner" | "authenticated" | "public";
+import type { Action } from "./ActionHandler.js";
 import type { Upload } from "./upload.ts";
 export type AuthMode = "credentials" | "otp";
 // | "magic-link" | "oauth";
@@ -27,11 +28,13 @@ export interface Route {
     hiddenFieldsArray?: string[];
     removeMultipleFieldKey?: "ids" | "write_the_field_name" | (string & {});
   };
-  // middlewareArray?: MiddlewareInput;
   fileArray?: Upload[];
-  // emailsArray?: Email | Email[];
   mode?: AuthMode;
   encryptedFieldsArray?: string[];
   decryptedFieldsArray?: string[];
-  hashedFieldsArray?: string[]
+  hashedFieldsArray?: string[];
+  actions?: {
+    before?: Action[];
+    after?: Action[];
+  };
 }
