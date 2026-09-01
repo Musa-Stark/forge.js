@@ -17,41 +17,20 @@ import "dotenv/config";
 
 new StarkNexus({
   authConfigObj: {
-    fieldsObj: {
-      otp: "otp",
-      purpose: "purpose",
-      email: "email",
-      password: "password",
-    },
-
     mode: "builtin",
-
-    returnAccessToken: true,
-    returnRefreshToken: true,
-
-    accessTokenName: "access_token",
-
-    rotateRefreshToken: true,
-    refreshTokenRotationInterval: "24h",
-
-    accessTokenAge: "1h",
-    refreshTokenAge: "30d",
-
     schemaObj: {
-      modelName: "User",
       schema: {
         name: fields.requiredString,
         email: fields.email,
         password: fields.password,
       },
     },
-    loginMode: "credentials",
-    signupMode: "credentials",
   },
+
   collections: [
     crudCollection,
     userCollection,
-    authCollection,
+    // authCollection,
     accountCollection,
   ],
   port: 10000,
