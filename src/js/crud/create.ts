@@ -53,7 +53,7 @@ const create = ({
         details: getErrorDetail(routeObj),
       });
 
-    // runActions
+    // runActions object
     const ActionObj = {
       req,
       user: req.user,
