@@ -5,8 +5,10 @@ export interface CreateContext {
   req: Request;
   user: Request["user"];
 
-  resource: string;
+  routeName: string;
   operation: "create" | "update" | "remove";
+  modelName: string;
+  Model: any;
 
   data: {
     owner: string;
@@ -14,11 +16,11 @@ export interface CreateContext {
     fileMetaData?: any;
     encryptedFields?: any;
     hashedFields?: any;
-    Model: any;
   };
   item?: Document;
 }
 
 export interface Action {
+  type: "custom" | "email";
   handler: (context: CreateContext) => Promise<void> | void;
 }

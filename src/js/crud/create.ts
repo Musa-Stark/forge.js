@@ -56,20 +56,24 @@ const create = ({
     // runActions
     const ActionObj = {
       req,
-      resource: routeName,
       user: req.user,
+      routeName,
+      modelName,
+      Model,
       data: {
         owner,
         body,
         fileMetaData,
         encryptedFields,
         hashedFields,
-        Model,
       },
     };
 
     // before action
-    await runActions(routeObj.actions?.before, { ...ActionObj, operation: "create" });
+    await runActions(routeObj.actions?.before, {
+      operation: "create",
+      ...ActionObj,
+    });
 
     // create
     let newItem = null;

@@ -3,3 +3,4 @@ export { default as crudCollection } from "./crud/crud.collection.js";
 export { default as userCollection } from "./user/user.collection.js";
 export { default as accountCollection } from "./account/account.collection.js";
 export { default as actionCollection } from "./action/action.collection.js";
+export { default as recentCollection } from "./recent/recent.collection.js";

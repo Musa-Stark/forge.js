@@ -11,7 +11,8 @@ import {
   userCollection,
   authCollection,
   accountCollection,
-  actionCollection
+  actionCollection,
+  recentCollection
 } from "./collections/index.js";
 
 import "dotenv/config";
@@ -39,7 +40,8 @@ new StarkNexus({
     userCollection,
     // authCollection,
     accountCollection,
-    actionCollection
+    actionCollection,
+    recentCollection
   ],
   port: 10000,
   apiVersion: 1,

@@ -3,7 +3,9 @@ import {
   defineRoutes,
   mongooseFields,
   zodFields,
+  getModel,
 } from "../../dist/js/index.js";
+import recentHandler from "../recent/recent.handler.js";
 
 const routes = defineRoutes([
   {
@@ -13,27 +15,14 @@ const routes = defineRoutes([
     authRole: "authenticated",
     validationKey: "PostAction",
     actions: {
-      before: [
+      after: [
         {
-          handler: async ({ data: Data, item }) => {
-            console.log("================= before =======================")
-            const response = await fetch("http://localhost:10000/api/v1/health")
-            const res = await response.json()
-            console.log(res)
-            console.log(item)
-            console.log("================= before =======================")
+          type: "custom",
+          handler: async ({ modelName,routeName,  operation }) => {
+            await recentHandler(routeName, operation);
           },
         },
       ],
-      after: [
-        {
-          handler: async ({item}) => {
-            console.log("================= after =======================")
-            console.log(item)
-            console.log("================= after =======================")
-          }
-        }
-      ]
     },
   },
 ]);
@@ -48,7 +37,7 @@ const actionCollection = collection({
   },
   validationsObj: {
     PostAction: {
-      handler: zodFields.optionalString
+      handler: zodFields.optionalString,
     },
   },
 });
