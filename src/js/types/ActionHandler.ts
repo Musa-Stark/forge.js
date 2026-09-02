@@ -6,18 +6,20 @@ export interface CreateContext {
   user: Request["user"];
 
   routeName: string;
-  operation: "create" | "update" | "remove" | "removeMultiple" | "removeAll";
+  operation: "read" | "readAll" | "create" | "update" | "remove" | "removeMultiple" | "removeAll";
   modelName: string;
-  Model: any;
+  Model?: any;
 
   data?: {
     owner?: string;
-    body: any;
+    body?: any;
     fileMetaData?: any;
     encryptedFields?: any;
+    decryptedFields?: any;
     hashedFields?: any;
   };
-  item?: Document;
+  item?: Document | Document[];
+  result?: any;
 }
 
 export interface Action {

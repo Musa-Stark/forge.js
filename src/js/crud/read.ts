@@ -3,9 +3,9 @@ import getItem from "./utils/getItem.js";
 import appResponse from "../utils/response.js";
 import getParam from "./utils/getParam.js";
 import type { Route, ValidationsObj } from "../types/Collection.js";
-import getValidationKey from "../utils/validationKeyError.js";
 import authorizeAccess from "./utils/authorizeAccess.js";
 import handleDecryption from "./encryption/handleDecryption.js";
+import runActions from "./utils/runActions.js";
 
 const read = ({
   modelName,
@@ -20,7 +20,20 @@ const read = ({
   return async (req: Request, res: Response): Promise<void> => {
     // get /:parameter
     const id = getParam({ req, routeObj });
-    
+
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+    };
+
+    // before action
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
+      operation: "read",
+      ...ActionObj,
+    });
 
     // findById item
     const item = await getItem({
@@ -43,10 +56,19 @@ const read = ({
     // if decryption
     const decryption = await handleDecryption(item, routeObj);
 
+    // before action
+    modifiedResponse = await runActions(routeObj.actions?.after, {
+      operation: "read",
+      ...ActionObj,
+      data: {
+        decryptedFields: decryption,
+      },
+    });
+
     // return response
     appResponse({
       res,
-      data: { ...item, ...decryption },
+      data: modifiedResponse ?? { ...item, ...decryption },
       message: "Item found successfully!",
     });
   };

@@ -1,22 +1,35 @@
 import type { Request, Response } from "express";
 import getItem from "./utils/getItem.js";
 import appResponse from "../utils/response.js";
-import type { Route, ValidationsObj } from "../types/Collection.js";
+import type { Route } from "../types/Collection.js";
 import authorizeAccess from "./utils/authorizeAccess.js";
+import runActions from "./utils/runActions.js";
 import handleDecryption from "./encryption/handleDecryption.js";
 
 const read = ({
   modelName,
   routeName,
   routeObj,
-  validationsObj,
 }: {
   modelName: string;
   routeName: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
+    // runActions object
+    const ActionObj = {
+      req,
+      user: req.user,
+      routeName,
+      modelName,
+    };
+
+    // before action
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
+      operation: "readAll",
+      ...ActionObj,
+    });
+
     // Find item
     const items = await getItem({
       modelName,
@@ -52,10 +65,18 @@ const read = ({
       }),
     );
 
+    // before action
+    modifiedResponse = await runActions(routeObj.actions?.after, {
+      operation: "readAll",
+      ...ActionObj,
+      item: decryptedItems,
+      result: decryptedItems,
+    });
+
     // Return response
     appResponse({
       res,
-      data: decryptedItems,
+      data: modifiedResponse ?? decryptedItems,
       message: "Items found successfully!",
     });
   };
