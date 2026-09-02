@@ -1,4 +1,4 @@
-import type {  Request, Response } from "express";
+import type { Request, Response } from "express";
 import type { Route, ValidationsObj } from "../types/Collection.js";
 import AppError from "../utils/AppError.js";
 import validate from "../utils/validate.js";
@@ -70,7 +70,7 @@ const create = ({
     };
 
     // before action
-    await runActions(routeObj.actions?.before, {
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "create",
       ...ActionObj,
     });
@@ -113,17 +113,19 @@ const create = ({
       });
     }
 
+    const cleaned = sanitizeOne(newItem.toObject(), routeObj)
+
     // after action
-    await runActions(routeObj.actions?.after, {
+    modifiedResponse = await runActions(routeObj.actions?.after, {
       ...ActionObj,
       operation: "create",
-      item: newItem,
+      item: cleaned,
     });
 
     // appresponse
     appResponse({
       res,
-      data: sanitizeOne(newItem.toObject(), routeObj),
+      data: modifiedResponse ?? cleaned,
       message: "Item created successfully!",
     });
   };

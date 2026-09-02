@@ -33,7 +33,7 @@ const removeAll = ({
     };
 
     // before action
-    await runActions(routeObj.actions?.before, {
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "removeAll",
       ...ActionObj,
     });
@@ -54,7 +54,7 @@ const removeAll = ({
     }
 
     // after action
-    await runActions(routeObj.actions?.before, {
+    modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "removeAll",
       ...ActionObj,
       item: result,
@@ -63,7 +63,7 @@ const removeAll = ({
     // return response
     appResponse({
       res,
-      data: {
+      data: modifiedResponse ?? {
         deletedCount: result.deletedCount,
       },
       message: "Items deleted successfully!",

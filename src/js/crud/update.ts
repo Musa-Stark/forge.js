@@ -68,7 +68,7 @@ const update = ({
     };
 
     // before action
-    await runActions(routeObj.actions?.before, {
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "update",
       ...ActionObj,
     });
@@ -91,16 +91,16 @@ const update = ({
     if (idExcluded) delete cleaned["_id"];
 
     // after action
-    await runActions(routeObj.actions?.after, {
+    modifiedResponse = await runActions(routeObj.actions?.after, {
       ...ActionObj,
       operation: "update",
-      item: updatedItem,
+      item: cleaned,
     });
 
     // return response
     appResponse({
       res,
-      data: cleaned,
+      data: modifiedResponse ?? cleaned,
       message: "Item updated successfully!",
     });
   };

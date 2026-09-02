@@ -16,6 +16,21 @@ const recentCollection = collection({
       handler: "readAll",
       path: "/",
       authRole: "public",
+      mongooseConfigObj: {
+        hiddenFieldsArray: ["__v", "updatedAt"]
+      },
+      actions: {
+        after: [
+          {
+            type: "custom",
+            handler: async ({ result }) => {
+              const Model = getModel({ modelName: "User" });
+              const users = await Model.find();
+              return await [...result, ...users];
+            },
+          },
+        ],
+      },
     },
   ],
 

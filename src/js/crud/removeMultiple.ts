@@ -38,7 +38,7 @@ const removeMultiple = ({
     };
 
     // before action
-    await runActions(routeObj.actions?.before, {
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "removeMultiple",
       ...ActionObj,
     });
@@ -75,7 +75,7 @@ const removeMultiple = ({
     }
 
     // after action
-    await runActions(routeObj.actions?.before, {
+    modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "removeMultiple",
       ...ActionObj,
       item: result,
@@ -84,7 +84,7 @@ const removeMultiple = ({
     // return response
     appResponse({
       res,
-      data: {
+      data: modifiedResponse ?? {
         deletedCount: result.deletedCount,
       },
       message: "Items deleted successfully!",

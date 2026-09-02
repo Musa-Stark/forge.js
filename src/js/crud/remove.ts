@@ -45,7 +45,7 @@ const remove = ({
     };
 
     // before action
-    await runActions(routeObj.actions?.before, {
+    let modifiedResponse = await runActions(routeObj.actions?.before, {
       operation: "remove",
       ...ActionObj,
     });
@@ -62,10 +62,10 @@ const remove = ({
     if (idExcluded) delete cleaned["_id"];
 
     // after action
-    await runActions(routeObj.actions?.after, {
+    modifiedResponse = await runActions(routeObj.actions?.after, {
       ...ActionObj,
       operation: "remove",
-      item: deletedItem,
+      item: cleaned,
     });
 
     // return response
@@ -73,7 +73,7 @@ const remove = ({
       res,
       message: "Item deleted successfully!",
       statusCode: 202,
-      data: cleaned,
+      data: modifiedResponse ?? cleaned,
     });
   };
 };
