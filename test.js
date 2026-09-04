@@ -9,7 +9,6 @@ import StarkNexus, {
 import {
   crudCollection,
   userCollection,
-  authCollection,
   accountCollection,
   actionCollection,
   recentCollection
@@ -23,9 +22,11 @@ new StarkNexus({
     schemaObj: {
       modelName: "User",
       schema: {
-        name: fields.requiredString,
+        firstName: fields.requiredString,
+        lastName: fields.optionalString,
         email: fields.email,
         password: fields.password,
+        profileImage: fields.optionalFileMetaData
       },
     },
 
@@ -38,7 +39,6 @@ new StarkNexus({
   collections: [
     crudCollection,
     userCollection,
-    // authCollection,
     accountCollection,
     actionCollection,
     recentCollection
@@ -56,7 +56,7 @@ new StarkNexus({
   cloudinaryAPISecret: process.env.CLOUDINARY_API_SECRET,
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryFolderName: process.env.CLOUDINARY_FOLDER_NAME,
-  masterKey: "jr0frt78n0gm6HRF2KO6JUse2XjPCcKug/Ys6ARzKLw=",
+  masterKey: process.env.MASTER_KEY,
 });
 
 startServer();
