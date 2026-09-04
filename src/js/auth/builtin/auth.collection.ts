@@ -4,7 +4,7 @@ import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
   const { authConfigObj } = getEnvs();
-  vals.mongooseSchemaObj = authConfigObj?.schemaObj?.schema!;
+  vals.schema = authConfigObj?.schemaObj?.schema!;
 
   return vals;
 };
@@ -73,10 +73,10 @@ const routes = (): Route[] => {
 };
 
 export const authCollection = collection({
-  modelName: "User",
-  reqType: "auth",
-  routeName: "auth",
-  routesArray: routes(),
+  model: "User",
+  type: "auth",
+  route: "auth",
+  routes: routes(),
 });
 
 export default authCollection;

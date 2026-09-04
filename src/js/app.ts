@@ -47,32 +47,32 @@ const handleCollection = (
     setAppInfo(Req);
 
     let {
-      reqType,
-      routeName,
-      routesArray,
-      modelName,
-      validationsObj,
-      mongooseSchemaObj,
+      type,
+      route,
+      routes,
+      model,
+      validations,
+      schema,
     } = Req;
 
-    if (reqType === "auth" && authConfigObj.mode === "builtin") {
-      mongooseSchemaObj = authConfigObj.schemaObj?.schema!;
-      modelName = authConfigObj.schemaObj?.modelName!;
+    if (type === "auth" && authConfigObj.mode === "builtin") {
+      schema = authConfigObj.schemaObj?.schema!;
+      model = authConfigObj.schemaObj?.modelName!;
     }
 
-    if (modelName) {
-      const MODEL = createModel(modelName, mongooseSchemaObj!, routeName);
-      registerModel[modelName] = MODEL;
+    if (model) {
+      const MODEL = createModel(model, schema!, route);
+      registerModel[model] = MODEL;
     }
 
     handleReqType(
-      reqType,
+      type,
       app,
-      routeName,
-      routesArray,
-      modelName,
-      validationsObj,
-      mongooseSchemaObj,
+      route,
+      routes,
+      model,
+      validations,
+      schema,
     );
   }
 };
