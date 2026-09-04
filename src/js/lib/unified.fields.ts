@@ -26,9 +26,9 @@ const optionalString: UnifiedField = {
   mongoose: {
     type: String,
     trim: true,
-    default: ""
+    default: "",
   },
-  zod: z.string().trim(),
+  zod: z.string().trim().optional(),
 };
 
 const optionalEmptyString: UnifiedField = {
@@ -58,11 +58,7 @@ const email: UnifiedField = {
     lowercase: true,
     trim: true,
   },
-  zod: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email("Invalid email address"),
+  zod: z.string().trim().toLowerCase().email("Invalid email address"),
 };
 
 const password: UnifiedField = {
@@ -254,7 +250,9 @@ const userRefArray: UnifiedField = {
       ref: "User",
     },
   ],
-  zod: z.array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId")).default([]),
+  zod: z
+    .array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"))
+    .default([]),
 };
 
 /**
@@ -340,7 +338,7 @@ const timestamps = {
  * FILE METADATA
  * =========================
  */
-const fileMetaData: UnifiedField = {
+const requiredFileMetaData: UnifiedField = {
   mongoose: [
     {
       storageKey: { type: String, required: true },
@@ -357,6 +355,60 @@ const fileMetaData: UnifiedField = {
     z.object({
       storageKey: z.string(),
       url: z.string().url(),
+      bytes: z.number().optional(),
+      format: z.string().optional(),
+      mimeType: z.string().optional(),
+      resourceType: z.string().optional(),
+      width: z.number().optional(),
+      height: z.number().optional(),
+    }),
+  ),
+};
+
+const optionalFileMetaData: UnifiedField = {
+  mongoose: [
+    {
+      storageKey: { type: String },
+      url: { type: String },
+      bytes: { type: Number },
+      format: { type: String },
+      mimeType: { type: String },
+      resourceType: { type: String },
+      width: { type: Number },
+      height: { type: Number },
+    },
+  ],
+  zod: z.array(
+    z.object({
+      storageKey: z.string().optional(),
+      url: z.string().url().optional(),
+      bytes: z.number().optional(),
+      format: z.string().optional(),
+      mimeType: z.string().optional(),
+      resourceType: z.string().optional(),
+      width: z.number().optional(),
+      height: z.number().optional(),
+    }),
+  ),
+};
+
+const optionalEmptyFileMetaData: UnifiedField = {
+  mongoose: [
+    {
+      storageKey: { type: String, default: "" },
+      url: { type: String, default: "" },
+      bytes: { type: Number },
+      format: { type: String },
+      mimeType: { type: String },
+      resourceType: { type: String },
+      width: { type: Number },
+      height: { type: Number },
+    },
+  ],
+  zod: z.array(
+    z.object({
+      storageKey: z.string().default(""),
+      url: z.url().or(z.literal("")).default(""),
       bytes: z.number().optional(),
       format: z.string().optional(),
       mimeType: z.string().optional(),
@@ -423,8 +475,10 @@ export const fields = {
   otpStatus,
   purposeOTP,
   timestamps,
-  fileMetaData,
   encryptedString,
+  requiredFileMetaData,
+  optionalFileMetaData,
+  optionalEmptyFileMetaData,
 } as const;
 
 export type FieldName = keyof typeof fields;

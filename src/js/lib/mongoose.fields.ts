@@ -208,7 +208,7 @@ const encryptedString: EncryptedString = {
   },
 };
 
-const fileMetaData: FileMetaDataField[] = [
+const requiredFileMetaData: FileMetaDataField[] = [
   {
     storageKey: {
       type: String,
@@ -217,6 +217,66 @@ const fileMetaData: FileMetaDataField[] = [
     url: {
       type: String,
       required: true,
+    },
+    bytes: {
+      type: Number,
+    },
+    format: {
+      type: String,
+    },
+    mimeType: {
+      type: String,
+    },
+    resourceType: {
+      type: String,
+    },
+    width: {
+      type: Number,
+    },
+    height: {
+      type: Number,
+    },
+  },
+];
+
+const optionalFileMetaData: FileMetaDataField[] = [
+  {
+    storageKey: {
+      type: String,
+    },
+    url: {
+      type: String,
+    },
+    bytes: {
+      type: Number,
+    },
+    format: {
+      type: String,
+    },
+    mimeType: {
+      type: String,
+    },
+    resourceType: {
+      type: String,
+    },
+    width: {
+      type: Number,
+    },
+    height: {
+      type: Number,
+    },
+  },
+];
+
+const optionalEmptyFileMetaData: FileMetaDataField[] = [
+  {
+    storageKey: {
+      type: String,
+      default: "",
+    },
+    url: {
+      type: String,
+      default: "",
     },
     bytes: {
       type: Number,
@@ -267,7 +327,9 @@ const mongooseFields = {
   otpCount,
   otpStatus,
   recruitmentStatus,
-  fileMetaData,
+  requiredFileMetaData,
+  optionalFileMetaData,
+  optionalEmptyFileMetaData,
   encryptedString,
 } as const;
 
