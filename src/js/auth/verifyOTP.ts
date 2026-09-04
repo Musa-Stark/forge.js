@@ -13,14 +13,14 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const verifyOTP = ({
-  modelName,
-  validationsObj,
-  routeName,
+  model,
+  validations,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  validationsObj: ValidationsObj;
-  routeName: string;
+  model: string;
+  validations: ValidationsObj;
+  route: string;
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
@@ -33,7 +33,7 @@ const verifyOTP = ({
     const purposeKey = fieldsObj?.purpose;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -47,7 +47,7 @@ const verifyOTP = ({
       throw new AppError({
         message: `${emailKey}, ${otpKey} and ${purposeKey} are required.`,
         statusCode: 400,
-        hint: `Check if ${emailKey}, ${otpKey} or ${purposeKey} is missing in collection -> validationsObj -> ${routeObj.validationKey}.`,
+        hint: `Check if ${emailKey}, ${otpKey} or ${purposeKey} is missing in collection -> validations -> ${routeObj.validation}.`,
         details: getErrorDetail(routeObj),
       });
 
@@ -141,8 +141,8 @@ const verifyOTP = ({
     purposeMap[OTPData[purposeKey!] as keyof typeof purposeMap]({
       body: OTPData,
       res,
-      routeName,
-      modelName,
+      route,
+      model,
       routeObj,
       req,
     });

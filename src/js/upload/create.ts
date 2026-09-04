@@ -53,16 +53,16 @@ const uploadFile = (
 };
 
 export const handleUploadFiles = async (req: Request, routeObj: Route) => {
-  // if fileArray = undefined, [], false, length = 0
-  if (!routeObj?.fileArray?.length) return;
+  // if files = undefined, [], false, length = 0
+  if (!routeObj?.files?.length) return;
 
-  // if mongooseSchemaFieldName is missing
-  for (const el of routeObj.fileArray) {
-    if (!el.mongooseSchemaFieldName)
+  // if schemaField is missing
+  for (const el of routeObj.files) {
+    if (!el.schemaField)
       throw new AppError({
-        message: "mongooseSchemaFieldName is required.",
+        message: "schemaField is required.",
         statusCode: 400,
-        hint: "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
+        hint: "Provide schemaField in collection -> routeObj -> files [{...}].",
         details: getErrorDetail(routeObj),
       });
   }
@@ -85,7 +85,7 @@ export const handleUploadFiles = async (req: Request, routeObj: Route) => {
   const metaData = await Promise.all(
     files.map((file) => uploadFile(file, routeObj)),
   );
-  const mongooseFieldName = routeObj.fileArray[0]!.mongooseSchemaFieldName;
+  const mongooseFieldName = routeObj.files[0]!.schemaField;
 
   return { [mongooseFieldName as string]: metaData };
 };

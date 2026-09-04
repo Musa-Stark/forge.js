@@ -28,7 +28,7 @@ const saveRefreshToken = async ({
   ipAddress,
   os
 }: RefreshToken) => {
-  const RefreshToken = await getModel({modelName: "RefreshToken"})
+  const RefreshToken = await getModel({model: "RefreshToken"})
 
   // create token
   await RefreshToken.create({

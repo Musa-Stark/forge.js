@@ -14,16 +14,16 @@ import saveRefreshToken from "../../utils/saveRefreshToken.js";
 
 const createUser = async ({
   body,
-  modelName,
+  model,
   res,
-  routeName,
+  route,
   routeObj,
   req,
 }: {
   body: any;
-  modelName: string;
+  model: string;
   res: Response;
-  routeName: string;
+  route: string;
   routeObj: Route;
   req: Request;
 }) => {
@@ -37,7 +37,7 @@ const createUser = async ({
   const purposeKey = fieldsObj?.purpose;
 
   // models
-  const Model = getModel({ modelName, routeName, routeObj });
+  const Model = getModel({ model, route, routeObj });
   const OTPModel = getOTPModel(routeObj);
 
   // token info

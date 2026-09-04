@@ -8,14 +8,14 @@ import handleDecryption from "./encryption/handleDecryption.js";
 import runActions from "./utils/runActions.js";
 
 const read = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // get /:parameter
@@ -25,8 +25,8 @@ const read = ({
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
     };
 
     // before action
@@ -37,20 +37,19 @@ const read = ({
 
     // findById item
     const item = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       _id: id as string,
       path: routeObj.path,
       routeObj,
     });
 
     // if not public -> do authorizeAccess
-    if (routeObj.authRole !== "public")
-      authorizeAccess({ routeObj, routeName, item, req });
+    if (routeObj.auth !== "public")
+      authorizeAccess({ routeObj, route, item, req });
 
     // if '_id' excluded
-    const idExcluded =
-      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+    const idExcluded = routeObj.config?.hiddenFields?.includes("_id");
     if (idExcluded) delete item["_id"];
 
     // if decryption
@@ -61,7 +60,7 @@ const read = ({
       operation: "read",
       ...ActionObj,
       data: {
-        decryptedFields: decryption,
+        decrypted: decryption,
       },
     });
 

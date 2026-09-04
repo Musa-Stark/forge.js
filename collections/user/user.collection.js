@@ -7,72 +7,72 @@ import {
 
 const routes = defineRoutes([
     {
-      authRole: "adminOrOwner",
+      auth: "adminOrOwner",
       handler: "readAll",
       method: "get",
       path: "/",
-      validationKey: false,
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["__v"],
+      validation: false,
+      config: {
+        hiddenFields: ["__v"],
       },
     },
     {
-      authRole: "adminOrOwner",
+      auth: "adminOrOwner",
       handler: "read",
       method: "get",
       path: "/:id",
-      validationKey: false,
-      ownerShip: "self",
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["_id", "!password"],
+      validation: false,
+      ownership: "self",
+      config: {
+        hiddenFields: ["_id", "!password"],
       },
     },
     {
-      authRole: "authenticated",
+      auth: "authenticated",
       handler: "create",
       method: "post",
       path: "/",
-      validationKey: "create",
-      fileArray: [
+      validation: "create",
+      files: [
         {
-          mongooseSchemaFieldName: "gallery",
-          fieldName: "gallery",
+          schemaField: "gallery",
+          paramField: "gallery",
           multiple: true,
         },
       ],
     },
     {
-      authRole: "adminOrOwner",
+      auth: "adminOrOwner",
       handler: "addFile",
       method: "patch",
       path: "/:id/addFile",
-      fileArray: [
+      files: [
         {
-          fieldName: "gallery",
-          mongooseSchemaFieldName: "test",
+          paramField: "gallery",
+          schemaField: "test",
           multiple: true,
         },
       ],
     },
     {
-      authRole: "adminOrOwner",
+      auth: "adminOrOwner",
       handler: "update",
       method: "patch",
       path: "/:id",
-      hashedFieldsArray: ["password"],
-      ownerShip: "self",
-      validationKey: "update",
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["_id", "!password"],
+      hashedFields: ["password"],
+      ownership: "self",
+      validation: "update",
+      config: {
+        hiddenFields: ["_id", "!password"],
       },
     },
   ])
 
 const userCollection = collection({
-  reqType: "crud",
-  routeName: "users",
-  modelName: "User",
-  mongooseSchemaObj: {
+  type: "crud",
+  route: "users",
+  model: "User",
+  schema: {
     name: mongooseFields.requiredString,
     Email: mongooseFields.email,
     password: mongooseFields.password,
@@ -80,9 +80,9 @@ const userCollection = collection({
     profileImage: mongooseFields.fileMetaData,
     test: mongooseFields.fileMetaData,
   },
-  routesArray: routes,
+  routes: routes,
 
-  validationsObj: {
+  validations: {
     create: {
       name: zodFields.requiredString,
       email: zodFields.email,

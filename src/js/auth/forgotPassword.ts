@@ -9,14 +9,14 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const forgotPassword = ({
-  modelName,
-  routeName,
-  validationsObj,
+  model,
+  route,
+  validations,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
-  validationsObj: ValidationsObj;
+  model: string;
+  route: string;
+  validations: ValidationsObj;
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ const forgotPassword = ({
     const emailKey = fieldsObj?.email;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -42,8 +42,8 @@ const forgotPassword = ({
 
     // user
     await getUser({
-      modelName,
-      routeName,
+      model,
+      route,
       email: body[emailKey!] as string,
       routeObj,
     });
@@ -53,8 +53,8 @@ const forgotPassword = ({
       body,
       res,
       purpose: "password_reset",
-      routeName,
-      modelName,
+      route,
+      model,
       routeObj,
     });
   };

@@ -13,15 +13,15 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const resetPassword = ({
-  modelName,
+  model,
   routeObj,
-  routeName,
-  validationsObj,
+  route,
+  validations,
 }: {
-  modelName: string;
+  model: string;
   routeObj: Route;
-  routeName: string;
-  validationsObj: ValidationsObj;
+  route: string;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // get dynamic auth field keys
@@ -34,7 +34,7 @@ const resetPassword = ({
     const purposeKey = fieldsObj?.purpose;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -67,8 +67,8 @@ const resetPassword = ({
 
     // user
     const user = await getUser({
-      modelName,
-      routeName,
+      model,
+      route,
       email: body[emailKey!] as string,
       routeObj,
     });

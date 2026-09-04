@@ -20,7 +20,7 @@ new StarkNexus({
   authConfigObj: {
     mode: "builtin",
     schemaObj: {
-      modelName: "User",
+      model: "User",
       schema: {
         firstName: fields.requiredString,
         lastName: fields.optionalString,

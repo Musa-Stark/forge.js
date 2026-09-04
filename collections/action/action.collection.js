@@ -12,14 +12,14 @@ const routes = defineRoutes([
     handler: "create",
     method: "post",
     path: "/",
-    authRole: "authenticated",
-    validationKey: "PostAction",
+    auth: "authenticated",
+    validation: "PostAction",
     actions: {
       after: [
         {
           type: "custom",
-          handler: async ({ modelName,routeName,  operation }) => {
-            await recentHandler(routeName, operation);
+          handler: async ({ model,route,  operation }) => {
+            await recentHandler(route, operation);
           },
         },
       ],
@@ -28,14 +28,14 @@ const routes = defineRoutes([
 ]);
 
 const actionCollection = collection({
-  reqType: "crud",
-  routeName: "actions",
-  modelName: "Action",
-  routesArray: routes,
-  mongooseSchemaObj: {
+  type: "crud",
+  route: "actions",
+  model: "Action",
+  routes: routes,
+  schema: {
     handler: mongooseFields.optionalString,
   },
-  validationsObj: {
+  validations: {
     PostAction: {
       handler: zodFields.optionalString,
     },

@@ -57,7 +57,7 @@ const handleCollection = (
 
     if (type === "auth" && authConfigObj.mode === "builtin") {
       schema = authConfigObj.schemaObj?.schema!;
-      model = authConfigObj.schemaObj?.modelName!;
+      model = authConfigObj.schemaObj?.model!;
     }
 
     if (model) {

@@ -34,14 +34,14 @@ const multerMiddleware = multer({
 });
 
 export const handleMulterMiddleware = (
-  fileArray: Upload[],
+  files: Upload[],
   routeObj: Route,
 ) => {
-  if (!Array.isArray(fileArray))
+  if (!Array.isArray(files))
     throw new AppError({
-      message: "fileArray must be an array.",
+      message: "files must be an array.",
       statusCode: 400,
-      hint: "Provide fileArray as an array in the collection configuration.",
+      hint: "Provide files as an array in the collection configuration.",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -49,8 +49,8 @@ export const handleMulterMiddleware = (
       },
     });
 
-  const fields = fileArray.map((upload) => ({
-    name: upload.fieldName,
+  const fields = files.map((upload) => ({
+    name: upload.paramField,
     maxCount: upload.multiple ? 10 : 1,
   }));
 
@@ -112,7 +112,7 @@ export const handleMulterMiddleware = (
                 : code === "UPLOAD_TOO_MANY_FILES"
                   ? "Reduce the number of uploaded files."
                   : code === "UPLOAD_FIELD_NOT_FOUND"
-                    ? "Ensure the uploaded field name matches collection -> routeObj -> fileArray -> fieldName. If these are multiple files, make 'multiple: true;'"
+                    ? "Ensure the uploaded field name matches collection -> routeObj -> files -> paramField. If these are multiple files, make 'multiple: true;'"
                     : "Check the upload request and try again.",
             details: {
               handler: routeObj.handler,

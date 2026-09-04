@@ -14,19 +14,19 @@ import handleHashing from "./security/handleHashing.js";
 import runActions from "./utils/runActions.js";
 
 const create = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
-  validationsObj,
+  validations,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -41,15 +41,15 @@ const create = ({
     const hashedFields = await handleHashing(req.body, routeObj);
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // owner
     const owner = req.user?._id;
     if (!owner)
       throw new AppError({
-        message: "authRole should'nt be public",
+        message: "auth should'nt be public",
         statusCode: 409,
-        hint: "Make the authRole admin or adminOrOwner",
+        hint: "Make the auth admin or adminOrOwner",
         details: getErrorDetail(routeObj),
       });
 
@@ -57,8 +57,8 @@ const create = ({
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
       Model,
       data: {
         owner,
@@ -95,7 +95,7 @@ const create = ({
         throw new AppError({
           message: `Item with this '${field}' already exists`,
           statusCode: 409,
-          hint: `'${field}' is declared as unique in collection -> mongooseSchemaObj`,
+          hint: `'${field}' is declared as unique in collection -> schema`,
           details: {
             handler: routeObj.handler,
             method: routeObj.method,

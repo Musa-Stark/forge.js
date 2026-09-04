@@ -5,14 +5,14 @@ import type { Route } from "../../types/Collection.js";
 import { getEnvs } from "../../config/envs.js";
 
 const verifyCredentials = async ({
-  modelName,
+  model,
   body,
-  routeName,
+  route,
   routeObj,
 }: {
-  modelName: string;
+  model: string;
   body: any;
-  routeName: string;
+  route: string;
   routeObj: Route;
 }) => {
   // get dynamic auth field keys
@@ -22,11 +22,11 @@ const verifyCredentials = async ({
   const emailKey = fieldsObj?.email;
   const passwordKey = fieldsObj?.password;
 
-  if (!modelName || !body)
+  if (!model || !body)
     throw new AppError({
-      message: "modelName and body are required.",
+      message: "model and body are required.",
       statusCode: 400,
-      hint: "Provide modelName and body before verifying credentials.",
+      hint: "Provide model and body before verifying credentials.",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -36,8 +36,8 @@ const verifyCredentials = async ({
 
   // user
   const user = await getUser({
-    modelName,
-    routeName,
+    model,
+    route,
     email: body[emailKey!] as string,
     needPassword: true,
     routeObj,

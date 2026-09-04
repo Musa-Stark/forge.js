@@ -4,28 +4,28 @@ import getErrorDetail from "./getErrorDetail.js";
 import type { Route } from "../types/Collection.js";
 
 const getModel = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  routeName?: string;
+  model: string;
+  route?: string;
   routeObj?: Route;
 }) => {
-  if (!modelName) {
+  if (!model) {
     throw new AppError({
-      message: `Model name is required for routeObj '${routeName}'`,
+      message: `Model name is required for routeObj '${route}'`,
       statusCode: 500,
-      hint: "Provide a valid modelName when configuring the collection.",
+      hint: "Provide a valid model when configuring the collection.",
       details: getErrorDetail(routeObj!),
     });
   }
 
-  const Model = registerModel[modelName];
+  const Model = registerModel[model];
 
   if (!Model) {
     throw new AppError({
-      message: `Model '${modelName}' is not registered`,
+      message: `Model '${model}' is not registered`,
       statusCode: 500,
       hint: "Register the model before using it in a collection.",
       details: getErrorDetail(routeObj!),

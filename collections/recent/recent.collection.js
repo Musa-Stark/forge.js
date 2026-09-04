@@ -7,24 +7,24 @@ import {
 } from "../../dist/js/index.js";
 
 const recentCollection = collection({
-  reqType: "crud",
-  routeName: "recents",
-  modelName: "Recent",
-  routesArray: [
+  type: "crud",
+  route: "recents",
+  model: "Recent",
+  routes: [
     {
       method: "get",
       handler: "readAll",
       path: "/",
-      authRole: "public",
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["__v", "updatedAt"]
+      auth: "public",
+      config: {
+        hiddenFields: ["__v", "updatedAt"]
       },
       actions: {
         after: [
           {
             type: "custom",
             handler: async ({ result }) => {
-              const Model = getModel({ modelName: "User" });
+              const Model = getModel({ model: "User" });
               const users = await Model.find();
               return await [...result, ...users];
             },
@@ -34,7 +34,7 @@ const recentCollection = collection({
     },
   ],
 
-  mongooseSchemaObj: {
+  schema: {
     title: mongooseFields.requiredString,
     type: mongooseFields.requiredString,
   },

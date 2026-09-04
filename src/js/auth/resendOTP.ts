@@ -12,14 +12,14 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const resendOTP = ({
-  modelName,
-  routeName,
-  validationsObj,
+  model,
+  route,
+  validations,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
-  validationsObj: ValidationsObj;
+  model: string;
+  route: string;
+  validations: ValidationsObj;
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response) => {
@@ -33,7 +33,7 @@ const resendOTP = ({
     const purposeKey = fieldsObj?.purpose;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -53,8 +53,8 @@ const resendOTP = ({
 
     // if user not found
     await getUser({
-      modelName,
-      routeName,
+      model,
+      route,
       email: body[emailKey!] as string,
       routeObj,
     });

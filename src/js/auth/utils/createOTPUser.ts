@@ -13,15 +13,15 @@ const createOTPUser = async ({
   body,
   res,
   purpose,
-  routeName,
-  modelName,
+  route,
+  model,
   routeObj,
 }: {
   body: any;
   res: Response;
   purpose: string;
-  routeName: string;
-  modelName: string;
+  route: string;
+  model: string;
   routeObj: Route;
 }) => {
   // get dynamic auth field keys
@@ -67,9 +67,9 @@ const createOTPUser = async ({
   // if login - mode: otp
   if (purpose === "login")
     await verifyCredentials({
-      modelName,
+      model,
       body,
-      routeName,
+      route,
       routeObj,
     });
 

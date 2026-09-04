@@ -10,10 +10,10 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 
 const account = (
   app: Express,
-  routeName: string,
+  route: string,
   routes: Route[],
-  modelName: string | undefined,
-  validationsObj?: ValidationsObj,
+  model: string | undefined,
+  validations?: ValidationsObj,
 ) => {
   const { apiVersion } = getEnvs();
   for (const routeObj of routes) {
@@ -34,20 +34,20 @@ const account = (
     middlewares.push(protect(routeObj));
 
     // upload in routeObj
-    if (routeObj?.fileArray)
-      middlewares.push(handleMulterMiddleware(routeObj.fileArray, routeObj));
+    if (routeObj?.files)
+      middlewares.push(handleMulterMiddleware(routeObj.files, routeObj));
 
     // app.get("/", (req, res) => {})
     app[routeObj.method](
-      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
+      `/api/v${apiVersion}/${route}${routeObj.path}`,
       ...middlewares,
       asyncHandler(
         // redirect -> handler
         handlerMap[routeObj.handler]({
-          modelName,
-          routeName,
+          model,
+          route,
           routeObj,
-          validationsObj,
+          validations,
         }),
       ),
     );

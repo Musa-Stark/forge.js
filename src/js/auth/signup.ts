@@ -9,15 +9,15 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const signup = ({
-  modelName,
+  model,
   routeObj,
-  routeName,
-  validationsObj,
+  route,
+  validations,
 }: {
-  modelName: string;
+  model: string;
   routeObj: Route;
-  routeName: string;
-  validationsObj: ValidationsObj;
+  route: string;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // get dynamic email and password
@@ -27,7 +27,7 @@ const signup = ({
     const passwordKey = fieldsObj?.password;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validation
     const body = validate(validationObj, req.body, routeObj);
@@ -42,7 +42,7 @@ const signup = ({
       });
 
     // if existing user
-    const Model = getModel({ modelName, routeName, routeObj })!;
+    const Model = getModel({ model, route, routeObj })!;
 
     const existing = await Model.findOne({
       [emailKey!]: body[emailKey!],
@@ -59,8 +59,8 @@ const signup = ({
     await modeMap.signup[routeObj.mode!]({
       body,
       res,
-      routeName,
-      modelName,
+      route,
+      model,
       purpose: "signup",
       routeObj,
       req,

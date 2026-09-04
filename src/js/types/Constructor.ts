@@ -22,7 +22,7 @@ export interface AuthConfig {
     purpose: "purpose" | "write_a_custom_field_name" | (string & {});
   };
   schemaObj?: {
-    modelName: "User" | "WRITE_A_CUSTOM_USER_Model_Name" | (string & {});
+    model: "User" | "WRITE_A_CUSTOM_USER_Model_Name" | (string & {});
     schema: Record<string, UnifiedField>;
   };
 

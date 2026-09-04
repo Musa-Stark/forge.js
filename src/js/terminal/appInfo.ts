@@ -42,7 +42,7 @@ const setAppInfo = (req: Collection) => {
 
   if (
     authConfigObj.mode === "builtin" &&
-    !resources.includes(authConfigObj.schemaObj?.modelName || "User")
+    !resources.includes(authConfigObj.schemaObj?.model || "User")
   )
     appInfo.modelsCount!++;
 
@@ -53,8 +53,8 @@ const setAppInfo = (req: Collection) => {
   if (req.routes) {
     appInfo.routesCount! += req.routes.length;
     for (const el of req.routes) {
-      if (el.fileArray) appInfo.fileUpload = true;
-      if (el.authRole === "admin" || el.authRole === "adminOrOwner")
+      if (el.files) appInfo.fileUpload = true;
+      if (el.auth === "admin" || el.auth === "adminOrOwner")
         appInfo.authorization = true;
     }
   }

@@ -16,17 +16,17 @@ import { hash } from "../../utils/libsodium.js";
 
 const authenticateUser = async ({
   body,
-  modelName,
+  model,
   res,
   req,
-  routeName,
+  route,
   routeObj,
 }: {
   body: any;
-  modelName: string;
+  model: string;
   res: Response;
   req: Request;
-  routeName: string;
+  route: string;
   routeObj: Route;
 }) => {
   // get dynamic auth field keys
@@ -58,8 +58,8 @@ const authenticateUser = async ({
 
   // user
   const user = await getUser({
-    modelName,
-    routeName,
+    model,
+    route,
     email: body[emailKey!] as string,
     needPassword: true,
     routeObj,

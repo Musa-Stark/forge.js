@@ -4,16 +4,16 @@ import getErrorDetail from "../../utils/getErrorDetail.js";
 import { hash } from "../../utils/libsodium.js";
 
 const handleHashing = async (body: any, routeObj: Route) => {
-  const hashArr = routeObj.hashedFieldsArray;
+  const hashArr = routeObj.hashedFields;
 
-  // If hashedFieldsArray is not configured, skip hashing.
+  // If hashedFields is not configured, skip hashing.
   if (!hashArr) return;
 
   // Validate configuration type.
   if (!Array.isArray(hashArr)) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "hashedFieldsArray must be an array of field names.",
+      hint: "hashedFields must be an array of field names.",
       message: "Hashing configuration is invalid.",
       statusCode: 409,
     });
@@ -23,7 +23,7 @@ const handleHashing = async (body: any, routeObj: Route) => {
   if (!hashArr.length) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "Add at least one field name to hashedFieldsArray.",
+      hint: "Add at least one field name to hashedFields.",
       message: "Hashing configuration is empty.",
       statusCode: 409,
     });

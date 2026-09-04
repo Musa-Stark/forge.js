@@ -10,24 +10,24 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 
 const crud = (
   app: Express,
-  routeName: string,
+  route: string,
   routes: Route[],
-  modelName: string | undefined,
-  validationsObj?: ValidationsObj,
+  model: string | undefined,
+  validations?: ValidationsObj,
 ) => {
   const { apiVersion } = getEnvs();
   for (const routeObj of routes) {
     // push middleware to middlewares
     if (
-      !routeObj.authRole ||
+      !routeObj.auth ||
       !routeObj.handler ||
       !routeObj.method ||
       !routeObj.path
     )
       throw new AppError({
-        message: "authRole, handler, method and path are required required",
+        message: "auth, handler, method and path are required required",
         statusCode: 409,
-        hint: "Check if authRole, handler, method or path is missing in collections -> routes.",
+        hint: "Check if auth, handler, method or path is missing in collections -> routes.",
         details: getErrorDetail(routeObj),
       });
 
@@ -35,23 +35,23 @@ const crud = (
     const middlewares = [];
 
     // protect
-    if (routeObj.authRole !== "public") middlewares.push(protect(routeObj));
+    if (routeObj.auth !== "public") middlewares.push(protect(routeObj));
 
     // upload in routeObj
-    if (routeObj?.fileArray)
-      middlewares.push(handleMulterMiddleware(routeObj.fileArray, routeObj));
+    if (routeObj?.files)
+      middlewares.push(handleMulterMiddleware(routeObj.files, routeObj));
 
     // app.get("/", (req, res) => {})
     app[routeObj.method](
-      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
+      `/api/v${apiVersion}/${route}${routeObj.path}`,
       ...middlewares,
       asyncHandler(
         // redirect -> handler
         handlerMap[routeObj.handler]({
-          modelName,
-          routeName,
+          model,
+          route,
           routeObj,
-          validationsObj,
+          validations,
         }),
       ),
     );

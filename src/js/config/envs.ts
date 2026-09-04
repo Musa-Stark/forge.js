@@ -41,11 +41,11 @@ const validateAuth = (config: AuthConfig): void => {
       if (!(key in config.fieldsObj!)) vAError(`fieldsObj.${key}`);
     }
 
-    // if modelName -> [modelName]
-    placeholderError("modelName", config.schemaObj?.modelName!);
+    // if model -> [model]
+    placeholderError("model", config.schemaObj?.model!);
 
-    // if modelName isn't found
-    if (!config.schemaObj?.modelName) vAError("schemaObj.modelName");
+    // if model isn't found
+    if (!config.schemaObj?.model) vAError("schemaObj.model");
 
     // if schema is missing
     if (!config.schemaObj?.schema) vAError("schemaObj.schema");

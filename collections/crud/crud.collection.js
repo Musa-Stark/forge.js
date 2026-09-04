@@ -1,10 +1,10 @@
 import { collection, zodFields, mongooseFields } from "../../dist/js/index.js";
 
 const crudCollection = collection({
-  reqType: "crud",
-  routeName: "products",
-  modelName: "Product",
-  mongooseSchemaObj: {
+  type: "crud",
+  route: "products",
+  model: "Product",
+  schema: {
     name: mongooseFields.requiredString,
     price: mongooseFields.requiredNumber,
     category: mongooseFields.objectArray,
@@ -15,54 +15,54 @@ const crudCollection = collection({
     // cardNumber: mongooseFields.encryptedString,
     // cvv: mongooseFields.encryptedString,
   },
-  routesArray: [
+  routes: [
     {
       method: "get",
       path: "/",
       handler: "readAll",
-      authRole: "public",
-      validationKey: false,
-      // decryptedFieldsArray: ["cardNumber", "cvv"],
-      mongooseConfigObj: {
-        populateKey: "owner",
-        hiddenFieldsArray: ["__v", "updatedAt"],
+      auth: "public",
+      validation: false,
+      // decryptedFields: ["cardNumber", "cvv"],
+      config: {
+        populate: "owner",
+        hiddenFields: ["__v", "updatedAt"],
       },
     },
     {
       method: "get",
       path: "/:id",
       handler: "read",
-      authRole: "adminOrOwner",
-      validationKey: false,
-      // decryptedFieldsArray: ["cardNumber", "cvv"],
-      mongooseConfigObj: {
-        populateKey: "owner",
-        hiddenFieldsArray: ["__v"],
+      auth: "adminOrOwner",
+      validation: false,
+      // decryptedFields: ["cardNumber", "cvv"],
+      config: {
+        populate: "owner",
+        hiddenFields: ["__v"],
       },
     },
     {
       method: "post",
       path: "/",
       handler: "create",
-      authRole: "authenticated",
-      validationKey: "createProduct",
-      // encryptedFieldsArray: ["cardNumber", "cvv"],
+      auth: "authenticated",
+      validation: "createProduct",
+      // encryptedFields: ["cardNumber", "cvv"],
     },
     {
       method: "post",
       path: "/create/bulk",
       handler: "createBulk",
-      authRole: "admin",
+      auth: "admin",
     },
     {
       method: "post",
       path: "/:id/addFile",
       handler: "addFile",
-      authRole: "adminOrOwner",
-      fileArray: [
+      auth: "adminOrOwner",
+      files: [
         {
-          mongooseSchemaFieldName: "profileImage",
-          fieldName: "backgroundImage",
+          schemaField: "profileImage",
+          paramField: "backgroundImage",
         },
       ],
     },
@@ -70,20 +70,20 @@ const crudCollection = collection({
       method: "patch",
       path: "/:id",
       handler: "update",
-      authRole: "adminOrOwner",
-      validationKey: "update",
+      auth: "adminOrOwner",
+      validation: "update",
     },
     {
       method: "patch",
       path: "/:id/updateFile",
       handler: "updateFile",
-      authRole: "adminOrOwner",
-      validationKey: "updateAvatar",
-      fileArray: [
+      auth: "adminOrOwner",
+      validation: "updateAvatar",
+      files: [
         {
-          fieldName: "backgroundImage",
-          mongooseSchemaFieldName: "profileImage",
-          validationIdentifierKey: "avatar",
+          paramField: "backgroundImage",
+          schemaField: "profileImage",
+          validationKey: "avatar",
         },
       ],
     },
@@ -91,41 +91,42 @@ const crudCollection = collection({
       method: "delete",
       path: "/:id",
       handler: "remove",
-      authRole: "adminOrOwner",
-      validationKey: false,
+      auth: "adminOrOwner",
+      validation: false,
     },
     {
       method: "delete",
       path: "/",
       handler: "removeMultiple",
-      authRole: "adminOrOwner",
-      validationKey: "removeMultiple",
-      mongooseConfigObj: {
-        removeMultipleFieldKey: "ids"
+      auth: "adminOrOwner",
+      validation: "removeMultiple",
+      config: {
+        targetField: "ids"
       }
     },
     {
+
       method: "delete",
       path: "/all",
       handler: "removeAll",
-      authRole: "admin",
-      validationKey: false,
+      auth: "admin",
+      validation: false,
     },
     {
       method: "delete",
       path: "/:id/deleteFile",
       handler: "deleteFile",
-      authRole: "adminOrOwner",
-      validationKey: "deleteAvatar",
-      fileArray: [
+      auth: "adminOrOwner",
+      validation: "deleteAvatar",
+      files: [
         {
-          mongooseSchemaFieldName: "profileImage",
-          validationIdentifierKey: "stark",
+          schemaField: "profileImage",
+          validationKey: "stark",
         },
       ],
     },
   ],
-  validationsObj: {
+  validations: {
     createProduct: {
       name: zodFields.requiredString,
       price: zodFields.requiredNumber,

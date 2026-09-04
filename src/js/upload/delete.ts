@@ -6,14 +6,14 @@ import AppLog from "../utils/AppLog.js";
 const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
   setupCloudinary(routeObj);
 
-  const fileArray = routeObj.fileArray;
+  const files = routeObj.files;
 
-  if (!Array.isArray(fileArray) || fileArray.length === 0)
+  if (!Array.isArray(files) || files.length === 0)
     throw new AppError({
-      message: "fileArray is required.",
+      message: "files is required.",
       statusCode: 400,
       hint:
-        "Provide fileArray in the collection routeObj configuration for delete handlers.",
+        "Provide files in the collection routeObj configuration for delete handlers.",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -21,21 +21,21 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
       },
     });
 
-  if (fileArray.length > 1)
+  if (files.length > 1)
     AppLog(
       "warn",
       "deleteFile",
-      `fileArray in collection has more than 1 items for handler: '${routeObj.handler}', method: '${routeObj.method}' and path: '${routeObj.path}' to delete.`,
+      `files in collection has more than 1 items for handler: '${routeObj.handler}', method: '${routeObj.method}' and path: '${routeObj.path}' to delete.`,
     );
 
-  const mongooseField = fileArray[0]?.mongooseSchemaFieldName;
+  const mongooseField = files[0]?.schemaField;
 
   if (typeof mongooseField !== "string" || mongooseField.trim() === "")
     throw new AppError({
-      message: "mongooseSchemaFieldName is required.",
+      message: "schemaField is required.",
       statusCode: 400,
       hint:
-        "Provide mongooseSchemaFieldName in collection -> routeObj -> fileArray [{...}].",
+        "Provide schemaField in collection -> routeObj -> files [{...}].",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -50,7 +50,7 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
       message: `'${mongooseField}' field not found.`,
       statusCode: 400,
       hint:
-        "Ensure mongooseSchemaFieldName matches an existing schema field.",
+        "Ensure schemaField matches an existing schema field.",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -58,17 +58,17 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
       },
     });
 
-  const validationIdentifierKey = fileArray[0]?.validationIdentifierKey;
+  const validationKey = files[0]?.validationKey;
 
   if (
-    typeof validationIdentifierKey !== "string" ||
-    validationIdentifierKey.trim() === ""
+    typeof validationKey !== "string" ||
+    validationKey.trim() === ""
   )
     throw new AppError({
-      message: "validationIdentifierKey is required.",
+      message: "validationKey is required.",
       statusCode: 400,
       hint:
-        "Provide validationIdentifierKey in collection -> routeObj -> fileArray [{...}].",
+        "Provide validationKey in collection -> routeObj -> files [{...}].",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -76,11 +76,11 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
       },
     });
 
-  if (!body[validationIdentifierKey])
+  if (!body[validationKey])
     throw new AppError({
-      message: `'${validationIdentifierKey}' is required.`,
+      message: `'${validationKey}' is required.`,
       statusCode: 400,
-      hint: `Provide '${validationIdentifierKey}' in the request body.`,
+      hint: `Provide '${validationKey}' in the request body.`,
       details: {
         handler: routeObj.handler,
         method: routeObj.method,
@@ -89,12 +89,12 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
     });
 
   const targetItem = mongooseFilesArray.find(
-    (el: any) => el._id.toString() === body[validationIdentifierKey],
+    (el: any) => el._id.toString() === body[validationKey],
   );
 
   if (!targetItem)
     throw new AppError({
-      message: `File with id '${body[validationIdentifierKey]}' not found.`,
+      message: `File with id '${body[validationKey]}' not found.`,
       statusCode: 404,
       hint:
         "Verify the provided file identifier exists in the stored file array.",
@@ -125,7 +125,7 @@ const handleDeleteFile = async (routeObj: Route, body: any, item: any) => {
 
   return {
     deleted: true,
-    _id: body[validationIdentifierKey],
+    _id: body[validationKey],
     mongooseField,
   };
 };

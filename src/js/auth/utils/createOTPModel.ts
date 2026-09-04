@@ -3,7 +3,7 @@ import type { OTPSchema } from "../../types/MongooseOTPSchemaObj.js";
 import otpPurposes from "../../utils/otpPurposes.js";
 import { getEnvs } from "../../config/envs.js";
 
-const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
+const createOTPModel = (route: string, schema: OTPSchema) => {
   // get dynamic auth field keys
   const { authConfigObj } = getEnvs();
   const { fieldsObj } = authConfigObj;
@@ -38,7 +38,7 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
     return field;
   };
 
-  const optionalSchema = makeOptional(mongooseSchemaObj);
+  const optionalSchema = makeOptional(schema);
 
   return createModel(
     "otpUser",
@@ -57,7 +57,7 @@ const createOTPModel = (routeName: string, mongooseSchemaObj: OTPSchema) => {
         required: true,
       },
     },
-    routeName,
+    route,
   );
 };
 

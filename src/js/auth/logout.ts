@@ -33,7 +33,7 @@ const logout = (routeObj: Route) => {
       });
 
     // refreshToken model
-    const RefreshToken = getModel({ modelName: "RefreshToken", routeObj });
+    const RefreshToken = getModel({ model: "RefreshToken", routeObj });
 
     // handleRefreshTokenValidation
     await handleRefreshTokenValidation(

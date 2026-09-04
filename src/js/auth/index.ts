@@ -14,11 +14,11 @@ import getValidationsObj from "./builtin/getValidations.js";
 
 const auth = (
   app: Express,
-  routeName: string,
+  route: string,
   routes: Route[],
-  modelName: string | undefined,
-  validationsObj?: ValidationsObj,
-  mongooseSchemaObj?: MongooseSchema,
+  model: string | undefined,
+  validations?: ValidationsObj,
+  schema?: MongooseSchema,
 ) => {
   const { apiVersion, authConfigObj } = getEnvs();
   let builtInValidation = null;
@@ -34,9 +34,9 @@ const auth = (
   }
 
   // set userModelName in envs
-  envs.userModelName = modelName as string;
+  envs.userModelName = model as string;
 
-  if (!mongooseSchemaObj)
+  if (!schema)
     throw new Error(
       "User model schema should also be written in auth collection",
     );
@@ -44,7 +44,7 @@ const auth = (
   // === create otp model ===
   // const otpRoute = routes.some((r) => r.mode === "otp");
   // if (otpRoute) {
-  const otpUserModel = createOTPModel(routeName, mongooseSchemaObj!);
+  const otpUserModel = createOTPModel(route, schema!);
   registerModel["otpUser"] = otpUserModel;
   // }
 
@@ -55,14 +55,14 @@ const auth = (
 
     app[routeObj.method](
       // /api/v1/auth/signup
-      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
+      `/api/v${apiVersion}/${route}${routeObj.path}`,
       ...middleware,
       asyncHandler(
         handlerMap[routeObj.handler]({
-          modelName,
-          routeName,
+          model,
+          route,
           routeObj,
-          validationsObj: builtInValidation || validationsObj,
+          validations: builtInValidation || validations,
         }),
       ),
     );

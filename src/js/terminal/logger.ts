@@ -125,7 +125,7 @@ const printBanner = (config: any) => {
   console.log();
   console.log(c(line(), colors.gray));
 
-  console.log(` • Listening on ${c(`${config.url}${config.apiPrefix}/[routeName]`, colors.blue)}`);
+  console.log(` • Listening on ${c(`${config.url}${config.apiPrefix}/[route]`, colors.blue)}`);
 
   console.log();
 };

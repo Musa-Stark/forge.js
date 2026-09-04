@@ -9,31 +9,31 @@ import validate from "../utils/validate.js";
 import runActions from "./utils/runActions.js";
 
 const removeMultiple = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
-  validationsObj,
+  validations,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // authorize access
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // runActions object
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
       Model,
     };
 
@@ -47,11 +47,11 @@ const removeMultiple = ({
     const body = validate(validationObj, req.body, routeObj);
 
     // ids - field name
-    const idsFieldName = routeObj.mongooseConfigObj?.removeMultipleFieldKey;
+    const idsFieldName = routeObj.config?.targetField;
     if (!idsFieldName)
       throw new AppError({
         details: getErrorDetail(routeObj),
-        hint: "Write the array name in routes -> route -> mongooseConfigObj -> removeMultipleFieldKey that has items' ids to delete",
+        hint: "Write the array name in routes -> route -> config -> targetField that has items' ids to delete",
         message: "Ids field name missing",
         statusCode: 409,
       });

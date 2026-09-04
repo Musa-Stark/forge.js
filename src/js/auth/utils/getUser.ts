@@ -4,14 +4,14 @@ import type { Route } from "../../types/Collection.js";
 import { getEnvs } from "../../config/envs.js";
 
 const getUser = async ({
-  modelName,
-  routeName,
+  model,
+  route,
   email,
   needPassword,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   email: string;
   needPassword?: boolean;
   routeObj: Route;
@@ -24,7 +24,7 @@ const getUser = async ({
   const passwordKey = fieldsObj?.password;
 
   // model
-  const Model = getModel({ modelName, routeName, routeObj });
+  const Model = getModel({ model, route, routeObj });
 
   // user
   let user: any = null;

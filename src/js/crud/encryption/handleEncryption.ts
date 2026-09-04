@@ -5,16 +5,16 @@ import { seal } from "../../utils/libsodium.js";
 import type { SealResult } from "../../utils/libsodium.ts";
 
 const handleEncryption = async (body: any, routeObj: Route) => {
-  const encArr = routeObj.encryptedFieldsArray;
+  const encArr = routeObj.encryptedFields;
 
-  // If encryptedFieldsArray is not configured, skip encryption.
+  // If encryptedFields is not configured, skip encryption.
   if (!encArr) return;
 
   // Validate configuration type.
   if (!Array.isArray(encArr)) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "encryptedFieldsArray must be an array of field names.",
+      hint: "encryptedFields must be an array of field names.",
       message: "Encryption configuration is invalid.",
       statusCode: 409,
     });
@@ -24,7 +24,7 @@ const handleEncryption = async (body: any, routeObj: Route) => {
   if (!encArr.length) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "Add at least one field name to encryptedFieldsArray.",
+      hint: "Add at least one field name to encryptedFields.",
       message: "Encryption configuration is empty.",
       statusCode: 409,
     });

@@ -1,38 +1,38 @@
 import { collection, zodFields } from "../../dist/js/index.js";
 
 const accountCollection = collection({
-  reqType: "account",
-  routeName: "account",
-  routesArray: [
+  type: "account",
+  route: "account",
+  routes: [
     {
       handler: "getMe",
       method: "get",
       path: "/me",
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["__v"],
+      config: {
+        hiddenFields: ["__v"],
       },
     },
     {
       handler: "updateMe",
       method: "patch",
       path: "/me",
-      authRole: "adminOrOwner",
-      ownerShip: "self",
-      validationKey: "updateProfile",
-      hashedFieldsArray: ["password"],
-      mongooseConfigObj: {
-        hiddenFieldsArray: ["!password"],
+      auth: "adminOrOwner",
+      ownership: "self",
+      validation: "updateProfile",
+      hashedFields: ["password"],
+      config: {
+        hiddenFields: ["!password"],
       },
     },
     {
       handler: "deleteMe",
       method: "delete",
       path: "/me",
-      authRole: "adminOrOwner",
-      ownerShip: "self"
+      auth: "adminOrOwner",
+      ownership: "self"
     },
   ],
-  validationsObj: {
+  validations: {
     updateProfile: {
       name: zodFields.optionalString,
       password: zodFields.optionalString,

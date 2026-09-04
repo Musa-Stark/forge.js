@@ -10,7 +10,7 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
       message: "validationSchema is required to validate",
       statusCode: 409,
       details: getErrorDetail(routeObj),
-      hint: "Provide validation in validationsObj. Use same name as key as provided in routeObj configuration",
+      hint: "Provide validation in validations. Use same name as key as provided in routeObj configuration",
     });
 
   if (!body)
@@ -18,7 +18,7 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
       message: "body is required to validate",
       statusCode: 409,
       details: getErrorDetail(routeObj),
-      hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write fileArray : [{...}] in collection -> routesArray -> routeObj.",
+      hint: "Provide body (Data from frontend or postman etc.) or if uploading a file, write files : [{...}] in collection -> routes -> routeObj.",
     });
 
   const zodBodyObj = z.object(validationSchema);
@@ -63,7 +63,7 @@ const validate = (validationSchema: any, body: any, routeObj: Route) => {
       message: `${field}: ${message}`,
       statusCode: 409,
       details: getErrorDetail(routeObj),
-      hint: `Check the keys you provided in collection -> valdiationsObj -> ${routeObj.validationKey}. It should be similar to body -> item key`,
+      hint: `Check the keys you provided in collection -> valdiationsObj -> ${routeObj.validation}. It should be similar to body -> item key`,
     });
   }
 

@@ -5,14 +5,14 @@ import handlerMap from "../config/handlerMap.js";
 
 const health = (
   app: Express,
-  routeName: string,
+  route: string,
   routes: Route[],
 ) => {
   const { apiVersion } = getEnvs();
 
   for (const routeObj of routes) {
     app[routeObj.method](
-      `/api/v${apiVersion}/${routeName}${routeObj.path}`,
+      `/api/v${apiVersion}/${route}${routeObj.path}`,
       handlerMap[routeObj.handler],
     );
   }

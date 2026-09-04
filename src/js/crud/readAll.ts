@@ -7,12 +7,12 @@ import runActions from "./utils/runActions.js";
 import handleDecryption from "./encryption/handleDecryption.js";
 
 const read = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
@@ -20,8 +20,8 @@ const read = ({
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
     };
 
     // before action
@@ -32,24 +32,24 @@ const read = ({
 
     // Find item
     const items = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       path: routeObj.path,
       routeObj,
     });
 
     // If not public -> authorize access
-    if (routeObj.authRole !== "public") {
+    if (routeObj.auth !== "public") {
       authorizeAccess({
         routeObj,
-        routeName,
+        route,
         item: items[0],
         req,
       });
     }
     // if '_id' excluded
     const idExcluded =
-      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+      routeObj.config?.hiddenFields?.includes("_id");
 
     // Decrypt fields
     const decryptedItems = await Promise.all(

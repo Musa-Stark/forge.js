@@ -12,7 +12,7 @@ const handleRefreshTokenValidation = async (
   jti: string,
 ) => {
   // Model
-  const RefreshToken = getModel({ modelName: "RefreshToken", routeObj });
+  const RefreshToken = getModel({ model: "RefreshToken", routeObj });
 
   // find same device tokens
   const foundToken = await findRefreshToken(owner, jti, routeObj);

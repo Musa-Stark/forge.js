@@ -183,12 +183,12 @@ Forge lets you define your backend like this:
 
 ```ts
 collection({
-    reqType: "crud",
-    routeName: "expenses",
-    modelName: "Expense",
-    routesArray: routes,
-    mongooseSchemaObj: schema,
-    validationsObj: validation,
+    type: "crud",
+    route: "expenses",
+    model: "Expense",
+    routes: routes,
+    schema: schema,
+    validations: validation,
 });
 ```
 
@@ -517,12 +517,12 @@ Every resource starts with a collection.
 
 ```ts
 collection({
-    reqType: "crud",
-    routeName: "expenses",
-    modelName: "Expense",
-    routesArray: routes,
-    mongooseSchemaObj: schema,
-    validationsObj: validation,
+    type: "crud",
+    route: "expenses",
+    model: "Expense",
+    routes: routes,
+    schema: schema,
+    validations: validation,
 });
 ```
 
@@ -606,11 +606,11 @@ You simply describe the routeObj.
 
 ```ts
 {
-    authRole: "authenticated",
+    auth: "authenticated",
     handler: "create",
     method: "post",
     path: "/",
-    validationKey: "create"
+    validation: "create"
 }
 ```
 
@@ -624,43 +624,43 @@ Example:
 const routes = [
 
 {
-    authRole: "authenticated",
+    auth: "authenticated",
     handler: "create",
     method: "post",
     path: "/",
-    validationKey: "create"
+    validation: "create"
 },
 
 {
-    authRole: "public",
+    auth: "public",
     handler: "readAll",
     method: "get",
     path: "/",
-    validationKey: false
+    validation: false
 },
 
 {
-    authRole: "public",
+    auth: "public",
     handler: "read",
     method: "get",
     path: "/:id",
-    validationKey: false
+    validation: false
 },
 
 {
-    authRole: "adminOrOwner",
+    auth: "adminOrOwner",
     handler: "update",
     method: "patch",
     path: "/:id",
-    validationKey: "update"
+    validation: "update"
 },
 
 {
-    authRole: "adminOrOwner",
+    auth: "adminOrOwner",
     handler: "remove",
     method: "delete",
     path: "/:id",
-    validationKey: false
+    validation: false
 }
 
 ];
@@ -729,19 +729,19 @@ Simply reference the handler name inside your routeObj.
 Authorization is intentionally simple.
 
 ```ts
-authRole: "public"
+auth: "public"
 ```
 
 ```ts
-authRole: "authenticated"
+auth: "authenticated"
 ```
 
 ```ts
-authRole: "admin"
+auth: "admin"
 ```
 
 ```ts
-authRole: "adminOrOwner"
+auth: "adminOrOwner"
 ```
 
 Forge applies the appropriate middleware automatically.
@@ -767,7 +767,7 @@ This keeps the framework lightweight while allowing complete flexibility.
     uploadArray: [
 
         {
-            fieldName: "avatar",
+            paramField: "avatar",
 
             provider: "cloudinary",
 

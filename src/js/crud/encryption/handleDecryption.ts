@@ -4,16 +4,16 @@ import AppError from "../../utils/AppError.js";
 import getErrorDetail from "../../utils/getErrorDetail.js";
 
 const handleDecryption = async (item: any, routeObj: Route) => {
-  const decArr = routeObj.decryptedFieldsArray;
+  const decArr = routeObj.decryptedFields;
 
-  // If decryptedFieldsArray is not configured, skip decryption.
+  // If decryptedFields is not configured, skip decryption.
   if (!decArr) return;
 
   // Validate configuration type.
   if (!Array.isArray(decArr)) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "decryptedFieldsArray must be an array of field names.",
+      hint: "decryptedFields must be an array of field names.",
       message: "Decryption configuration is invalid.",
       statusCode: 409,
     });
@@ -23,7 +23,7 @@ const handleDecryption = async (item: any, routeObj: Route) => {
   if (!decArr.length) {
     throw new AppError({
       details: getErrorDetail(routeObj),
-      hint: "Add at least one field name to decryptedFieldsArray.",
+      hint: "Add at least one field name to decryptedFields.",
       message: "Decryption configuration is empty.",
       statusCode: 409,
     });

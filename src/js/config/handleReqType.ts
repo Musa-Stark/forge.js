@@ -15,25 +15,25 @@ const reqMap = {
 };
 
 const handleReqType = (
-  reqType: ReqType,
+  type: ReqType,
   app: Express,
-  routeName: string,
+  route: string,
   routes: Route[],
-  modelName: string | undefined,
-  validationsObj?: ValidationsObj,
-  mongooseSchemaObj?: MongooseSchema,
+  model: string | undefined,
+  validations?: ValidationsObj,
+  schema?: MongooseSchema,
 ) => {
   
-  if (!reqType) return;
+  if (!type) return;
 
   // health(app, health, [{...}])
-  reqMap[reqType](
+  reqMap[type](
     app,
-    routeName,
+    route,
     routes,
-    modelName,
-    validationsObj,
-    mongooseSchemaObj,
+    model,
+    validations,
+    schema,
   );
 };
 

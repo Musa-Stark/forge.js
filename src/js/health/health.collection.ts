@@ -3,36 +3,36 @@ const collection = (vals: any) => {
 }
 
 const healthCollection = collection({
-  routeName: "health",
-  reqType: "health",
-  routesArray: [
+  route: "health",
+  type: "health",
+  routes: [
     {
       handler: "healthGet",
       method: "get",
       path: "/",
-      authRole: "public",
-      validationKey: false,
+      auth: "public",
+      validation: false,
     },
     {
       handler: "healthPost",
       method: "post",
       path: "/",
-      authRole: "public",
-      validationKey: false,
+      auth: "public",
+      validation: false,
     },
     {
       handler: "healthPatch",
       method: "patch",
       path: "/",
-      authRole: "public",
-      validationKey: false,
+      auth: "public",
+      validation: false,
     },
     {
       handler: "healthDelete",
       method: "delete",
       path: "/",
-      authRole: "public",
-      validationKey: false,
+      auth: "public",
+      validation: false,
     },
   ],
 });
