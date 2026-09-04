@@ -389,7 +389,7 @@ const optionalFileMetaData: UnifiedField = {
       width: z.number().optional(),
       height: z.number().optional(),
     }),
-  ),
+  ).optional(),
 };
 
 const optionalEmptyFileMetaData: UnifiedField = {
@@ -415,7 +415,7 @@ const optionalEmptyFileMetaData: UnifiedField = {
       resourceType: z.string().optional(),
       width: z.number().optional(),
       height: z.number().optional(),
-    }),
+    }).optional(),
   ),
 };
 
