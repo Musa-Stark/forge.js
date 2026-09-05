@@ -1,10 +1,8 @@
 import type { ActionContext } from "../types/ActionHandler.js";
-import type { EmailTemplate } from "../types/email.js";
 import AppError from "../utils/AppError.js";
 import { getEnvs } from "../config/envs.js";
-// import handleWelcome from "./templates/handleWelcome.js";
 import sendEmail from "../config/sendEmail.js";
-import welcomeEmail from "./templates/welcome.email.js";
+import { welcomeEmail } from "./templates/index.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_SENDER_REGEX = /^[^<>]+<[^<>\s@]+@[^<>\s@]+\.[^<>\s@]+>$/;
@@ -127,20 +125,22 @@ const emailAction = async (
     }
 
     try {
-      switch (template.name) {
-        case "welcome":
-          body = welcomeEmail(template.placeholders);
-          break;
+      // switch (template.name) {
+      //   case "welcome":
+      //     console.log(template);
+      //     body = welcomeEmail(template.placeholders);
+      //     break;
 
-        default:
-          throw new AppError({
-            message: `Unsupported email template: ${template}`,
-            statusCode: 400,
-            code: "UNSUPPORTED_EMAIL_TEMPLATE",
-            details,
-            hint: "Use one of the email templates supported by Forge.",
-          });
-      }
+      //   default:
+      //     throw new AppError({
+      //       message: `Unsupported email template: ${template}`,
+      //       statusCode: 400,
+      //       code: "UNSUPPORTED_EMAIL_TEMPLATE",
+      //       details,
+      //       hint: "Use one of the email templates supported by Forge.",
+      //     });
+      // }
+      console.log(template)
     } catch (error) {
       // Don't destroy an AppError produced by the template handler.
       if (error instanceof AppError) {
@@ -175,18 +175,18 @@ const emailAction = async (
   // --------------------------------------------------
 
   try {
-    await sendEmail({
-      from: sender,
-      to: recipient,
-      subject: resolvedSubject,
-      htmlBody: body,
-      routeObj: {
-        auth: "authenticated",
-        handler: "readAll",
-        method: "get",
-        path: "/",
-      },
-    });
+    // await sendEmail({
+    //   from: sender,
+    //   to: recipient,
+    //   subject: resolvedSubject,
+    //   htmlBody: body,
+    //   routeObj: {
+    //     auth: "authenticated",
+    //     handler: "readAll",
+    //     method: "get",
+    //     path: "/",
+    //   },
+    // });
   } catch (error) {
     throw new AppError({
       message: "Failed to send email.",

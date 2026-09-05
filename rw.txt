@@ -78,50 +78,11 @@ git push
 git switch main
 git diff feature
 
-------------------------------------------------
-Let's do email handling:
-We get this
-  emailAction: {
-    /** Sender configuration. */
-    from: "system-email-sender" | string;
-
-    /** Recipient email address. */
-    to: string | ((context: ActionContext) => string);
-
-    /** Email content mode. */
-    type: "template" | "raw";
-
-    /** Raw email body when `type` is `raw`. */
-    rawBody?: string;
-
-    /** Email template when `type` is `template`. */
-    template?: EmailTemplate;
-
-    /** Email subject. */
-    subject?: string | ((context: ActionContext) => string);
-  };
-
-in the item:
-import AppError from "../utils/AppError.js";
-
-const emailAction = async (item: any) => {
-  const { from, to, type } = item;
-
-  // from, to and type error
-  if (!from || !to || !type)
-    throw new Error(
-      "from, to and type are required to send email in emailAction",
-    );
-
-  // type
-  if (typeof from !== "string")
-    throw new Error("from must be of string datatype");
-};
-export default emailAction;
-
-The idea is, if from is system-email-sender, i'll get that from getenvs() manually, else it should be only string and email.
-to maybe current user, we'll get that from context else it should also be a valid email.
-if, it is template, let's say welcome template, we'll pass it to handleWelcome from email - I'll handle it, you just pass it, this will return the email body or HTML and will handle errors for required placeholders.
-But if it is raw, we'll get the content from rawBody.
-Once we get the content, i'll just pass it manually to sendEmail function.
-Write the code, i'll make the improvements where needed
+account-created.html  email-changed.html   mention.html             order-delivered.html          preview.html                 support-ticket.html
+account-deleted.html  feedback.html        monthly-report.html      order-shipped.html            README.md                    team-invitation.html
+account-updated.html  invoice.html         new-comment.html         organization-invitation.html  receipt.html                 trial-ending.html
+announcement.html     login-alert.html     new-device-login.html    password-changed.html         reminder.html                two-factor-code.html
+api-key-created.html  magic-link.html      new-message.html         password-expiring.html        security-alert.html          verify-email.html
+api-key-revoked.html  maintenance.html     notification.html        password-reset.html           subscription-cancelled.html  weekly-report.html
+contact-form.html     member-added.html    order-cancelled.html     payment-failed.html           subscription-created.html    welcome.html
+daily-report.html     member-removed.html  order-confirmation.html  payment-success.html          subscription-renewed.html

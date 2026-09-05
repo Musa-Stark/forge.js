@@ -21,17 +21,9 @@ const emailCollection = collection({
               from: "system-email-sender",
               type: "template",
               template: {
-                name: "welcome",
-                placeholders: {
-                    companyAddress: "XYZ",
-                    companyName: "Stark Industries",
-                    companyUrl: "starkindustries.com",
-                    currentYear: new Date().getFullYear(),
-                    dashboardUrl: "https://dashboard",
-                    supportEmail: "notfound@gmail.com",
-                    unsubscribeUrl: "not found",
-                    userEmail: "musa.fullstack08@gmail.com",
-                    userName: "Musa Stark"
+                name: "account-created",
+                accountCreated: {
+                  
                 }
               }
             },

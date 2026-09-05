@@ -1,7 +1,102 @@
 import type { Request } from "express";
 import type { Document, Model } from "mongoose";
 import type { EmailTemplate } from "./email.js";
-import type { WelcomeEmailPlaceholders } from "./email/welcome.type.js";
+import type {
+  AccountCreatedEmailPlaceholders,
+  AccountDeletedEmailPlaceholders,
+  AccountUpdatedEmailPlaceholders,
+  AnnouncementEmailPlaceholders,
+  ApiKeyCreatedEmailPlaceholders,
+  ApiKeyRevokedEmailPlaceholders,
+  ContactFormEmailPlaceholders,
+  DailyReportEmailPlaceholders,
+  EmailChangedEmailPlaceholders,
+  FeedbackEmailPlaceholders,
+  InvoiceEmailPlaceholders,
+  LoginAlertEmailPlaceholders,
+  MagicLinkEmailPlaceholders,
+  MaintenanceEmailPlaceholders,
+  MemberAddedEmailPlaceholders,
+  MemberRemovedEmailPlaceholders,
+  MentionEmailPlaceholders,
+  MonthlyReportEmailPlaceholders,
+  NewCommentEmailPlaceholders,
+  NewDeviceLoginEmailPlaceholders,
+  NewMessageEmailPlaceholders,
+  NotificationEmailPlaceholders,
+  OrderCancelledEmailPlaceholders,
+  OrderConfirmationEmailPlaceholders,
+  OrderDeliveredEmailPlaceholders,
+  OrderShippedEmailPlaceholders,
+  OrganizationInvitationEmailPlaceholders,
+  PasswordChangedEmailPlaceholders,
+  PasswordExpiringEmailPlaceholders,
+  PasswordResetEmailPlaceholders,
+  PaymentFailedEmailPlaceholders,
+  PaymentSuccessEmailPlaceholders,
+  ReceiptEmailPlaceholders,
+  ReminderEmailPlaceholders,
+  SecurityAlertEmailPlaceholders,
+  SubscriptionCancelledEmailPlaceholders,
+  SubscriptionCreatedEmailPlaceholders,
+  SubscriptionRenewedEmailPlaceholders,
+  SupportTicketEmailPlaceholders,
+  TeamInvitationEmailPlaceholders,
+  TrialEndingEmailPlaceholders,
+  TwoFactorCodeEmailPlaceholders,
+  VerifyEmailEmailPlaceholders,
+  WeeklyReportEmailPlaceholders,
+  WelcomeEmailPlaceholders,
+} from "./email/index.js";
+
+interface EmailActionTemplate {
+  name: EmailTemplate;
+  accountCreated?: AccountCreatedEmailPlaceholders;
+  accountDeleted?: AccountDeletedEmailPlaceholders;
+  accountUpdated?: AccountUpdatedEmailPlaceholders;
+  announcement?: AnnouncementEmailPlaceholders;
+  apiKeyCreated?: ApiKeyCreatedEmailPlaceholders;
+  apiKeyRevoked?: ApiKeyRevokedEmailPlaceholders;
+  contactForm?: ContactFormEmailPlaceholders;
+  dailyReport?: DailyReportEmailPlaceholders;
+  emailChanged?: EmailChangedEmailPlaceholders;
+  feedback?: FeedbackEmailPlaceholders;
+  invoice?: InvoiceEmailPlaceholders;
+  loginAlert?: LoginAlertEmailPlaceholders;
+  magicLink?: MagicLinkEmailPlaceholders;
+  maintenance?: MaintenanceEmailPlaceholders;
+  memberAdded?: MemberAddedEmailPlaceholders;
+  memberRemoved?: MemberRemovedEmailPlaceholders;
+  mention?: MentionEmailPlaceholders;
+  monthlyReport?: MonthlyReportEmailPlaceholders;
+  newComment?: NewCommentEmailPlaceholders;
+  newDeviceLogin?: NewDeviceLoginEmailPlaceholders;
+  newMessage?: NewMessageEmailPlaceholders;
+  notification?: NotificationEmailPlaceholders;
+  orderCancelled?: OrderCancelledEmailPlaceholders;
+  orderConfirmation?: OrderConfirmationEmailPlaceholders;
+  orderDelivered?: OrderDeliveredEmailPlaceholders;
+  orderShipped?: OrderShippedEmailPlaceholders;
+  organizationInvitation?: OrganizationInvitationEmailPlaceholders;
+  passwordChanged?: PasswordChangedEmailPlaceholders;
+  passwordExpiring?: PasswordExpiringEmailPlaceholders;
+  passwordReset?: PasswordResetEmailPlaceholders;
+  paymentFailed?: PaymentFailedEmailPlaceholders;
+  paymentSuccess?: PaymentSuccessEmailPlaceholders;
+  receipt?: ReceiptEmailPlaceholders;
+  reminder?: ReminderEmailPlaceholders;
+  securityAlert?: SecurityAlertEmailPlaceholders;
+  subscriptionCancelled?: SubscriptionCancelledEmailPlaceholders;
+  subscriptionCreated?: SubscriptionCreatedEmailPlaceholders;
+  subscriptionRenewed?: SubscriptionRenewedEmailPlaceholders;
+  supportTicket?: SupportTicketEmailPlaceholders;
+  teamInvitation?: TeamInvitationEmailPlaceholders;
+  trialEnding?: TrialEndingEmailPlaceholders;
+  twoFactorCode?: TwoFactorCodeEmailPlaceholders;
+  verifyEmail?: VerifyEmailEmailPlaceholders;
+  weeklyReport?: WeeklyReportEmailPlaceholders;
+  welcome?: WelcomeEmailPlaceholders;
+}
 
 /**
  * Context provided to Forge actions before or after a route operation.
@@ -108,10 +203,7 @@ export interface EmailAction {
     rawBody?: string;
 
     /** Email template when `type` is `template`. */
-    template?: {
-      name: EmailTemplate;
-      placeholders: WelcomeEmailPlaceholders;
-    };
+    template?: EmailActionTemplate;
 
     /** Email subject. */
     subject?: string | ((context: ActionContext) => string);
