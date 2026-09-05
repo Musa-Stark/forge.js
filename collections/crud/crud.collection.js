@@ -32,7 +32,7 @@ const crudCollection = collection({
       method: "get",
       path: "/:id",
       handler: "read",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: false,
       // decryptedFields: ["cardNumber", "cvv"],
       config: {
@@ -58,7 +58,7 @@ const crudCollection = collection({
       method: "post",
       path: "/:id/addFile",
       handler: "addFile",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       files: [
         {
           schemaField: "profileImage",
@@ -70,14 +70,14 @@ const crudCollection = collection({
       method: "patch",
       path: "/:id",
       handler: "update",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: "update",
     },
     {
       method: "patch",
       path: "/:id/updateFile",
       handler: "updateFile",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: "updateAvatar",
       files: [
         {
@@ -91,14 +91,14 @@ const crudCollection = collection({
       method: "delete",
       path: "/:id",
       handler: "remove",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: false,
     },
     {
       method: "delete",
       path: "/",
       handler: "removeMultiple",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: "removeMultiple",
       config: {
         targetField: "ids"
@@ -116,7 +116,7 @@ const crudCollection = collection({
       method: "delete",
       path: "/:id/deleteFile",
       handler: "deleteFile",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       validation: "deleteAvatar",
       files: [
         {

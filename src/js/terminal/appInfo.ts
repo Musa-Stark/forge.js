@@ -54,7 +54,7 @@ const setAppInfo = (req: Collection) => {
     appInfo.routesCount! += req.routes.length;
     for (const el of req.routes) {
       if (el.files) appInfo.fileUpload = true;
-      if (el.auth === "admin" || el.auth === "adminOrOwner")
+      if (el.auth === "admin" || el.auth === "admin-or-owner")
         appInfo.authorization = true;
     }
   }

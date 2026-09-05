@@ -49,7 +49,7 @@ const create = ({
       throw new AppError({
         message: "auth should'nt be public",
         statusCode: 409,
-        hint: "Make the auth admin or adminOrOwner",
+        hint: "Make the auth admin or admin-or-owner",
         details: getErrorDetail(routeObj),
       });
 

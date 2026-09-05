@@ -7,7 +7,7 @@ import {
 
 const routes = defineRoutes([
     {
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       handler: "readAll",
       method: "get",
       path: "/",
@@ -17,7 +17,7 @@ const routes = defineRoutes([
       },
     },
     {
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       handler: "read",
       method: "get",
       path: "/:id",
@@ -42,7 +42,7 @@ const routes = defineRoutes([
       ],
     },
     {
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       handler: "addFile",
       method: "patch",
       path: "/:id/addFile",
@@ -55,7 +55,7 @@ const routes = defineRoutes([
       ],
     },
     {
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       handler: "update",
       method: "patch",
       path: "/:id",

@@ -15,12 +15,12 @@ const authorizeAccess = ({
   item?: any;
   req: Request;
 }) => {
-  // if auth !== admin or adminOrOwner
-  if (routeObj.auth !== "admin" && routeObj.auth !== "adminOrOwner")
+  // if auth !== admin or admin-or-owner
+  if (routeObj.auth !== "admin" && routeObj.auth !== "admin-or-owner")
     throw new AppError({
-      message: "auth should only be 'admin' or 'adminOrOwner'",
+      message: "auth should only be 'admin' or 'admin-or-owner'",
       statusCode: 409,
-      hint: "Make the auth admin or adminOrOwner based on your routeObj requirement. Checkout collection -> routes -> auth",
+      hint: "Make the auth admin or admin-or-owner based on your routeObj requirement. Checkout collection -> routes -> auth",
       details: getErrorDetail(routeObj),
     });
 
@@ -60,7 +60,7 @@ const authorizeAccess = ({
   }
 
   // if allow both admin or owner
-  if (routeObj.auth === "adminOrOwner") {
+  if (routeObj.auth === "admin-or-owner") {
     if (!isAdmin && !isOwner)
       throw new AppError({
         message: "Unauthorized",

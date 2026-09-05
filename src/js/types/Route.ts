@@ -17,9 +17,9 @@ export type RouteMethod = "get" | "post" | "patch" | "delete";
  * - `public`: Anyone can access (no login required).
  * - `authenticated`: Any logged-in user can access.
  * - `admin`: Only users with the admin role can access.
- * - `adminOrOwner`: Admins or the owner of the resource can access.
+ * - `admin-or-owner`: Admins or the owner of the resource can access.
  */
-export type AuthRole = "admin" | "adminOrOwner" | "authenticated" | "public";
+export type AuthRole = "admin" | "admin-or-owner" | "authenticated" | "public";
 
 /**
  * Authentication mode required for auth-related routes.
@@ -71,7 +71,7 @@ export interface RouteDbConfig {
  *   method: "get",
  *   path: "/:id",
  *   handler: "read",
- *   auth: "adminOrOwner",
+ *   auth: "admin-or-owner",
  *   validation: "readProduct",
  *   config: {
  *     populate: "owner",

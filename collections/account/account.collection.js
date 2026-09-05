@@ -16,7 +16,7 @@ const accountCollection = collection({
       handler: "updateMe",
       method: "patch",
       path: "/me",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       ownership: "self",
       validation: "updateProfile",
       hashedFields: ["password"],
@@ -28,7 +28,7 @@ const accountCollection = collection({
       handler: "deleteMe",
       method: "delete",
       path: "/me",
-      auth: "adminOrOwner",
+      auth: "admin-or-owner",
       ownership: "self"
     },
   ],

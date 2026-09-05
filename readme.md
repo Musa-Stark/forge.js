@@ -648,7 +648,7 @@ const routes = [
 },
 
 {
-    auth: "adminOrOwner",
+    auth: "admin-or-owner",
     handler: "update",
     method: "patch",
     path: "/:id",
@@ -656,7 +656,7 @@ const routes = [
 },
 
 {
-    auth: "adminOrOwner",
+    auth: "admin-or-owner",
     handler: "remove",
     method: "delete",
     path: "/:id",
@@ -741,7 +741,7 @@ auth: "admin"
 ```
 
 ```ts
-auth: "adminOrOwner"
+auth: "admin-or-owner"
 ```
 
 Forge applies the appropriate middleware automatically.
