@@ -1,29 +1,27 @@
 import type { Request } from "express";
 import type { Document, Model } from "mongoose";
+import type { EmailTemplate } from "./email.js";
+import type { WelcomeEmailPlaceholders } from "./email/welcome.type.js";
 
 /**
- * Context payload passed to custom action hooks before or after route execution.
+ * Context provided to Forge actions before or after a route operation.
  */
 export interface ActionContext {
-  /**
-   * Express request object.
-   */
+  /** Express request object. */
   req: Request;
 
-  /**
-   * Currently authenticated user profile attached to the request.
-   */
+  /** Authenticated user attached to the request, if available. */
   user?: Request["user"];
 
   /**
-   * The collection's Express route name.
-   * 
+   * Name of the Forge resource/route.
+   *
    * @example "products"
    */
   route: string;
 
   /**
-   * Database operation being executed by the handler.
+   * Database operation being performed.
    */
   operation:
     | "read"
@@ -36,89 +34,96 @@ export interface ActionContext {
 
   /**
    * Mongoose model name.
-   * 
+   *
    * @example "Product"
    */
   model: string;
 
-  /**
-   * Mongoose Model instance for performing direct database queries.
-   */
+  /** Mongoose model for direct database access. */
   Model?: Model<any>;
 
   /**
-   * Incoming request payload and processed metadata.
+   * Data associated with the current request and operation.
    */
   data?: {
-    /**
-     * ID or reference of the resource owner.
-     */
+    /** ID of the resource owner. */
     owner?: string;
 
-    /**
-     * Parsed request body object.
-     */
+    /** Parsed request body. */
     body?: any;
 
-    /**
-     * Metadata from uploaded files (if multipart route).
-     */
+    /** Uploaded file metadata. */
     files?: any;
 
-    /**
-     * Encrypted field values.
-     */
+    /** Values encrypted by Forge. */
     encrypted?: any;
 
-    /**
-     * Decrypted field values.
-     */
+    /** Values decrypted by Forge. */
     decrypted?: any;
 
-    /**
-     * Hashed field values.
-     */
+    /** Values hashed by Forge. */
     hashed?: any;
   };
 
   /**
-   * The database document(s) fetched or updated during the operation.
+   * Document(s) affected by the operation.
    */
   item?: Document | Document[];
 
   /**
-   * The final processed result payload ready to be returned in the response.
+   * Current result produced by the operation/action chain.
+   *
+   * Return a value from a custom action to replace this result.
    */
   result?: any;
 }
 
 /**
- * A custom action hook executed before or after a route handler runs.
- * 
- * @example
- * ```ts
- * const sendWelcomeEmail: Action = {
- *   type: "email",
- *   handler: async ({ user, data }) => {
- *     console.log(`Sending email to ${user?.email}`);
- *   },
- * };
- * ```
+ * Executes custom developer-defined logic.
+ *
+ * Returning a value replaces the current action result.
  */
-export interface Action {
-  /**
-   * Action category type.
-   * 
-   * - `custom`: General custom middleware logic.
-   * - `email`: Dedicated email notification trigger.
-   */
-  type: "custom" | "email";
-
-  /**
-   * Async handler function executed by the framework.
-   */
-  handler: (context: ActionContext) => Promise<void> | void;
+export interface CustomAction {
+  /** Custom action handler. */
+  customAction: (context: ActionContext) => Promise<any> | any;
 }
 
-// Backward compatibility alias for legacy code
+/**
+ * Sends an email through Forge's configured email provider.
+ */
+export interface EmailAction {
+  /** Email action configuration. */
+
+  emailAction: {
+    /** Sender configuration. */
+    from: "system-email-sender" | ({} & string);
+
+    /** Recipient email address. */
+    to: string | ((context: ActionContext) => string);
+
+    /** Email content mode. */
+    type: "template" | "raw";
+
+    /** Raw email body when `type` is `raw`. */
+    rawBody?: string;
+
+    /** Email template when `type` is `template`. */
+    template?: {
+      name: EmailTemplate;
+      placeholders: WelcomeEmailPlaceholders;
+    };
+
+    /** Email subject. */
+    subject?: string | ((context: ActionContext) => string);
+  };
+}
+
+/**
+ * Action executed before or after a Forge route operation.
+ */
+export type Action = CustomAction | EmailAction;
+
+/**
+ * @deprecated Use `ActionContext` instead.
+ */
 export type CreateContext = ActionContext;

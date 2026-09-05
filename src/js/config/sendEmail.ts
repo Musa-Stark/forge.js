@@ -110,6 +110,8 @@ const sendEmail = async ({
     });
   }
 
+  console.log("Email sent successfully!")
+
   return true;
 };
 
