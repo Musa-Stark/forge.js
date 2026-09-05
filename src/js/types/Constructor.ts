@@ -59,7 +59,7 @@ export interface Constructor {
   port: number;
   rateLimitDuration: DurationType;
   rateLimitMsg: string;
-  adminEmailSender?: string;
+  systemEmailSender?: string;
   resendAPIKey?: string;
 }
 

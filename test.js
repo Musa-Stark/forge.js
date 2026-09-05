@@ -11,7 +11,8 @@ import {
   userCollection,
   accountCollection,
   actionCollection,
-  recentCollection
+  recentCollection,
+  emailCollection,
 } from "./collections/index.js";
 
 import "dotenv/config";
@@ -26,14 +27,14 @@ new StarkNexus({
         lastName: fields.optionalString,
         email: fields.email,
         password: fields.password,
-        profileImage: fields.optionalFileMetaData
+        profileImage: fields.optionalFileMetaData,
       },
     },
 
     accessTokenAge: "1d",
 
     loginMode: "credentials",
-    signupMode: "credentials"
+    signupMode: "credentials",
   },
 
   collections: [
@@ -41,14 +42,15 @@ new StarkNexus({
     userCollection,
     accountCollection,
     actionCollection,
-    recentCollection
+    recentCollection,
+    emailCollection,
   ],
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",
   databaseName: process.env.DATABASE_NAME,
   mongoDBURI: process.env.MONGODB_URI,
-  adminEmailSender: process.env.ADMIN_EMAIL_SENDER,
+  systemEmailSender: process.env.ADMIN_EMAIL_SENDER,
   resendAPIKey: process.env.RESEND_API_KEY,
   domain: process.env.DOMAIN,
   jwtSecret: process.env.JWT_SECRET,

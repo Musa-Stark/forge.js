@@ -4,3 +4,4 @@ export { default as userCollection } from "./user/user.collection.js";
 export { default as accountCollection } from "./account/account.collection.js";
 export { default as actionCollection } from "./action/action.collection.js";
 export { default as recentCollection } from "./recent/recent.collection.js";
+export { default as emailCollection } from "./email/email.collection.js";
