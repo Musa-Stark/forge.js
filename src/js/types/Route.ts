@@ -115,7 +115,7 @@ export interface Route {
    *
    * @example "authenticated"
    */
-  auth?: AuthRole;
+  auth: AuthRole;
 
   /**
    * Resource ownership check setting.

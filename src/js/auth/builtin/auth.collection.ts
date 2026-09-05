@@ -17,12 +17,14 @@ const routes = (): Route[] => {
       path: "/signup",
       mode: "otp",
       validation: "signup",
+      auth: "public",
     },
     {
       method: "post",
       handler: "verifyOTP",
       path: "/verify-otp",
       validation: "verifyOTP",
+      auth: "authenticated",
     },
     {
       method: "post",
@@ -30,44 +32,52 @@ const routes = (): Route[] => {
       path: "/login",
       mode: "otp",
       validation: "login",
+      auth: "public",
     },
     {
       method: "post",
       handler: "resendOTP",
       path: "/resend-otp",
       validation: "resendOTP",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "forgotPassword",
       path: "/forgot-password",
       validation: "forgotPassword",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "resetPassword",
       path: "/reset-password",
       validation: "resetPassword",
+      auth: "authenticated",
     },
     {
       method: "get",
       handler: "logout",
       path: "/logout",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "logout",
       path: "/logout",
+      auth: "authenticated",
     },
     {
       method: "get",
       handler: "refresh",
       path: "/refresh-token",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "refresh",
       path: "/refresh-token",
+      auth: "authenticated",
     },
   ];
 };
