@@ -116,6 +116,7 @@ const emailAction = async (
   context: ActionContext,
 ): Promise<void> => {
   const { from, to, type, rawBody, template, subject } = item;
+  const { systemEmailSender, emailConfig } = getEnvs();
 
   const details = {
     handler: "emailAction",
@@ -141,8 +142,7 @@ const emailAction = async (
   // Sender
   // --------------------------------------------------
 
-  const sender =
-    from === "system-email-sender" ? getEnvs().systemEmailSender : from;
+  const sender = from === "system-email-sender" ? systemEmailSender : from;
 
   if (!sender || !EMAIL_SENDER_REGEX.test(sender)) {
     throw new AppError({
@@ -230,7 +230,10 @@ const emailAction = async (
 
     try {
       const funcName = emailTemplates[template.name].name.replace("Email", "");
-      body = emailTemplates[template.name](template[funcName])
+      body = emailTemplates[template.name]({
+        ...template[funcName],
+        // ...emailConfig,
+      });
     } catch (error) {
       // Don't destroy an AppError produced by the template handler.
       if (error instanceof AppError) {

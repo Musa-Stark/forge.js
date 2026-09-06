@@ -27,10 +27,10 @@ export function getClientIp(req: MinimalRequest): string {
   const forwarded = req.headers["x-forwarded-for"];
 
   if (typeof forwarded === "string" && forwarded.length > 0) {
-    return forwarded.split(",")[0].trim();
+    return forwarded.split(",")[0]?.trim() ?? "Unknown";
   }
   if (Array.isArray(forwarded) && forwarded.length > 0) {
-    return forwarded[0].trim();
+    return forwarded[0]?.trim() ?? "Unknown";
   }
 
   return (
@@ -54,7 +54,9 @@ export function getClientIp(req: MinimalRequest): string {
  */
 export function getDeviceName(req: MinimalRequest): string {
   const rawUserAgent = req.headers["user-agent"];
-  const userAgent = Array.isArray(rawUserAgent) ? rawUserAgent[0] : rawUserAgent;
+  const userAgent = Array.isArray(rawUserAgent)
+    ? rawUserAgent[0]
+    : rawUserAgent;
 
   if (!userAgent) return "Unknown device";
   if (/ipad/i.test(userAgent)) return "iPad";
@@ -125,7 +127,7 @@ export function getFormattedNow(locale = "en-US", timeZone?: string): string {
  *   });
  */
 export async function getAutoDerivedFields(
-  req: MinimalRequest
+  req: MinimalRequest,
 ): Promise<AutoDerivedEmailFields> {
   const ipAddress = getClientIp(req);
   const deviceName = getDeviceName(req);

@@ -36,6 +36,13 @@ export interface AuthConfig {
   loginMode?: authMode;
 }
 
+export interface EmailConfig {
+  companyName: string;
+  companyUrl: string;
+  companyAddress: string;
+  supportEmail: string;
+}
+
 export interface Constructor {
   authConfigObj: AuthConfig;
   apiVersion: number;
@@ -48,6 +55,7 @@ export interface Constructor {
   databaseName?: string;
   domain?: string;
   ENV: string;
+  emailConfig?: EmailConfig;
   frontendURL?: string;
   frontendURLs?: string[];
   internalRoles?: string[];

@@ -80,3 +80,6 @@ git diff feature
 
 1. common/static-config.types.ts:
   Write them in constructor.ts so that developer provides it in new StarkForge({})
+
+2. common/auto-fields.ts + common/auth-fields.types.ts:
+  Paste them in email/utils
