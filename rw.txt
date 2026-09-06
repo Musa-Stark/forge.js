@@ -78,11 +78,5 @@ git push
 git switch main
 git diff feature
 
-account-created.html  email-changed.html   mention.html             order-delivered.html          preview.html                 support-ticket.html
-account-deleted.html  feedback.html        monthly-report.html      order-shipped.html            README.md                    team-invitation.html
-account-updated.html  invoice.html         new-comment.html         organization-invitation.html  receipt.html                 trial-ending.html
-announcement.html     login-alert.html     new-device-login.html    password-changed.html         reminder.html                two-factor-code.html
-api-key-created.html  magic-link.html      new-message.html         password-expiring.html        security-alert.html          verify-email.html
-api-key-revoked.html  maintenance.html     notification.html        password-reset.html           subscription-cancelled.html  weekly-report.html
-contact-form.html     member-added.html    order-cancelled.html     payment-failed.html           subscription-created.html    welcome.html
-daily-report.html     member-removed.html  order-confirmation.html  payment-success.html          subscription-renewed.html
+1. common/static-config.types.ts:
+  Write them in constructor.ts so that developer provides it in new StarkForge({})

@@ -21,11 +21,25 @@ const emailCollection = collection({
               from: "system-email-sender",
               type: "template",
               template: {
-                name: "account-created",
-                accountCreated: {
-                  
-                }
-              }
+                name: "login-alert",
+                loginAlert: {
+                  companyAddress: "XYZ",
+                  companyName: "Stark Industries",
+                  companyUrl: "https://youtube.com",
+                  currentYear: new Date().getFullYear(),
+                  dashboardUrl: "https://notfound",
+                  supportEmail: "musa.fullstack08@gmail.com",
+                  unsubscribeUrl: "https://unsubscribe.com",
+                  userEmail: "musa.fullstack08@gmail.com",
+                  userName: "Musa Stark",
+                  confirmLoginUrl: "Confirm",
+                  deviceName: "Current device",
+                  ipAddress: "192.168.100.39",
+                  location: "Pakistan",
+                  loginTime: new Date().getTime(),
+                  secureAccountUrl: "tony stark"
+                },
+              },
             },
           },
         ],
