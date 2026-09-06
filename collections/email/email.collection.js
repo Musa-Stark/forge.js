@@ -12,32 +12,23 @@ const emailCollection = collection({
       auth: "public",
       actions: {
         before: [
-          {
-            emailAction: {
-              subject: () => {
-                return "Welcome to StarkForge!";
-              },
-              to: () => "musa.fullstack08@gmail.com",
-              from: "system-email-sender",
-              type: "template",
-              template: {
-                name: "login-alert",
-                loginAlert: {
-                  currentYear: new Date().getFullYear(),
-                  dashboardUrl: "https://notfound",
-                  unsubscribeUrl: "https://unsubscribe.com",
-                  userEmail: "musa.fullstack08@gmail.com",
-                  userName: "Musa Stark",
-                  confirmLoginUrl: "Confirm",
-                  deviceName: "Current device",
-                  ipAddress: "192.168.100.39",
-                  location: "Pakistan",
-                  loginTime: new Date().getTime(),
-                  secureAccountUrl: "tony stark"
-                },
-              },
-            },
-          },
+         {
+          emailAction: {
+            from: "system-email-sender",
+            to: "musa.fullstack08@gmail.com",
+            type: "template",
+            subject: "Magic Link",
+            template: {
+              name: "magic-link",
+              magicLink: {
+                expiryMinutes: 10,
+                magicLinkUrl: "https://auth.starkindustries.com/magic-link",
+                userEmail: "musa.fullstack08@gmail.com",
+                userName: "Musa Stark"
+              }
+            }
+          }
+         }
         ],
       },
     },

@@ -1,15 +1,14 @@
-export type OrderShippedEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type OrderShippedEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   orderNumber: string;
   carrierName: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   trackingNumber: string;
   estimatedDelivery: string;
   trackingUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

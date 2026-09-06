@@ -1,12 +1,11 @@
-export type TwoFactorCodeEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type TwoFactorCodeEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   otpCode: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   expiryMinutes: number;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

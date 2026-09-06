@@ -50,6 +50,7 @@ new StarkNexus({
     companyName: "Stark Industries",
     companyUrl: "https://starkindustries.com",
     supportEmail: "support@starkindustries.com",
+    unsubscribeUrl: "https://unsubscribeUrl"
   },
   port: 10000,
   apiVersion: 1,

@@ -1,13 +1,12 @@
-export type NewCommentEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type NewCommentEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   commentAuthor: string;
   postTitle: string;
-  companyUrl: string;
-  companyName: string;
   commentText: string;
   commentUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

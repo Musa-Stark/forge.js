@@ -1,14 +1,13 @@
-export type TeamInvitationEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type TeamInvitationEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   inviterName: string;
   teamName: string;
-  companyName: string;
-  companyUrl: string;
   memberRole: string;
   inviteUrl: string;
   expiryDate: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

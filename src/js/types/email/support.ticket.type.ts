@@ -1,15 +1,14 @@
-export type SupportTicketEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type SupportTicketEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   ticketId: string;
   ticketSubject: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   ticketStatus: string;
   agentName: string;
   ticketUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

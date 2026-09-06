@@ -1,14 +1,13 @@
-export type TrialEndingEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type TrialEndingEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   daysRemaining: number;
-  companyName: string;
   trialEndDate: string;
-  companyUrl: string;
   userName: string;
   planName: string;
   billingUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

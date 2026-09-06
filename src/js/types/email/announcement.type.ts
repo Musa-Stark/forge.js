@@ -1,14 +1,13 @@
-export type AnnouncementEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type AnnouncementEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   announcementTitle: string;
   announcementSummary: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   announcementBody: string;
   learnMoreUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

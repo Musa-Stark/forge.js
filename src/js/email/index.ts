@@ -2,111 +2,8 @@ import type { ActionContext } from "../types/ActionHandler.js";
 import AppError from "../utils/AppError.js";
 import { getEnvs } from "../config/envs.js";
 import sendEmail from "../config/sendEmail.js";
-import type { EmailTemplate } from "../types/email.js";
-import {
-  accountCreated,
-  accountDeleted,
-  accountUpdated,
-  announcement,
-  apiKeyCreated,
-  apiKeyRevoked,
-  contactForm,
-  dailyReport,
-  emailChanged,
-  feedback,
-  invoice,
-  loginAlert,
-  magicLink,
-  maintenance,
-  memberAdded,
-  memberRemoved,
-  mention,
-  monthlyReport,
-  newComment,
-  newDeviceLogin,
-  newMessage,
-  notification,
-  orderCancelled,
-  orderConfirmation,
-  orderDelivered,
-  orderShipped,
-  organizationInvitation,
-  passwordChanged,
-  passwordExpiring,
-  passwordReset,
-  paymentFailed,
-  paymentSuccess,
-  receipt,
-  reminder,
-  securityAlert,
-  subscriptionCancelled,
-  subscriptionCreated,
-  subscriptionRenewed,
-  supportTicket,
-  teamInvitation,
-  trialEnding,
-  twoFactorCode,
-  verifyEmail,
-  weeklyReport,
-  welcome,
-} from "./templates/index.js";
-
-export const emailTemplates: Record<string, any> = {
-  welcome: welcome,
-  "verify-email": verifyEmail,
-  "password-reset": passwordReset,
-  "password-changed": passwordChanged,
-  "login-alert": loginAlert,
-  "two-factor-code": twoFactorCode,
-  "magic-link": magicLink,
-
-  "account-created": accountCreated,
-  "account-updated": accountUpdated,
-  "account-deleted": accountDeleted,
-  "email-changed": emailChanged,
-
-  "team-invitation": teamInvitation,
-  "organization-invitation": organizationInvitation,
-  "member-added": memberAdded,
-  "member-removed": memberRemoved,
-
-  "new-message": newMessage,
-  "new-comment": newComment,
-  mention: mention,
-  notification: notification,
-  reminder: reminder,
-
-  invoice: invoice,
-  receipt: receipt,
-  "payment-success": paymentSuccess,
-  "payment-failed": paymentFailed,
-  "subscription-created": subscriptionCreated,
-  "subscription-renewed": subscriptionRenewed,
-  "subscription-cancelled": subscriptionCancelled,
-  "trial-ending": trialEnding,
-
-  "order-confirmation": orderConfirmation,
-  "order-shipped": orderShipped,
-  "order-delivered": orderDelivered,
-  "order-cancelled": orderCancelled,
-
-  "password-expiring": passwordExpiring,
-  "security-alert": securityAlert,
-  "new-device-login": newDeviceLogin,
-  "api-key-created": apiKeyCreated,
-  "api-key-revoked": apiKeyRevoked,
-
-  "contact-form": contactForm,
-  "support-ticket": supportTicket,
-  feedback: feedback,
-
-  "daily-report": dailyReport,
-  "weekly-report": weeklyReport,
-  "monthly-report": monthlyReport,
-
-  maintenance: maintenance,
-  announcement: announcement,
-} satisfies Record<EmailTemplate, unknown>;
+import { emailTemplates } from "./utils/emailTemplates.js";
+import { getCurrentYear } from "./utils/auto-fields.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_SENDER_REGEX = /^[^<>]+<[^<>\s@]+@[^<>\s@]+\.[^<>\s@]+>$/;
@@ -232,7 +129,8 @@ const emailAction = async (
       const funcName = emailTemplates[template.name].name.replace("Email", "");
       body = emailTemplates[template.name]({
         ...template[funcName],
-        // ...emailConfig,
+        ...emailConfig,
+        currentYear: getCurrentYear()
       });
     } catch (error) {
       // Don't destroy an AppError produced by the template handler.

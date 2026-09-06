@@ -1,11 +1,10 @@
-export type AccountDeletedEmailPlaceholders = {
-  companyName: string;
-  companyUrl: string;
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type AccountDeletedEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   userName: string;
   deletionDate: string;
-  supportEmail: string;
-  companyAddress: string;
   userEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

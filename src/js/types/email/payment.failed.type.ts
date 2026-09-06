@@ -1,15 +1,14 @@
-export type PaymentFailedEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type PaymentFailedEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   paymentAmount: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   failureReason: string;
   paymentMethod: string;
   paymentDate: string;
   updatePaymentUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

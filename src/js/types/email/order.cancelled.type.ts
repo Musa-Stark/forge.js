@@ -1,13 +1,12 @@
-export type OrderCancelledEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type OrderCancelledEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   orderNumber: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   cancellationReason: string;
   refundAmount: string;
-  supportEmail: string;
-  companyAddress: string;
   userEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

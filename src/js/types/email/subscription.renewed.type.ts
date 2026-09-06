@@ -1,15 +1,14 @@
-export type SubscriptionRenewedEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type SubscriptionRenewedEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   planName: string;
   billingCycle: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   paymentAmount: string;
   nextBillingDate: string;
   billingUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

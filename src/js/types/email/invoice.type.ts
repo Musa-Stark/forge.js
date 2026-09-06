@@ -1,15 +1,14 @@
-export type InvoiceEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type InvoiceEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   invoiceNumber: string;
-  companyName: string;
   invoiceAmount: string;
-  companyUrl: string;
   userName: string;
   invoiceDate: string;
   invoiceDueDate: string;
   invoiceUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

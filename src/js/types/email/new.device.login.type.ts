@@ -1,15 +1,11 @@
-export type NewDeviceLoginEmailPlaceholders = {
-  deviceName: string;
-  companyUrl: string;
-  companyName: string;
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type NewDeviceLoginEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "deviceName" | "location" | "ipAddress" | "currentYear"> & {
   userName: string;
-  location: string;
   loginTime: string;
-  ipAddress: string;
   secureAccountUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

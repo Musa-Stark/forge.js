@@ -1,12 +1,11 @@
-export type PasswordResetEmailPlaceholders = {
-  companyUrl: string;
-  companyName: string;
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type PasswordResetEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   userName: string;
   expiryMinutes: number;
   resetUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

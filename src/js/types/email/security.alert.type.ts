@@ -1,14 +1,12 @@
-export type SecurityAlertEmailPlaceholders = {
-  companyUrl: string;
-  companyName: string;
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type SecurityAlertEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "location" | "currentYear"> & {
   userName: string;
   activityDescription: string;
-  location: string;
   loginTime: string;
   secureAccountUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

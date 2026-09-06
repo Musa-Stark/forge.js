@@ -1,6 +1,7 @@
 import type { Collection, MongooseObj, SchemaField } from "./Collection.ts";
 import type { DurationType } from "../config/duration.ts";
 import type { UnifiedField } from "../lib/unified.types.js";
+import type { CommonEmailPlaceholders } from "./email/static-config.type.js";
 
 // auth config types and interface
 export type authMode = "credentials" | "otp";
@@ -36,13 +37,6 @@ export interface AuthConfig {
   loginMode?: authMode;
 }
 
-export interface EmailConfig {
-  companyName: string;
-  companyUrl: string;
-  companyAddress: string;
-  supportEmail: string;
-}
-
 export interface Constructor {
   authConfigObj: AuthConfig;
   apiVersion: number;
@@ -55,7 +49,7 @@ export interface Constructor {
   databaseName?: string;
   domain?: string;
   ENV: string;
-  emailConfig?: EmailConfig;
+  emailConfig?: CommonEmailPlaceholders;
   frontendURL?: string;
   frontendURLs?: string[];
   internalRoles?: string[];

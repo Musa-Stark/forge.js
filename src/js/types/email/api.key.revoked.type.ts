@@ -1,15 +1,14 @@
-export type ApiKeyRevokedEmailPlaceholders = {
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type ApiKeyRevokedEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   apiKeyName: string;
-  companyUrl: string;
-  companyName: string;
   userName: string;
   apiKeyPrefix: string;
   revokedBy: string;
   changeDate: string;
   apiKeysUrl: string;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };

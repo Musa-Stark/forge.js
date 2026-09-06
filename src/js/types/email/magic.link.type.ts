@@ -1,12 +1,11 @@
-export type MagicLinkEmailPlaceholders = {
-  companyName: string;
-  companyUrl: string;
+import type { CommonEmailPlaceholders } from "./static-config.type.ts";
+import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+
+export type MagicLinkEmailPlaceholders = CommonEmailPlaceholders &
+  Pick<AutoDerivedEmailFields, "currentYear"> & {
   userName: string;
   magicLinkUrl: string;
   expiryMinutes: number;
-  companyAddress: string;
   userEmail: string;
-  supportEmail: string;
   unsubscribeUrl: string;
-  currentYear: number;
 };
