@@ -53,20 +53,20 @@ const crudCollection = collection({
                 return item.owner.email;
               },
               type: "template",
-              subject: "Account Created",
+              subject: "New Device Login",
               template: {
-                name: "account-updated",
-                accountUpdated: {
-                  changeDate: new Date().toLocaleDateString("en-PK", {
-                    dateStyle: "full",
-                  }),
-                  fieldChanged: "isAvailable",
-                  newValue: true,
+                name: "new-device-login",
+                newDeviceLogin: {
+                  deviceName: "Google Pixel 6",
+                  ipAddress: "192.169.100.39",
+                  location: "Pakistan",
+                  loginTime: "current-time",
+                  secureAccountUrl: "https://secure-account.starkindustries.com",
                   userEmail: async ({item}) => {
                     return item.owner.email;
                   },
-                  userName: "there",
-                },
+                  userName: "Musa Stark"
+                }
               },
             },
           },

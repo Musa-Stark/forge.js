@@ -4,6 +4,7 @@ import { getEnvs } from "../config/envs.js";
 import sendEmail from "../config/sendEmail.js";
 import { emailTemplates } from "./utils/emailTemplates.js";
 import { getCurrentYear } from "./utils/auto-fields.js";
+import handleEmailTemplateConfig from "./utils/handleEmailTemplateConfig.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const EMAIL_SENDER_REGEX = /^[^<>]+<[^<>\s@]+@[^<>\s@]+\.[^<>\s@]+>$/;
@@ -127,10 +128,15 @@ const emailAction = async (
 
     try {
       const funcName = emailTemplates[template.name].name.replace("Email", "");
-      body = emailTemplates[template.name]({
+      const templateConfig = await handleEmailTemplateConfig(
+        template[funcName],
+        context,
+      );
+
+      body = await  emailTemplates[template.name]({
         ...template[funcName],
         ...emailConfig,
-        currentYear: getCurrentYear(),
+        ...templateConfig,
       });
     } catch (error) {
       // Don't destroy an AppError produced by the template handler.

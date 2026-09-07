@@ -111,7 +111,7 @@ const sendEmail = async ({
     });
   }
 
-  console.log("Email sent successfully!")
+  console.log("Email sent successfully! to: ", to)
 
   return true;
 };

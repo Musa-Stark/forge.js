@@ -4,8 +4,11 @@ import type { ActionContext } from "../ActionHandler.js";
 
 export type AccountDeletedEmailPlaceholders = CommonEmailPlaceholders &
   Pick<AutoDerivedEmailFields, "currentYear"> & {
-  userName: "there" | (object & string) | ((context: ActionContext) => string);
-  deletionDate: "current-date" | ({} & string);
- userEmail: string | ((context: ActionContext) => string);
-  unsubscribeUrl: string;
-};
+    userName:
+      | "there"
+      | (object & string)
+      | ((context: ActionContext) => string);
+    deletionDate: "current-date" | ({} & string);
+    userEmail: string | ((context: ActionContext) => string);
+    unsubscribeUrl: string;
+  };
