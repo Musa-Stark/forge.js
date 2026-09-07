@@ -33,8 +33,8 @@ new StarkNexus({
 
     accessTokenAge: "1d",
 
-    loginMode: "credentials",
-    signupMode: "credentials",
+    loginMode: "otp",
+    signupMode: "otp",
   },
 
   collections: [
@@ -54,7 +54,7 @@ new StarkNexus({
   },
   port: 10000,
   apiVersion: 1,
-  isOffline: process.env.ISOFFLINE === "true",
+  isOffline: process.env.ISOFFLINE === "false",
   databaseName: process.env.DATABASE_NAME,
   mongoDBURI: process.env.MONGODB_URI,
   systemEmailSender: process.env.ADMIN_EMAIL_SENDER,

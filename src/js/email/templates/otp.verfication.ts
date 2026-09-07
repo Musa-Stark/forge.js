@@ -1,6 +1,6 @@
-import type { TwoFactorCodeEmailPlaceholders } from "../../types/email/two.factor.code.type.js";
+import type { OtpVerificationEmailPlaceholders } from "../../types/email/otp.verification.type.js";
 
-const twoFactorCodeEmail = ({
+const otpVerificationEmail = ({
   otpCode,
   companyUrl,
   companyName,
@@ -11,7 +11,7 @@ const twoFactorCodeEmail = ({
   supportEmail,
   unsubscribeUrl,
   currentYear,
-}: TwoFactorCodeEmailPlaceholders): string => {
+}: OtpVerificationEmailPlaceholders): string => {
   return `<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -20,7 +20,7 @@ const twoFactorCodeEmail = ({
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="color-scheme" content="light">
 <meta name="supported-color-schemes" content="light">
-<title>Your verification code is ${otpCode}</title>
+<title>Your one-time password is ${otpCode}</title>
 <!--[if mso]>
 <noscript>
 <xml>
@@ -45,7 +45,7 @@ const twoFactorCodeEmail = ({
 </head>
 <body style="margin:0;padding:0;background-color:#F1F5F9;">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#F1F5F9;">
-    Use this code to complete your sign-in.
+    Use this one-time password to verify it's you.
     &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
   </div>
   <center style="width:100%;background-color:#F1F5F9;">
@@ -70,35 +70,31 @@ const twoFactorCodeEmail = ({
         <tr>
           <td class="fluid-padding" style="padding:40px 40px 36px 40px;">
 
-            
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0;">
-      <tr>
-        <td width="56" height="56" style="width:56px;height:56px;border-radius:16px;background-color:#EAE9FC;text-align:center;vertical-align:middle;" bgcolor="#EAE9FC">
-          <div style="font-size:0;line-height:0;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5.5c0 4.8-3.2 7.7-7 8.7-3.8-1-7-3.9-7-8.7V6l7-3z"/></svg></div>
-        </td>
-      </tr>
-    </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px 0;">
+              <tr>
+                <td width="56" height="56" style="width:56px;height:56px;border-radius:16px;background-color:#EAE9FC;text-align:center;vertical-align:middle;" bgcolor="#EAE9FC">
+                  <div style="font-size:0;line-height:0;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5.5c0 4.8-3.2 7.7-7 8.7-3.8-1-7-3.9-7-8.7V6l7-3z"/></svg></div>
+                </td>
+              </tr>
+            </table>
 
             <h1 style="margin:0 0 16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:22px;line-height:28px;font-weight:700;color:#0F172A;letter-spacing:-0.02em;">
-              Your verification code
+              Your one-time password
             </h1>
 
-            <p style="margin:0 0 14px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:24px;color:#475569;">Hi ${userName}, enter this code to finish authentication to ${companyName}.</p>
-            
-            
-            
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:24px 0;">
-      <tr>
-        <td align="center" style="background-color:#EDECFC;border:1px dashed #4F46E5;border-radius:12px;padding:20px;">
-          <span style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
-                       font-size:32px;font-weight:700;letter-spacing:10px;color:#0F172A;">
-            ${otpCode}
-          </span>
-        </td>
-      </tr>
-    </table>
-            
-            
+            <p style="margin:0 0 14px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:24px;color:#475569;">Hi ${userName}, use the code below to verify it's really you on ${companyName}.</p>
+
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:24px 0;">
+              <tr>
+                <td align="center" style="background-color:#EDECFC;border:1px dashed #4F46E5;border-radius:12px;padding:20px;">
+                  <span style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+                               font-size:32px;font-weight:700;letter-spacing:10px;color:#0F172A;">
+                    ${otpCode}
+                  </span>
+                </td>
+              </tr>
+            </table>
+
             <p style="margin:20px 0 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:20px;color:#94A3B8;">This code expires in ${expiryMinutes} minutes. Never share this code with anyone, including ${companyName} staff.</p>
 
           </td>
@@ -131,4 +127,4 @@ const twoFactorCodeEmail = ({
 `;
 };
 
-export default twoFactorCodeEmail;
+export default otpVerificationEmail;

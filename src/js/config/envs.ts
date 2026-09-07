@@ -1,102 +1,17 @@
-import type { AuthConfig, InternalConstructor } from "../types/Constructor.ts";
-import AppLog from "../utils/AppLog.js";
+import type { InternalConstructor } from "../types/Constructor.ts";
+import type { CommonEmailPlaceholders } from "../types/email/static-config.type.js";
+import { authConfigValidation } from "./auth.envs.js";
 import { defaultConfig } from "./defaultConfig.js";
+import { emailConfig } from "./email.envs.js";
 
 let envs: InternalConstructor = { ...defaultConfig };
 
-// validateAuthConfigError handling
-const vAError = (str: string): void => {
-  throw new Error(
-    `authConfigObj.${str} is requried in StarkForge({}) ->  authConfigObj.`,
-  );
-};
-
-const placeholderError = (key: string, value: string): void => {
-  if (typeof value === "string" && value.startsWith("[")) {
-    throw new Error(
-      `"${value}" is just a placeholder, use a valid value for the key "${key}" in StarkForge({}) ->  authConfigObj.`,
-    );
-  }
-};
-
-// validateAuthConfigError
-const validateAuth = (config: AuthConfig): void => {
-  try {
-    // if mode is manual -> return;
-    if (config.mode !== "builtin") return;
-
-    // if value -> [placeholder]
-    for (const [key, value] of Object.entries(config.fieldsObj!)) {
-      placeholderError(key, value);
-    }
-
-    // if config.schemaObj isn't found -> error
-    if (!config.schemaObj) vAError("schemaObj");
-
-    // keys that are required
-    const requiredKeys = ["email", "password", "otp", "purpose"];
-
-    // loop for missing keys
-    for (const key of requiredKeys) {
-      if (!(key in config.fieldsObj!)) vAError(`fieldsObj.${key}`);
-    }
-
-    // if model -> [model]
-    placeholderError("model", config.schemaObj?.model!);
-
-    // if model isn't found
-    if (!config.schemaObj?.model) vAError("schemaObj.model");
-
-    // if schema is missing
-    if (!config.schemaObj?.schema) vAError("schemaObj.schema");
-  } catch (error) {
-    AppLog("x", "authConfigObj", (error as Error).message);
-    process.exit(1);
-  }
-};
-
 const setEnvs = (values: InternalConstructor): void => {
-  const authConfig = values.authConfigObj;
+  // authConfig
+  authConfigValidation(values.authConfigObj);
 
-  // Token expiration
-  authConfig.accessTokenAge ??= "10m";
-  authConfig.refreshTokenAge ??= "30d";
-
-  // Token rotation
-  authConfig.rotateRefreshToken ??= true;
-  authConfig.refreshTokenRotationInterval ??= "0s";
-
-  // Token names
-  authConfig.accessTokenName ??= "accessToken";
-  authConfig.refreshTokenName ??= "refreshToken";
-
-  // Return tokens
-  authConfig.returnAccessToken ??= false;
-  authConfig.returnRefreshToken ??= false;
-
-  // User verification
-  authConfig.verifyAccessUser ??= true;
-
-  // Modes
-  authConfig.loginMode ??= "otp";
-  authConfig.signupMode ??= "otp";
-
-  // Fields
-  authConfig.fieldsObj ??= {
-    email: "email",
-    otp: "otp",
-    password: "password",
-    purpose: "purpose",
-  };
-
-  // fieldNames
-  authConfig.fieldsObj.email ??= "email";
-  authConfig.fieldsObj.otp ??= "otp";
-  authConfig.fieldsObj.password ??= "password";
-  authConfig.fieldsObj.purpose ??= "purpose";
-
-  // Validation checkpoint
-  validateAuth(authConfig);
+  // emailConfig
+  emailConfig(values.emailConfig as CommonEmailPlaceholders)
 
   // Save final config
   envs = values;

@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { getEnvs } from "./envs.js";
 import AppError from "../utils/AppError.js";
 import type { Route } from "../types/Collection.js";
+import { validateFrom } from "./email.envs.js";
 
 export interface Email {
   from: string;
@@ -101,7 +102,7 @@ const sendEmail = async ({
     throw new AppError({
       message: error.message,
       statusCode: 409,
-      hint: "This issue requires a fix from the framework developer.",
+      hint: "This issue may require a fix from the framework developer.",
       details: {
         handler: routeObj.handler,
         method: routeObj.method,

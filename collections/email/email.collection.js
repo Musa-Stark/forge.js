@@ -19,10 +19,10 @@ const emailCollection = collection({
             type: "template",
             subject: "Magic Link",
             template: {
-              name: "magic-link",
-              magicLink: {
-                expiryMinutes: 10,
-                magicLinkUrl: "https://auth.starkindustries.com/magic-link",
+              name: "two-factor-code",
+              twoFactorCode: {
+                expiryMinutes: 5,
+                otpCode: "123456",
                 userEmail: "musa.fullstack08@gmail.com",
                 userName: "Musa Stark"
               }
