@@ -55,7 +55,7 @@ export const emailConfig = (config: CommonEmailPlaceholders) => {
       AppLog(
         "warn",
         "emailConfig",
-        `Missing email configuration: "${key}" was not provided in StarkForge({}). Emails may have undefined values.`,
+        `Missing email configuration: "${key}" was not provided in StarkForge({}). Email(s) may have undefined value(s).`,
       );
     }
   }

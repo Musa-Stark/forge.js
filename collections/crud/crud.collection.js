@@ -57,16 +57,24 @@ const crudCollection = collection({
               template: {
                 name: "new-device-login",
                 newDeviceLogin: {
-                  deviceName: "Google Pixel 6",
-                  ipAddress: "192.169.100.39",
-                  location: "Pakistan",
-                  loginTime: "current-time",
-                  secureAccountUrl: "https://secure-account.starkindustries.com",
-                  userEmail: async ({item}) => {
+                  secureAccountUrl:
+                    "https://secure-account.starkindustries.com",
+
+                  userEmail: async ({ item }) => {
                     return item.owner.email;
                   },
-                  userName: "Musa Stark"
-                }
+
+                  userName: async ({ item }) => {
+                    const Model = getModel({ model: "User" });
+                    const userData = await Model.findOne({
+                      _id: item.owner._id,
+                    });
+                    const userName = `${userData.firstName.slice(0, 1).toUpperCase() + userData.firstName.slice(1)} ${userData.lastName}`;
+                    return userName;
+                  },
+
+                  loginTime: "current-time",
+                },
               },
             },
           },

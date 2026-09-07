@@ -17,8 +17,9 @@ const getToken = ({
 
   const tokenName = authConfigObj[type];
 
-  let token = req.cookies[tokenName!];
-  if (!token) token = req.body[tokenName!];
+  let token = req.cookies?.[tokenName!];
+
+  if (!token) token = req.body?.[tokenName!];
 
   if (!token || typeof token !== "string")
     throw new AppError({

@@ -126,6 +126,15 @@ const emailAction = async (
       });
     }
 
+    if (!("name" in template))
+      throw new AppError({
+        message: "template name is required when email type is 'template'.",
+        statusCode: 400,
+        code: "EMAIL_TEMPLATE_Name_REQUIRED",
+        details,
+        hint: "Provide a supported email template name.",
+      });
+
     try {
       const funcName = emailTemplates[template.name].name.replace("Email", "");
       const templateConfig = await handleEmailTemplateConfig(
@@ -133,7 +142,7 @@ const emailAction = async (
         context,
       );
 
-      body = await  emailTemplates[template.name]({
+      body = await emailTemplates[template.name]({
         ...template[funcName],
         ...emailConfig,
         ...templateConfig,

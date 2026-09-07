@@ -54,7 +54,10 @@ export type ExcludedEmailFields =
   | "companyUrl"
   | "companyAddress"
   | "supportEmail"
-  | "unsubscribeUrl";
+  | "unsubscribeUrl"
+  | "ipAddress"
+  | "deviceName"
+  | "location";
 
 export interface EmailActionTemplate {
   name: EmailTemplate;
