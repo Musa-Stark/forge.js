@@ -32,6 +32,21 @@ const crudCollection = collection({
         populate: "owner",
         hiddenFields: ["__v", "updatedAt"],
       },
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({item}) => {
+                return item[0].owner.email;
+              },
+              subject: "Testing Purpose",
+              type: "raw",
+              rawBody: "This email is sent to you for testing purpose, you can simply ignore it.",
+            } 
+          }
+        ]
+      }
     },
     {
       method: "get",
