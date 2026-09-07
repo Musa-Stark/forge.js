@@ -77,3 +77,5 @@ git diff feature
 
 2. common/auto-fields.ts + common/auth-fields.types.ts:
   Paste them in email/utils
+
+  "current-date" | ({} & string);

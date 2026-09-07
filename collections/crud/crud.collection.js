@@ -1,4 +1,9 @@
-import { collection, zodFields, mongooseFields } from "../../dist/js/index.js";
+import {
+  collection,
+  zodFields,
+  mongooseFields,
+  getModel,
+} from "../../dist/js/index.js";
 
 const crudCollection = collection({
   type: "crud",
@@ -39,6 +44,34 @@ const crudCollection = collection({
         populate: "owner",
         hiddenFields: ["__v"],
       },
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({ item }) => {
+                return item.owner.email;
+              },
+              type: "template",
+              subject: "Account Created",
+              template: {
+                name: "account-updated",
+                accountUpdated: {
+                  changeDate: new Date().toLocaleDateString("en-PK", {
+                    dateStyle: "full",
+                  }),
+                  fieldChanged: "isAvailable",
+                  newValue: true,
+                  userEmail: async ({item}) => {
+                    return item.owner.email;
+                  },
+                  userName: "there",
+                },
+              },
+            },
+          },
+        ],
+      },
     },
     {
       method: "post",
@@ -47,6 +80,27 @@ const crudCollection = collection({
       auth: "authenticated",
       validation: "createProduct",
       // encryptedFields: ["cardNumber", "cvv"],
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              type: "template",
+              subject: "Item created",
+              template: {
+                name: "account-created",
+                accountCreated: {
+                  dashboardUrl: "https://youtube.com",
+                  userEmail: "musa.fullstack08@gmail.com",
+                },
+              },
+              to: ({ user }) => {
+                return "musa.fullstack08@gmail.com";
+              },
+            },
+          },
+        ],
+      },
     },
     {
       method: "post",
@@ -72,6 +126,30 @@ const crudCollection = collection({
       handler: "update",
       auth: "admin-or-owner",
       validation: "update",
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({ data }) => {
+                console.log(data.body);
+              },
+              type: "template",
+              subject: "Item updated",
+              template: {
+                name: "account-updated",
+                accountUpdated: {
+                  changeDate: new Date().getDate(),
+                  fieldChanged: "isAvailable",
+                  newValue: true,
+                  userEmail: "imstark.official@gmail.com",
+                  userName: "Stark",
+                },
+              },
+            },
+          },
+        ],
+      },
     },
     {
       method: "patch",
@@ -101,11 +179,10 @@ const crudCollection = collection({
       auth: "admin-or-owner",
       validation: "removeMultiple",
       config: {
-        targetField: "ids"
-      }
+        targetField: "ids",
+      },
     },
     {
-
       method: "delete",
       path: "/all",
       handler: "removeAll",
@@ -149,7 +226,7 @@ const crudCollection = collection({
       stark: zodFields.requiredString,
     },
     removeMultiple: {
-      ids: zodFields.requiredStringArray
+      ids: zodFields.requiredStringArray,
     },
   },
 });

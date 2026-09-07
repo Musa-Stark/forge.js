@@ -48,8 +48,7 @@ const read = ({
       });
     }
     // if '_id' excluded
-    const idExcluded =
-      routeObj.config?.hiddenFields?.includes("_id");
+    const idExcluded = routeObj.config?.hiddenFields?.includes("_id");
 
     // Decrypt fields
     const decryptedItems = await Promise.all(

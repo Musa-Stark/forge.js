@@ -45,9 +45,6 @@ export interface ActionContext {
    * Data associated with the current request and operation.
    */
   data?: {
-    /** ID of the resource owner. */
-    owner?: string;
-
     /** Parsed request body. */
     body?: any;
 

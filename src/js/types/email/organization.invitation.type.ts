@@ -1,5 +1,6 @@
 import type { CommonEmailPlaceholders } from "./static-config.type.ts";
 import type { AutoDerivedEmailFields } from "../../email/utils/auto-fields.type.js";
+import type { ActionContext } from "../ActionHandler.js";
 
 export type OrganizationInvitationEmailPlaceholders = CommonEmailPlaceholders &
   Pick<AutoDerivedEmailFields, "currentYear"> & {
@@ -7,7 +8,7 @@ export type OrganizationInvitationEmailPlaceholders = CommonEmailPlaceholders &
   inviterName: string;
   memberRole: string;
   inviteUrl: string;
-  expiryDate: string;
-  userEmail: string;
+  expiryDate: "current-date" | ({} & string);
+  userEmail: string | ((context: ActionContext) => string);
   unsubscribeUrl: string;
 };

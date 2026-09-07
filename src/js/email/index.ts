@@ -58,14 +58,14 @@ const emailAction = async (
   let recipient: string;
 
   try {
-    recipient = typeof to === "function" ? to(context) : to;
+    recipient = typeof to === "function" ? await to(context) : to;
   } catch (error) {
     throw new AppError({
       message: "Failed to resolve the email recipient.",
       statusCode: 400,
       code: "EMAIL_RECIPIENT_RESOLUTION_ERROR",
       details,
-      hint: "Check the function provided to the to field.",
+      hint: "Check the function provided to the 'to' field.",
     });
   }
 
@@ -130,7 +130,7 @@ const emailAction = async (
       body = emailTemplates[template.name]({
         ...template[funcName],
         ...emailConfig,
-        currentYear: getCurrentYear()
+        currentYear: getCurrentYear(),
       });
     } catch (error) {
       // Don't destroy an AppError produced by the template handler.

@@ -33,8 +33,8 @@ new StarkNexus({
 
     accessTokenAge: "1d",
 
-    loginMode: "otp",
-    signupMode: "otp",
+    loginMode: "credentials",
+    signupMode: "credentials",
   },
 
   collections: [

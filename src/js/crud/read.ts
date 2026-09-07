@@ -55,13 +55,12 @@ const read = ({
     // if decryption
     const decryption = await handleDecryption(item, routeObj);
 
-    // before action
+    // after action
     modifiedResponse = await runActions(routeObj.actions?.after, {
       operation: "read",
       ...ActionObj,
-      data: {
-        decrypted: decryption,
-      },
+      item,
+      result: decryption,
     });
 
     // return response
