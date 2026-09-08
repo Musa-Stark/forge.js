@@ -110,7 +110,7 @@ const createModel = (
   const cleanDefinition = normalizeDefinition(definition);
   const schema = buildSchema(cleanDefinition);
 
-  AppLog("db", "modelFactory", `${name} model created!`);
+  // AppLog("db", "modelFactory", `${name} model created!`);
 
   return mongoose.model(name, schema);
 };

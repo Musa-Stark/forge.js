@@ -16,11 +16,11 @@ const connectLocally = async (databaseName = "starkForge") => {
     process.exit(1);
   }
 
-  AppLog(
-    "check",
-    "db",
-    `Connected to OFFLINE-DB! Database name: '${databaseName}'`,
-  );
+  // AppLog(
+  //   "check",
+  //   "db",
+  //   `Connected to OFFLINE-DB! Database name: '${databaseName}'`,
+  // );
 };
 
 type connectDBParams = {
