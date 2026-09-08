@@ -95,7 +95,7 @@ export interface Route {
    *
    * @example "/:id"
    */
-  path: RoutePath;
+  path: RoutePath | ({} & string);
 
   /**
    * Name of the framework controller handler to run.
