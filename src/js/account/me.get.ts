@@ -12,7 +12,7 @@ const getMe = ({ routeObj }: { routeObj: Route }) => {
 
     appResponse({
       res,
-      data: sanitizeOne(user.toObject(), routeObj),
+      data: sanitizeOne(user.data.toObject(), routeObj),
       message: "Welcome back!",
     });
   };

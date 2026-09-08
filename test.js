@@ -13,6 +13,7 @@ import {
   actionCollection,
   recentCollection,
   emailCollection,
+  adminCollection,
 } from "./collections/index.js";
 
 import "dotenv/config";
@@ -35,6 +36,8 @@ new StarkNexus({
 
     loginMode: "credentials",
     signupMode: "credentials",
+    // verifyAccessUser: false
+
   },
 
   collections: [
@@ -44,13 +47,14 @@ new StarkNexus({
     actionCollection,
     recentCollection,
     emailCollection,
+    adminCollection,
   ],
   emailConfig: {
     companyAddress: "Peshawar, Pakistan",
     companyName: "Stark Industries",
     companyUrl: "https://starkindustries.com",
     supportEmail: "support@starkindustries.com",
-    unsubscribeUrl: "https://unsubscribeUrl"
+    unsubscribeUrl: "https://unsubscribeUrl",
   },
   maxReqLimit: 999999999999999999999,
   port: 10000,

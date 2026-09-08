@@ -3,6 +3,7 @@ import type { authHandlers } from "./authHandlers.ts";
 import type { crudHandlers } from "./crudHandlers.ts";
 import type { uploadHandlers } from "./uploadHandlers.js";
 import type { accountHandlers } from "./accountHandlers.js";
+import type { adminHandlers } from "./adminHandlers.js";
 import type { Action } from "./ActionHandler.js";
 import type { Upload } from "./upload.ts";
 
@@ -33,7 +34,8 @@ export type Handler =
   | authHandlers
   | crudHandlers
   | uploadHandlers
-  | accountHandlers;
+  | accountHandlers
+  | adminHandlers;
 
 /**
  * Configuration options for database queries on this route.

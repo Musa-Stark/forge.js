@@ -37,12 +37,18 @@ import {
   addFile,
 } from "../crud/bunch.crud.js";
 
+// admin handlers
+import { checkAdmin } from "../admin/bunch.admin.js";
+
 const handlerMap: Record<string, any> = {
+  // health
   healthDelete,
   healthGet,
   healthPatch,
   healthPost,
   healthPut,
+
+  // auth
   signup,
   verifyOTP,
   login,
@@ -51,6 +57,8 @@ const handlerMap: Record<string, any> = {
   resetPassword,
   logout,
   refresh,
+
+  // crud
   read,
   create,
   readAll,
@@ -64,7 +72,10 @@ const handlerMap: Record<string, any> = {
   addFile,
   getMe,
   updateMe,
-  deleteMe
+  deleteMe,
+
+  // admin
+  checkAdmin,
 };
 
 export default handlerMap;

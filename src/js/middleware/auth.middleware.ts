@@ -33,8 +33,19 @@ export const findUser = async (
     });
   }
 
-  const user = await Model.findById(id).select("+_id +email +role");
-  return user;
+  const user = await Model.findById(id).select("+_id +email +role").lean();
+  if (!user)
+    return {
+      success: false,
+      message: {
+        message: "User associated with the access token was not found",
+        code: "ACCESS_USER_NOT_FOUND",
+        statusCode: 401,
+        hint: "Sign in again with an existing account.",
+        details: getErrorDetail(routeObj),
+      },
+    };
+  return { success: true, data: user };
 };
 
 const protect =
@@ -51,7 +62,7 @@ const protect =
         token,
         routeObj,
       });
-      
+
       if (typeof payload === "string" || !payload.sub) {
         return next(
           new AppError({
@@ -71,22 +82,20 @@ const protect =
           userModelName!,
         );
 
-        if (!user) {
-          return next(
-            new AppError({
-              message: "User associated with the access token was not found",
-              code: "ACCESS_USER_NOT_FOUND",
-              statusCode: 401,
-              hint: "Sign in again with an existing account.",
-              details: getErrorDetail(routeObj),
-            }),
-          );
+        if (!user.success) {
+          return next(new AppError(user.message!));
         }
+
+        req.user = {
+          _id: user.data._id,
+          role: user.data.role,
+        };
       }
 
-      req.user = {
-        _id: payload.sub,
-      };
+      if (!verifyAccessUser)
+        req.user = {
+          _id: payload.sub,
+        };
 
       next();
     } catch (error: unknown) {
@@ -94,7 +103,7 @@ const protect =
         return next(error);
       }
 
-      console.error(error);
+      console.error("auth.middleware.js: ", error);
 
       return next(
         new AppError({

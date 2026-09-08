@@ -59,7 +59,7 @@ export type CollectionValidations = Record<
  * - `account`: Profile settings for the logged-in user.
  * - `health`: Server status and health checks.
  */
-export type CollectionType = "auth" | "health" | "crud" | "account";
+export type CollectionType = "auth" | "health" | "crud" | "account" | "admin";
 
 /**
  * The main configuration object to create your backend feature.
