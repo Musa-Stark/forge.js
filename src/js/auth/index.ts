@@ -20,15 +20,15 @@ const auth = (
   validations?: ValidationsObj,
   schema?: MongooseSchema,
 ) => {
-  const { apiVersion, authConfigObj } = getEnvs();
+  const { apiVersion, authConfig } = getEnvs();
   let builtInValidation = null;
-  if (authConfigObj?.mode === "builtin") {
-    builtInValidation = getValidationsObj(authConfigObj?.schemaObj?.schema!);
+  if (authConfig?.mode === "builtin") {
+    builtInValidation = getValidationsObj(authConfig?.schemaObj?.schema!);
     routes = routes.map((item: Route) =>
       item.handler === "login"
-        ? { ...item, mode: authConfigObj!.loginMode! }
+        ? { ...item, mode: authConfig!.loginMode! }
         : item.handler === "signup"
-          ? { ...item, mode: authConfigObj!.signupMode! }
+          ? { ...item, mode: authConfig!.signupMode! }
           : item,
     );
   }

@@ -1,4 +1,4 @@
-import express  from "express";
+import express from "express";
 import type { Express } from "express";
 const app: Express = express();
 import { getEnvs } from "./config/envs.js";
@@ -17,6 +17,7 @@ import { setAppInfo } from "./terminal/appInfo.js";
 import printInfo from "./terminal/loggerConfig.js";
 import type { AuthConfig } from "./types/Constructor.js";
 import createRefreshModel from "./config/refreshModel.js";
+import { adminCollection } from "./admin/bunch.admin.js";
 
 // body - middlewares
 const jsonParser = express.json();
@@ -40,23 +41,16 @@ app.use((req, res, next) => {
 // handle collection
 const handleCollection = (
   collections: Collection[],
-  authConfigObj: AuthConfig,
+  authConfig: AuthConfig,
 ): void => {
   for (const Req of collections) {
     setAppInfo(Req);
 
-    let {
-      type,
-      route,
-      routes,
-      model,
-      validations,
-      schema,
-    } = Req;
+    let { type, route, routes, model, validations, schema } = Req;
 
-    if (type === "auth" && authConfigObj.mode === "builtin") {
-      schema = authConfigObj.schemaObj?.schema!;
-      model = authConfigObj.schemaObj?.model!;
+    if (type === "auth" && authConfig.mode === "builtin") {
+      schema = authConfig.schemaObj?.schema!;
+      model = authConfig.schemaObj?.model!;
     }
 
     if (model) {
@@ -64,15 +58,7 @@ const handleCollection = (
       registerModel[model] = MODEL;
     }
 
-    handleReqType(
-      type,
-      app,
-      route,
-      routes,
-      model,
-      validations,
-      schema,
-    );
+    handleReqType(type, app, route, routes, model, validations, schema);
   }
 };
 
@@ -84,11 +70,12 @@ const startServer = async (): Promise<void> => {
     isOffline,
     mongoDBURI,
     databaseName,
-    authConfigObj,
+    authConfig,
+    adminConfig,
   } = getEnvs();
   // connect db
   await connectDB({ isOffline, mongoDBURI, databaseName });
-  await createRefreshModel()
+  await createRefreshModel();
 
   // rate limiter
   app.use(rateLimiter());
@@ -97,11 +84,12 @@ const startServer = async (): Promise<void> => {
   const collectionArray = [healthCollection];
 
   // handleCollection config
-  if (authConfigObj?.mode === "builtin") collectionArray.push(authCollection);
+  if (authConfig?.mode === "builtin") collectionArray.push(authCollection);
+  if (adminConfig?.mode === "builtin") collectionArray.push(adminCollection);
   if (collections) collectionArray.push(...collections);
 
   // call - handleCollection
-  handleCollection(collectionArray, authConfigObj!);
+  handleCollection(collectionArray, authConfig!);
 
   // routeObj not found
   app.use((req, res) => {
@@ -111,10 +99,10 @@ const startServer = async (): Promise<void> => {
   // error middleware
   app.use(errorMiddleware);
 
-  // app.listen(port, printInfo);
-  app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-  });
+  app.listen(port, printInfo);
+  // app.listen(port, () => {
+  //   console.log(`Server is running at http://localhost:${port}`);
+  // });
 };
 
 export { startServer, app };

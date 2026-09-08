@@ -15,7 +15,7 @@ import getRefreshToken from "./utils/handleGetToken.js";
 
 const refresh = ({ routeObj }: { routeObj: Route }) => {
   return async (req: Request, res: Response) => {
-    const { authConfigObj } = getEnvs();
+    const { authConfig } = getEnvs();
 
     // token info
     const { deviceType, jti, deviceName, os, ipAddress, familyId } =
@@ -58,7 +58,7 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
     // send access cookie
     const { accessToken } = sendCookie({
       res,
-      accessTokenName: authConfigObj.accessTokenName!,
+      accessTokenName: authConfig.accessTokenName!,
       routeObj,
       accessTokenPayload: {
         sub: payload.sub,
@@ -84,8 +84,8 @@ const refresh = ({ routeObj }: { routeObj: Route }) => {
     appResponse({
       res,
       message: "Access token refreshed successfully",
-      accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
-      refreshToken: authConfigObj?.returnRefreshToken ? token! : undefined,
+      accessToken: authConfig?.returnAccessToken ? accessToken! : undefined,
+      refreshToken: authConfig?.returnRefreshToken ? token! : undefined,
     });
   };
 };

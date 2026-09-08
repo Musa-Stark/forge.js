@@ -3,7 +3,7 @@ import type { DurationType } from "../config/duration.ts";
 import type { UnifiedField } from "../lib/unified.types.js";
 import type { CommonEmailPlaceholders } from "./email/static-config.type.js";
 
-// auth config types and interface
+// auth config types and interface -------------------------------------------------
 export type authMode = "credentials" | "otp";
 export interface AuthConfig {
   mode: "builtin" | "manual";
@@ -37,8 +37,14 @@ export interface AuthConfig {
   loginMode?: authMode;
 }
 
+// adminConfig --------------------------------------------------------------------
+export interface AdminConfig {
+  mode: "builtin" | "manual";
+}
+
 export interface Constructor {
-  authConfigObj: AuthConfig;
+  authConfig: AuthConfig;
+  adminConfig: AdminConfig;
   apiVersion: number;
   backendURL: string;
   cloudinaryAPIKey?: string;

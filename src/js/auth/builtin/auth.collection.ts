@@ -3,8 +3,8 @@ import type { Collection } from "../../types/Collection.js";
 import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
-  const { authConfigObj } = getEnvs();
-  vals.schema = authConfigObj?.schemaObj?.schema!;
+  const { authConfig } = getEnvs();
+  vals.schema = authConfig?.schemaObj?.schema!;
 
   return vals;
 };

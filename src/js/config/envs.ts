@@ -8,7 +8,7 @@ let envs: InternalConstructor = { ...defaultConfig };
 
 const setEnvs = (values: InternalConstructor): void => {
   // authConfig
-  authConfigValidation(values.authConfigObj);
+  authConfigValidation(values.authConfig);
 
   // emailConfig
   emailConfig(values.emailConfig as CommonEmailPlaceholders)

@@ -4,14 +4,14 @@ import AppLog from "../utils/AppLog.js";
 // validateAuthConfigError handling
 const vAError = (str: string): void => {
   throw new Error(
-    `authConfigObj.${str} is requried in StarkForge({}) ->  authConfigObj.`,
+    `authConfig.${str} is requried in StarkForge({}) ->  authConfig.`,
   );
 };
 
 const placeholderError = (key: string, value: string): void => {
   if (typeof value === "string" && value.startsWith("[")) {
     throw new Error(
-      `"${value}" is just a placeholder, use a valid value for the key "${key}" in StarkForge({}) ->  authConfigObj.`,
+      `"${value}" is just a placeholder, use a valid value for the key "${key}" in StarkForge({}) ->  authConfig.`,
     );
   }
 };
@@ -47,7 +47,7 @@ export const validateAuth = (config: AuthConfig): void => {
     // if schema is missing
     if (!config.schemaObj?.schema) vAError("schemaObj.schema");
   } catch (error) {
-    AppLog("x", "authConfigObj", (error as Error).message);
+    AppLog("x", "authConfig", (error as Error).message);
     process.exit(1);
   }
 };

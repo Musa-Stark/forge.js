@@ -20,14 +20,14 @@ const appResponse = ({
   refreshToken,
   purpose,
 }: AppResponse): void => {
-  const { authConfigObj } = getEnvs();
+  const { authConfig } = getEnvs();
 
   res.status(statusCode).json({
     success: true,
     data,
     message,
-    [authConfigObj.accessTokenName ?? "accessToken"]: accessToken,
-    [authConfigObj.refreshTokenName ?? "refreshToken"]: refreshToken,
+    [authConfig.accessTokenName ?? "accessToken"]: accessToken,
+    [authConfig.refreshTokenName ?? "refreshToken"]: refreshToken,
     purpose,
   });
 };

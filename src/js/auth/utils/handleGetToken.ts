@@ -13,9 +13,9 @@ const getToken = ({
   routeObj: Route;
   type: "accessTokenName" | "refreshTokenName";
 }) => {
-  const { authConfigObj } = getEnvs();
+  const { authConfig } = getEnvs();
 
-  const tokenName = authConfigObj[type];
+  const tokenName = authConfig[type];
 
   let token = req.cookies?.[tokenName!];
 

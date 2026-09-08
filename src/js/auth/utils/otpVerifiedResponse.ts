@@ -14,8 +14,8 @@ const otpVerifiedResponse = ({
   routeObj: Route;
 }) => {
   // get dynamic auth field key
-  const { authConfigObj } = getEnvs();
-  const { fieldsObj } = authConfigObj;
+  const { authConfig } = getEnvs();
+  const { fieldsObj } = authConfig;
 
   const purposeKey = fieldsObj?.purpose;
 

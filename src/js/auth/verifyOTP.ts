@@ -25,8 +25,8 @@ const verifyOTP = ({
 }) => {
   return async (req: Request, res: Response) => {
     // get dynamic auth field keys
-    const { authConfigObj } = getEnvs();
-    const { fieldsObj } = authConfigObj;
+    const { authConfig } = getEnvs();
+    const { fieldsObj } = authConfig;
 
     const emailKey = fieldsObj?.email;
     const otpKey = fieldsObj?.otp;

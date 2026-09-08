@@ -42,7 +42,7 @@ export const signJWT = ({
         message: "JWT expiration time is not configured",
         code: "JWT_AGE_MISSING",
         statusCode: 500,
-        hint: "Configure the access or refresh token age in 'authConfigObj'.",
+        hint: "Configure the access or refresh token age in 'authConfig'.",
         details: getErrorDetail(routeObj),
       });
     }

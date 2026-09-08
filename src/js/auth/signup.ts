@@ -21,8 +21,8 @@ const signup = ({
 }) => {
   return async (req: Request, res: Response) => {
     // get dynamic email and password
-    const { authConfigObj } = getEnvs();
-    const { fieldsObj } = authConfigObj;
+    const { authConfig } = getEnvs();
+    const { fieldsObj } = authConfig;
     const emailKey = fieldsObj?.email;
     const passwordKey = fieldsObj?.password;
 
