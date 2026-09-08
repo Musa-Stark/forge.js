@@ -107,7 +107,7 @@ export interface EmailAction {
     template?: EmailActionTemplate;
 
     /** Email subject. */
-    subject?: string | ((context: ActionContext) => string);
+    subject: string | ((context: ActionContext) => string);
   };
 }
 

@@ -11,7 +11,6 @@ const runActions = async (
   const handlerMap: Record<string, any> = {
     customAction: async (handler: any) => {
       const output = await handler({ ...context, result });
-      console.log(output);
       if (output !== undefined) result = output;
     },
     emailAction: async (emailConfig: any) => {

@@ -42,6 +42,15 @@ export const validateFrom = (emailSender: string) => {
 
 // validate emailConfig ----------------------------------------------------------------------
 export const emailConfig = (config: CommonEmailPlaceholders) => {
+  if (!config) {
+    AppLog(
+      "warn",
+      "emailConfig",
+      `emailConfig was not provided in StarkForge({}). Email(s) may have undefined value(s).`,
+    );
+    return
+  }
+
   const keys: (keyof CommonEmailPlaceholders)[] = [
     "companyName",
     "companyUrl",

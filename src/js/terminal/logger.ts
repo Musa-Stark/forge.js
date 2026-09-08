@@ -36,8 +36,6 @@ function row(key: string, value: string) {
 }
 
 const printBanner = (config: any) => {
-  console.clear();
-
   console.log(
     c(
       "╔════════════════════════════════════════════════════════════════════════╗",
