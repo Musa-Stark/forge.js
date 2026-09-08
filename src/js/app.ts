@@ -23,7 +23,6 @@ const jsonParser = express.json();
 const urlencodedParser = express.urlencoded({ extended: true });
 app.use(cookieParser());
 app.use(helmet());
-app.use(rateLimiter());
 
 // parse body - based on situation
 app.use((req, res, next) => {
@@ -91,6 +90,9 @@ const startServer = async (): Promise<void> => {
   await connectDB({ isOffline, mongoDBURI, databaseName });
   await createRefreshModel()
 
+  // rate limiter
+  app.use(rateLimiter());
+
   // collectionsArray
   const collectionArray = [healthCollection];
 
@@ -109,10 +111,10 @@ const startServer = async (): Promise<void> => {
   // error middleware
   app.use(errorMiddleware);
 
-  app.listen(port, printInfo);
-  // app.listen(port, () => {
-  //   console.log(`Server is running at http://localhost:${port}`);
-  // });
+  // app.listen(port, printInfo);
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
 };
 
 export { startServer, app };

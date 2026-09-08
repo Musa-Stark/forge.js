@@ -72,10 +72,15 @@ git push
 git switch main
 git diff feature
 
-1. common/static-config.types.ts:
-  Write them in constructor.ts so that developer provides it in new StarkForge({})
+admin/
 
-2. common/auto-fields.ts + common/auth-fields.types.ts:
-  Paste them in email/utils
+client:accessToken -> auth.middleware.ts -> im.admin.ts
 
-  "current-date" | ({} & string);
+auth.middleware.ts:
+  if verifyAccessUser -> req.user = _id: user._id, role: user.role
+
+im.admin.ts:
+  1. If not req.user.role?  Get User model. Find the user with req.user._id
+  2. if !internalRoles.include(user.role)
+        throw new AppError({})
+  3. return success: true

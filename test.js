@@ -46,12 +46,13 @@ new StarkNexus({
     emailCollection,
   ],
   emailConfig: {
-    // companyAddress: "Peshawar, Pakistan",
+    companyAddress: "Peshawar, Pakistan",
     companyName: "Stark Industries",
     companyUrl: "https://starkindustries.com",
     supportEmail: "support@starkindustries.com",
     unsubscribeUrl: "https://unsubscribeUrl"
   },
+  maxReqLimit: 999999999999999999999,
   port: 10000,
   apiVersion: 1,
   isOffline: process.env.ISOFFLINE === "true",

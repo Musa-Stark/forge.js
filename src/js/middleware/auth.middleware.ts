@@ -47,18 +47,6 @@ const protect =
 
       const token = handleGetToken({ req, routeObj, type: "accessTokenName" });
 
-      if (!token) {
-        return next(
-          new AppError({
-            message: "Access token is missing",
-            code: "ACCESS_TOKEN_MISSING",
-            statusCode: 401,
-            hint: "Request a new access token using the  endpoint. Default: /auth/refresh-token",
-            details: getErrorDetail(routeObj),
-          }),
-        );
-      }
-
       const payload = verifyJWT({
         token,
         routeObj,
@@ -112,7 +100,7 @@ const protect =
         new AppError({
           message: "Authentication middleware failed",
           statusCode: 500,
-          hint: "This issue requires a fix from the framework developer.",
+          hint: "This issue may requires a fix from the framework developer.",
           details: getErrorDetail(routeObj),
         }),
       );

@@ -19,18 +19,18 @@ const recentCollection = collection({
       config: {
         hiddenFields: ["__v", "updatedAt"]
       },
-      actions: {
-        after: [
-          {
-            type: "custom",
-            handler: async ({ result }) => {
-              const Model = getModel({ model: "User" });
-              const users = await Model.find();
-              return await [...result, ...users];
-            },
-          },
-        ],
-      },
+      // actions: {
+      //   after: [
+      //     {
+      //       type: "custom",
+      //       handler: async ({ result }) => {
+      //         const Model = getModel({ model: "User" });
+      //         const users = await Model.find();
+      //         return await [...result, ...users];
+      //       },
+      //     },
+      //   ],
+      // },
     },
   ],
 
