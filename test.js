@@ -59,7 +59,7 @@ new StarkNexus({
   maxReqLimit: 999999999999999999999,
   port: 10000,
   apiVersion: 1,
-  isOffline: process.env.ISOFFLINE === "true",
+  isOffline: process.env.ISOFFLINE === "false",
   databaseName: process.env.DATABASE_NAME,
   mongoDBURI: process.env.MONGODB_URI,
   systemEmailSender: process.env.ADMIN_EMAIL_SENDER,
