@@ -57,9 +57,9 @@ const getValidationsObj = (obj: Record<string, UnifiedField>) => {
   } catch (error) {
     let message = (error as Error).message;
     if (message.includes("schema")) {
-      message = message.replace("schema", "'authConfig.schemaObj.schema'");
+      message = message.replace("schema", "'authConfig.mongooseConfig.schema'");
       message = message.replace("does not exist", "is required");
-      AppLog("x", "schemaObj", message);
+      AppLog("x", "mongooseConfig", message);
     }
     process.exit(1);
   }

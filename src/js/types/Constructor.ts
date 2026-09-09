@@ -22,7 +22,7 @@ export interface AuthConfig {
     otp: "otp" | "write_a_custom_field_name" | (string & {});
     purpose: "purpose" | "write_a_custom_field_name" | (string & {});
   };
-  schemaObj?: {
+  mongooseConfig?: {
     model: "User" | "WRITE_A_CUSTOM_USER_Model_Name" | (string & {});
     schema: Record<string, UnifiedField>;
   };

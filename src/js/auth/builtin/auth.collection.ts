@@ -4,7 +4,7 @@ import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
   const { authConfig } = getEnvs();
-  vals.schema = authConfig?.schemaObj?.schema!;
+  vals.schema = authConfig?.mongooseConfig?.schema!;
 
   return vals;
 };

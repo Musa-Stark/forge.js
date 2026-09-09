@@ -42,7 +42,7 @@ const setAppInfo = (req: Collection) => {
 
   if (
     authConfig.mode === "builtin" &&
-    !resources.includes(authConfig.schemaObj?.model || "User")
+    !resources.includes(authConfig.mongooseConfig?.model || "User")
   )
     appInfo.modelsCount!++;
 

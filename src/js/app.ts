@@ -49,8 +49,8 @@ const handleCollection = (
     let { type, route, routes, model, validations, schema } = Req;
 
     if (type === "auth" && authConfig.mode === "builtin") {
-      schema = authConfig.schemaObj?.schema!;
-      model = authConfig.schemaObj?.model!;
+      schema = authConfig.mongooseConfig?.schema!;
+      model = authConfig.mongooseConfig?.model!;
     }
 
     if (model) {

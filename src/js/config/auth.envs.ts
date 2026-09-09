@@ -27,8 +27,8 @@ export const validateAuth = (config: AuthConfig): void => {
       placeholderError(key, value);
     }
 
-    // if config.schemaObj isn't found -> error
-    if (!config.schemaObj) vAError("schemaObj");
+    // if config.mongooseConfig isn't found -> error
+    if (!config.mongooseConfig) vAError("mongooseConfig");
 
     // keys that are required
     const requiredKeys = ["email", "password", "otp", "purpose"];
@@ -39,13 +39,13 @@ export const validateAuth = (config: AuthConfig): void => {
     }
 
     // if model -> [model]
-    placeholderError("model", config.schemaObj?.model!);
+    placeholderError("model", config.mongooseConfig?.model!);
 
     // if model isn't found
-    if (!config.schemaObj?.model) vAError("schemaObj.model");
+    if (!config.mongooseConfig?.model) vAError("mongooseConfig.model");
 
     // if schema is missing
-    if (!config.schemaObj?.schema) vAError("schemaObj.schema");
+    if (!config.mongooseConfig?.schema) vAError("mongooseConfig.schema");
   } catch (error) {
     AppLog("x", "authConfig", (error as Error).message);
     process.exit(1);

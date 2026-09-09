@@ -23,7 +23,7 @@ const auth = (
   const { apiVersion, authConfig } = getEnvs();
   let builtInValidation = null;
   if (authConfig?.mode === "builtin") {
-    builtInValidation = getValidationsObj(authConfig?.schemaObj?.schema!);
+    builtInValidation = getValidationsObj(authConfig?.mongooseConfig?.schema!);
     routes = routes.map((item: Route) =>
       item.handler === "login"
         ? { ...item, mode: authConfig!.loginMode! }

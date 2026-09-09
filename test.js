@@ -20,7 +20,7 @@ import "dotenv/config";
 new StarkNexus({
   authConfig: {
     mode: "builtin",
-    schemaObj: {
+    mongooseConfig: {
       model: "User",
       schema: {
         firstName: fields.requiredIndexString,
@@ -39,11 +39,11 @@ new StarkNexus({
   },
 
   collections: [
-    crudCollection,
-    userCollection,
-    accountCollection,
-    actionCollection,
-    recentCollection,
+    // crudCollection,
+    // userCollection,
+    // accountCollection,
+    // actionCollection,
+    // recentCollection,
     emailCollection,
   ],
   emailConfig: {
