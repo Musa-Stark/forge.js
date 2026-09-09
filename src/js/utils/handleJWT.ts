@@ -32,7 +32,7 @@ export const signJWT = ({
         message: "JWT secret is not configured",
         code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in the environment variables.",
+        hint: "Configure 'jwtSecret' in StarkForge({})",
         details: getErrorDetail(routeObj),
       });
     }
@@ -89,7 +89,7 @@ export const verifyJWT = ({
         message: "JWT secret is not configured",
         code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in the environment variables.",
+        hint: "Configure 'jwtSecret' in StarkForge({})",
         details: getErrorDetail(routeObj),
       });
 
