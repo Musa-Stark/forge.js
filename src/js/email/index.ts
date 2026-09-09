@@ -44,7 +44,7 @@ const emailAction = async (
 
   if (!sender || !EMAIL_SENDER_REGEX.test(sender)) {
     throw new AppError({
-      message: "Invalid email sender.",
+      message: "Invalid email sender, from or systemEmailSender.",
       statusCode: 400,
       code: "INVALID_EMAIL_SENDER",
       details,
