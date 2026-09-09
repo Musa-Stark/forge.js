@@ -23,7 +23,7 @@ new StarkNexus({
     schemaObj: {
       model: "User",
       schema: {
-        firstName: fields.requiredString,
+        firstName: fields.requiredIndexString,
         lastName: fields.optionalString,
         email: fields.email,
         password: fields.password,

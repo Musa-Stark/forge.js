@@ -1,4 +1,3 @@
-// fields.ts
 import { z } from "zod";
 import mongoose from "mongoose";
 import { ROLES } from "./roles.js";
@@ -13,6 +12,7 @@ const { ObjectId } = mongoose.Schema.Types;
  * STRING FIELDS
  * =========================
  */
+
 const requiredString: UnifiedField = {
   mongoose: {
     type: String,
@@ -35,6 +35,35 @@ const optionalEmptyString: UnifiedField = {
   mongoose: {
     type: String,
     default: "",
+    trim: true,
+  },
+  zod: z.string().trim().default(""),
+};
+
+const requiredIndexString: UnifiedField = {
+  mongoose: {
+    type: String,
+    required: true,
+    index: true,
+    trim: true,
+  },
+  zod: z.string().trim().min(1, "At least 1 character is required"),
+};
+
+const optionalIndexString: UnifiedField = {
+  mongoose: {
+    type: String,
+    index: true,
+    trim: true,
+  },
+  zod: z.string().trim().optional(),
+};
+
+const optionalEmptyIndexString: UnifiedField = {
+  mongoose: {
+    type: String,
+    default: "",
+    index: true,
     trim: true,
   },
   zod: z.string().trim().default(""),
@@ -75,6 +104,7 @@ const password: UnifiedField = {
  * NUMBER FIELDS
  * =========================
  */
+
 const requiredNumber: UnifiedField = {
   mongoose: {
     type: Number,
@@ -91,23 +121,50 @@ const optionalNumber: UnifiedField = {
   zod: z.coerce.number().default(0),
 };
 
+const requiredIndexNumber: UnifiedField = {
+  mongoose: {
+    type: Number,
+    required: true,
+    index: true,
+  },
+  zod: z.coerce.number().min(0.1, "Number must be 0.1 or greater"),
+};
+
+const optionalIndexNumber: UnifiedField = {
+  mongoose: {
+    type: Number,
+    default: 0,
+    index: true,
+  },
+  zod: z.coerce.number().default(0),
+};
+
 /**
  * =========================
  * BOOLEAN FIELDS
  * =========================
  */
+
 const boolean: UnifiedField = {
-  mongoose: { type: Boolean },
+  mongoose: {
+    type: Boolean,
+  },
   zod: z.boolean(),
 };
 
 const booleanTrue: UnifiedField = {
-  mongoose: { type: Boolean, default: true },
+  mongoose: {
+    type: Boolean,
+    default: true,
+  },
   zod: z.boolean().default(true),
 };
 
 const booleanFalse: UnifiedField = {
-  mongoose: { type: Boolean, default: false },
+  mongoose: {
+    type: Boolean,
+    default: false,
+  },
   zod: z.boolean().default(false),
 };
 
@@ -116,10 +173,20 @@ const booleanFalse: UnifiedField = {
  * DATE FIELDS
  * =========================
  */
+
 const dateNow: UnifiedField = {
   mongoose: {
     type: Date,
     default: Date.now,
+  },
+  zod: z.coerce.date().default(() => new Date()),
+};
+
+const indexDateNow: UnifiedField = {
+  mongoose: {
+    type: Date,
+    default: Date.now,
+    index: true,
   },
   zod: z.coerce.date().default(() => new Date()),
 };
@@ -144,23 +211,30 @@ const optionalDate: UnifiedField = {
  * ARRAYS
  * =========================
  */
+
 const stringArray: UnifiedField = {
   mongoose: {
     type: [String],
     default: [],
   },
-  zod: z.preprocess((val) => {
-    if (Array.isArray(val)) return val;
-    if (typeof val === "string") {
-      try {
-        const parsed = JSON.parse(val);
-        if (Array.isArray(parsed)) return parsed;
-      } catch {
-        return val.split(",").map((v) => v.trim());
+  zod: z.preprocess(
+    (val) => {
+      if (Array.isArray(val)) return val;
+
+      if (typeof val === "string") {
+        try {
+          const parsed = JSON.parse(val);
+
+          if (Array.isArray(parsed)) return parsed;
+        } catch {
+          return val.split(",").map((v) => v.trim());
+        }
       }
-    }
-    return [];
-  }, z.array(z.string()).default([])),
+
+      return [];
+    },
+    z.array(z.string()).default([]),
+  ),
 };
 
 const requiredStringArray: UnifiedField = {
@@ -171,15 +245,19 @@ const requiredStringArray: UnifiedField = {
   zod: z.preprocess(
     (val) => {
       if (val === undefined || val === null) return undefined;
+
       if (Array.isArray(val)) return val;
+
       if (typeof val === "string") {
         try {
           const parsed = JSON.parse(val);
+
           if (Array.isArray(parsed)) return parsed;
         } catch {
           return val.split(",").map((v) => v.trim());
         }
       }
+
       return val;
     },
     z.array(z.string()).min(1, "Array must have at least 1 element"),
@@ -194,14 +272,17 @@ const objectArray: UnifiedField = {
   zod: z.preprocess(
     (val) => {
       if (Array.isArray(val)) return val;
+
       if (typeof val === "string") {
         try {
           const parsed = JSON.parse(val);
+
           if (Array.isArray(parsed)) return parsed;
         } catch {
           return [{}];
         }
       }
+
       return [{}];
     },
     z.array(z.object({})).default([{}]),
@@ -213,8 +294,11 @@ const objectArray: UnifiedField = {
  * OBJECT ID / REFERENCES
  * =========================
  */
+
 const objectId: UnifiedField = {
-  mongoose: { type: ObjectId },
+  mongoose: {
+    type: ObjectId,
+  },
   zod: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
 };
 
@@ -222,6 +306,23 @@ const requiredObjectId: UnifiedField = {
   mongoose: {
     type: ObjectId,
     required: true,
+  },
+  zod: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+};
+
+const indexObjectId: UnifiedField = {
+  mongoose: {
+    type: ObjectId,
+    index: true,
+  },
+  zod: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+};
+
+const requiredIndexObjectId: UnifiedField = {
+  mongoose: {
+    type: ObjectId,
+    required: true,
+    index: true,
   },
   zod: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
 };
@@ -251,7 +352,9 @@ const userRefArray: UnifiedField = {
     },
   ],
   zod: z
-    .array(z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"))
+    .array(
+      z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
+    )
     .default([]),
 };
 
@@ -260,6 +363,7 @@ const userRefArray: UnifiedField = {
  * ENUMS & SPECIAL FIELDS
  * =========================
  */
+
 const provider: UnifiedField = {
   mongoose: {
     type: String,
@@ -301,7 +405,10 @@ const otpCount: UnifiedField = {
     type: Number,
     required: true,
     default: 0,
-    max: [10, "OTP verification limit reached. Please try again later."],
+    max: [
+      10,
+      "OTP verification limit reached. Please try again later.",
+    ],
   },
   zod: z.coerce.number().max(10),
 };
@@ -312,7 +419,9 @@ const otpStatus: UnifiedField = {
     enum: ["pending", "verified", "blocked"],
     default: "pending",
   },
-  zod: z.enum(["pending", "verified", "blocked"]).default("pending"),
+  zod: z
+    .enum(["pending", "verified", "blocked"])
+    .default("pending"),
 };
 
 const purposeOTP: UnifiedField = {
@@ -325,9 +434,10 @@ const purposeOTP: UnifiedField = {
 
 /**
  * =========================
- * TIMESTAMPS (special case)
+ * TIMESTAMPS
  * =========================
  */
+
 const timestamps = {
   createdAt: dateNow,
   updatedAt: dateNow,
@@ -338,19 +448,46 @@ const timestamps = {
  * FILE METADATA
  * =========================
  */
+
 const requiredFileMetaData: UnifiedField = {
   mongoose: [
     {
-      storageKey: { type: String, required: true },
-      url: { type: String, required: true },
-      bytes: { type: Number },
-      format: { type: String },
-      mimeType: { type: String },
-      resourceType: { type: String },
-      width: { type: Number },
-      height: { type: Number },
+      storageKey: {
+        type: String,
+        required: true,
+      },
+
+      url: {
+        type: String,
+        required: true,
+      },
+
+      bytes: {
+        type: Number,
+      },
+
+      format: {
+        type: String,
+      },
+
+      mimeType: {
+        type: String,
+      },
+
+      resourceType: {
+        type: String,
+      },
+
+      width: {
+        type: Number,
+      },
+
+      height: {
+        type: Number,
+      },
     },
   ],
+
   zod: z.array(
     z.object({
       storageKey: z.string(),
@@ -368,54 +505,108 @@ const requiredFileMetaData: UnifiedField = {
 const optionalFileMetaData: UnifiedField = {
   mongoose: [
     {
-      storageKey: { type: String },
-      url: { type: String },
-      bytes: { type: Number },
-      format: { type: String },
-      mimeType: { type: String },
-      resourceType: { type: String },
-      width: { type: Number },
-      height: { type: Number },
+      storageKey: {
+        type: String,
+      },
+
+      url: {
+        type: String,
+      },
+
+      bytes: {
+        type: Number,
+      },
+
+      format: {
+        type: String,
+      },
+
+      mimeType: {
+        type: String,
+      },
+
+      resourceType: {
+        type: String,
+      },
+
+      width: {
+        type: Number,
+      },
+
+      height: {
+        type: Number,
+      },
     },
   ],
-  zod: z.array(
-    z.object({
-      storageKey: z.string().optional(),
-      url: z.string().url().optional(),
-      bytes: z.number().optional(),
-      format: z.string().optional(),
-      mimeType: z.string().optional(),
-      resourceType: z.string().optional(),
-      width: z.number().optional(),
-      height: z.number().optional(),
-    }),
-  ).optional(),
+
+  zod: z
+    .array(
+      z.object({
+        storageKey: z.string().optional(),
+        url: z.string().url().optional(),
+        bytes: z.number().optional(),
+        format: z.string().optional(),
+        mimeType: z.string().optional(),
+        resourceType: z.string().optional(),
+        width: z.number().optional(),
+        height: z.number().optional(),
+      }),
+    )
+    .optional(),
 };
 
 const optionalEmptyFileMetaData: UnifiedField = {
   mongoose: [
     {
-      storageKey: { type: String, default: "" },
-      url: { type: String, default: "" },
-      bytes: { type: Number },
-      format: { type: String },
-      mimeType: { type: String },
-      resourceType: { type: String },
-      width: { type: Number },
-      height: { type: Number },
+      storageKey: {
+        type: String,
+        default: "",
+      },
+
+      url: {
+        type: String,
+        default: "",
+      },
+
+      bytes: {
+        type: Number,
+      },
+
+      format: {
+        type: String,
+      },
+
+      mimeType: {
+        type: String,
+      },
+
+      resourceType: {
+        type: String,
+      },
+
+      width: {
+        type: Number,
+      },
+
+      height: {
+        type: Number,
+      },
     },
   ],
+
   zod: z.array(
-    z.object({
-      storageKey: z.string().default(""),
-      url: z.url().or(z.literal("")).default(""),
-      bytes: z.number().optional(),
-      format: z.string().optional(),
-      mimeType: z.string().optional(),
-      resourceType: z.string().optional(),
-      width: z.number().optional(),
-      height: z.number().optional(),
-    }).optional(),
+    z
+      .object({
+        storageKey: z.string().default(""),
+        url: z.url().or(z.literal("")).default(""),
+        bytes: z.number().optional(),
+        format: z.string().optional(),
+        mimeType: z.string().optional(),
+        resourceType: z.string().optional(),
+        width: z.number().optional(),
+        height: z.number().optional(),
+      })
+      .optional(),
   ),
 };
 
@@ -424,13 +615,30 @@ const optionalEmptyFileMetaData: UnifiedField = {
  * ENCRYPTED STRING
  * =========================
  */
+
 const encryptedString: UnifiedField = {
   mongoose: {
-    str: { type: String, required: true },
-    nonce: { type: String, required: true },
-    publicKey: { type: String, required: true },
-    securedPrivateKey: { type: String, required: true },
+    str: {
+      type: String,
+      required: true,
+    },
+
+    nonce: {
+      type: String,
+      required: true,
+    },
+
+    publicKey: {
+      type: String,
+      required: true,
+    },
+
+    securedPrivateKey: {
+      type: String,
+      required: true,
+    },
   },
+
   zod: z.object({
     str: z.string(),
     nonce: z.string(),
@@ -444,29 +652,51 @@ const encryptedString: UnifiedField = {
  * EXPORT
  * =========================
  */
+
 export const fields = {
+  // Strings
   requiredString,
   optionalString,
   optionalEmptyString,
+  requiredIndexString,
+  optionalIndexString,
+  optionalEmptyIndexString,
   requiredUniqueString,
   email,
   password,
+
+  // Numbers
   requiredNumber,
   optionalNumber,
+  requiredIndexNumber,
+  optionalIndexNumber,
+
+  // Booleans
   boolean,
   booleanTrue,
   booleanFalse,
+
+  // Dates
   dateNow,
+  indexDateNow,
   requiredDate,
   optionalDate,
+
+  // Arrays
   stringArray,
   requiredStringArray,
   objectArray,
+
+  // ObjectIds
   objectId,
   requiredObjectId,
+  indexObjectId,
+  requiredIndexObjectId,
   userRef,
   requiredUserRef,
   userRefArray,
+
+  // Enums / special
   provider,
   role,
   otp,
@@ -474,14 +704,21 @@ export const fields = {
   otpCount,
   otpStatus,
   purposeOTP,
+
+  // Timestamps
   timestamps,
-  encryptedString,
+
+  // Files
   requiredFileMetaData,
   optionalFileMetaData,
   optionalEmptyFileMetaData,
+
+  // Encryption
+  encryptedString,
 } as const;
 
 export type FieldName = keyof typeof fields;
+
 export type FieldDefinition = (typeof fields)[FieldName];
 
 export default fields;
