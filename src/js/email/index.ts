@@ -44,11 +44,11 @@ const emailAction = async (
 
   if (!sender || !EMAIL_SENDER_REGEX.test(sender)) {
     throw new AppError({
-      message: "Invalid email sender, 'from' or 'systemEmailSender'.",
+      message: "Invalid email sender, 'from' or 'systemEmailSender'",
       statusCode: 400,
       code: "INVALID_EMAIL_SENDER",
       details,
-      hint: `Expected value: e.g, 'Starklabs <noreply@starklabs.com>'.`,
+      hint: "Expected value: e.g, 'Starklabs <noreply@starklabs.com>'",
     });
   }
 
