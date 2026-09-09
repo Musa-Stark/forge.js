@@ -8,27 +8,27 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import runActions from "./utils/runActions.js";
 
 const removeAll = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // authorize access
-    authorizeAccess({ routeObj, routeName, req });
+    authorizeAccess({ routeObj, route, req });
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // runActions object
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
       Model,
     };
 

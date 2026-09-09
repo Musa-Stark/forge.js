@@ -30,13 +30,13 @@ const printInfo = () => {
       driver: "MongoDB",
       name: databaseName || "starkForge",
       connected: true,
-      status: appInfo.dbConnectionStatus
+      status: appInfo.dbConnectionStatus as string
     },
 
     generated: {
-      models: appInfo.modelsCount,
-      validators: appInfo.validationsCount,
-      routes: appInfo.routesCount,
+      models: appInfo.modelsCount as number,
+      validators: appInfo.validationsCount as number,
+      routes: appInfo.routesCount as number,
     },
 
     features,

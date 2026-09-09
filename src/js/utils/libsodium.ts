@@ -149,7 +149,7 @@ export const seal = async (
       throw new AppError({
         message: "Master key is required for encryption",
         statusCode: 404,
-        hint: "Import 'generateMasterKey' from StarkForge, run it 'generateMasterKey()' and then copy-paste the masterKey from terminal to StarkForge({})",
+        hint: "Import 'generateMasterKey' from @starklabs/forge, run it 'generateMasterKey()' and then copy-paste the masterKey from terminal to StarkForge({}).",
         details: getErrorDetail(routeObj),
       });
     }

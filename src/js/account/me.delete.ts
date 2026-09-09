@@ -9,11 +9,11 @@ import { getEnvs } from "../config/envs.js";
 import { findUser } from "../middleware/auth.middleware.js";
 
 const remove = ({
-  routeName,
+  route,
   routeObj,
 }: {
   routeObj: Route;
-  routeName: string;
+  route: string;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // user id
@@ -21,16 +21,16 @@ const remove = ({
 
     // user model
     const { userModelName } = getEnvs();
-    const modelName = userModelName!;
+    const model = userModelName!;
 
     // ensure item exists
-    const item = await findUser(id, routeObj, modelName)
+    const item = await findUser(id, routeObj, model)
 
     // authorize access
-    authorizeAccess({ routeObj, routeName, item, req });
+    authorizeAccess({ routeObj, route, item, req });
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // delete
     const deletedItem = await Model.findByIdAndDelete(id);
@@ -40,7 +40,7 @@ const remove = ({
 
     // if '_id' excluded
     const idExcluded =
-      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+      routeObj.config?.hiddenFields?.includes("_id");
     if (idExcluded) delete cleaned["_id"];
 
     // return response

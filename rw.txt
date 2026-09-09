@@ -1,5 +1,6 @@
 === resend otp for forgot password after the previous expires ===
 === custom OTP timouts ===
+=== Delete OTP when timedOut so that user can request new, Also update the message of wait for it to expire ===
 === ?q= in /get
 ✓ Pagination
 ✓ Sorting
@@ -9,13 +10,6 @@
 ✓ Invalid query params
 ✓ Large dataset
 ===
-
-=== emails: [
-  {
-    event: "productCreated",
-    to: "{{owner.email}}",
-  },
-]; ===
 
 === COLLECTION ===
 Skips:
@@ -78,8 +72,15 @@ git push
 git switch main
 git diff feature
 
-=== me ===
-write token type in handleGetRefreshToken, it will handle getting token access or refresh based on the type.
-once the item is gotten, auth.middleware will do the rest till req.user.
-me.ts.
-use func: getItem, clean, appresponse
+admin/
+
+client:accessToken -> auth.middleware.ts -> im.admin.ts
+
+auth.middleware.ts:
+  if verifyAccessUser -> req.user = _id: user._id, role: user.role
+
+im.admin.ts:
+  1. If not req.user.role?  Get User model. Find the user with req.user._id
+  2. if !internalRoles.include(user.role)
+        throw new AppError({})
+  3. return success: true

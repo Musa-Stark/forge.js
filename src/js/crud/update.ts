@@ -13,19 +13,19 @@ import handleHashing from "./security/handleHashing.js";
 import runActions from "./utils/runActions.js";
 
 const update = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
-  validationsObj,
+  validations,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // get /:parameter
     const id = getParam({ req, routeObj });
@@ -35,14 +35,14 @@ const update = ({
 
     // ensure item exists
     const item = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       _id: id as string,
       routeObj,
     });
 
     // authorize access
-    authorizeAccess({ item, req, routeObj, routeName });
+    authorizeAccess({ item, req, routeObj, route });
 
     // if encryptedFields
     const encryptedFields = await handleEncryption(req.body, routeObj);
@@ -51,14 +51,14 @@ const update = ({
     const hashedFields = await handleHashing(req.body, routeObj);
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // runActions object
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
       Model,
       data: {
         body,
@@ -87,7 +87,7 @@ const update = ({
 
     // if '_id' excluded
     const idExcluded =
-      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+      routeObj.config?.hiddenFields?.includes("_id");
     if (idExcluded) delete cleaned["_id"];
 
     // after action

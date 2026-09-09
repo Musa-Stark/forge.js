@@ -1,28 +1,122 @@
 import type { Request } from "express";
-import type { Document } from "mongoose";
+import type { Document, Model } from "mongoose";
+import type { EmailActionTemplate } from "./EmailActionTemplate.js";
 
-export interface CreateContext {
+/**
+ * Context provided to Forge actions before or after a route operation.
+ */
+export interface ActionContext {
+  /** Express request object. */
   req: Request;
-  user: Request["user"];
 
-  routeName: string;
-  operation: "read" | "readAll" | "create" | "update" | "remove" | "removeMultiple" | "removeAll";
-  modelName: string;
-  Model?: any;
+  /** Authenticated user attached to the request, if available. */
+  user?: Request["user"];
 
+  /**
+   * Name of the Forge resource/route.
+   *
+   * @example "products"
+   */
+  route: string;
+
+  /**
+   * Database operation being performed.
+   */
+  operation:
+    | "read"
+    | "readAll"
+    | "create"
+    | "update"
+    | "remove"
+    | "removeMultiple"
+    | "removeAll";
+
+  /**
+   * Mongoose model name.
+   *
+   * @example "Product"
+   */
+  model: string;
+
+  /** Mongoose model for direct database access. */
+  Model?: Model<any>;
+
+  /**
+   * Data associated with the current request and operation.
+   */
   data?: {
-    owner?: string;
+    /** Parsed request body. */
     body?: any;
-    fileMetaData?: any;
-    encryptedFields?: any;
-    decryptedFields?: any;
-    hashedFields?: any;
+
+    /** Uploaded file metadata. */
+    files?: any;
+
+    /** Values encrypted by Forge. */
+    encrypted?: any;
+
+    /** Values decrypted by Forge. */
+    decrypted?: any;
+
+    /** Values hashed by Forge. */
+    hashed?: any;
   };
+
+  /**
+   * Document(s) affected by the operation.
+   */
   item?: Document | Document[];
+
+  /**
+   * Current result produced by the operation/action chain.
+   *
+   * Return a value from a custom action to replace this result.
+   */
   result?: any;
 }
 
-export interface Action {
-  type: "custom" | "email";
-  handler: (context: CreateContext) => Promise<void> | void;
+/**
+ * Executes custom developer-defined logic.
+ *
+ * Returning a value replaces the current action result.
+ */
+export interface CustomAction {
+  /** Custom action handler. */
+  customAction: (context: ActionContext) => Promise<any> | any;
 }
+
+/**
+ * Sends an email through Forge's configured email provider.
+ */
+export interface EmailAction {
+  /** Email action configuration. */
+
+  emailAction: {
+    /** Sender configuration. */
+    from: "system-email-sender" | ({} & string);
+
+    /** Recipient email address. */
+    to: string | ((context: ActionContext) => string);
+
+    /** Email content mode. */
+    type: "template" | "raw";
+
+    /** Raw email body when `type` is `raw`. */
+    rawBody?: string;
+
+    /** Email template when `type` is `template`. */
+    template?: EmailActionTemplate;
+
+    /** Email subject. */
+    subject: string | ((context: ActionContext) => string);
+  };
+}
+
+/**
+ * Action executed before or after a Forge route operation.
+ */
+export type Action = CustomAction | EmailAction;
+
+/**
+ * @deprecated Use `ActionContext` instead.
+ */
+export type CreateContext = ActionContext;

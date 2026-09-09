@@ -14,8 +14,8 @@ const helper = (
 
 const getValidationsObj = (obj: Record<string, UnifiedField>) => {
   try {
-    const { authConfigObj } = getEnvs();
-    const { otp, purpose, email, password } = authConfigObj?.fieldsObj!;
+    const { authConfig } = getEnvs();
+    const { otp, purpose, email, password } = authConfig?.fieldsObj!;
 
     if (!otp || !purpose || !email || !password)
       throw new Error(
@@ -57,9 +57,9 @@ const getValidationsObj = (obj: Record<string, UnifiedField>) => {
   } catch (error) {
     let message = (error as Error).message;
     if (message.includes("schema")) {
-      message = message.replace("schema", "'authConfig.schemaObj.schema'");
+      message = message.replace("schema", "'authConfig.mongooseConfig.schema'");
       message = message.replace("does not exist", "is required");
-      AppLog("x", "schemaObj", message);
+      AppLog("x", "mongooseConfig", message);
     }
     process.exit(1);
   }

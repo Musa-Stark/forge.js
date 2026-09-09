@@ -1,7 +1,10 @@
 import type { InternalConstructor } from "../types/Constructor.js";
 
 export const defaultConfig: InternalConstructor = {
-  authConfigObj: {
+  authConfig: {
+    mode: "manual",
+  },
+  adminConfig: {
     mode: "manual",
   },
   port: 5000,

@@ -32,29 +32,29 @@ let appInfo: AppInfo = {
 const resources: string[] = ["OTP", "RefreshToken"];
 
 const setAppInfo = (req: Collection) => {
-  const { authConfigObj } = getEnvs();
+  const { authConfig } = getEnvs();
 
-  if (req.modelName && !resources.includes(req.modelName)) {
-    if (req.mongooseSchemaObj) appInfo.modelsCount!++;
+  if (req.model && !resources.includes(req.model)) {
+    if (req.schema) appInfo.modelsCount!++;
 
-    resources.push(req.modelName);
+    resources.push(req.model);
   }
 
   if (
-    authConfigObj.mode === "builtin" &&
-    !resources.includes(authConfigObj.schemaObj?.modelName || "User")
+    authConfig.mode === "builtin" &&
+    !resources.includes(authConfig.mongooseConfig?.model || "User")
   )
     appInfo.modelsCount!++;
 
-  if (req.validationsObj) appInfo.validationsCount!++;
+  if (req.validations) appInfo.validationsCount!++;
 
-  if (req.reqType === "auth") appInfo.authentication = true;
+  if (req.type === "auth") appInfo.authentication = true;
 
-  if (req.routesArray) {
-    appInfo.routesCount! += req.routesArray.length;
-    for (const el of req.routesArray) {
-      if (el.fileArray) appInfo.fileUpload = true;
-      if (el.authRole === "admin" || el.authRole === "adminOrOwner")
+  if (req.routes) {
+    appInfo.routesCount! += req.routes.length;
+    for (const el of req.routes) {
+      if (el.files) appInfo.fileUpload = true;
+      if (el.auth === "admin" || el.auth === "admin-or-owner")
         appInfo.authorization = true;
     }
   }

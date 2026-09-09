@@ -66,17 +66,3 @@ export interface Email {
   subject?: string;
   body?: string;
 }
-
-/*
-type: ||| from
-    || to
-    custom:
-        subject
-        body
-    
-    rawHTML:
-        <html>
-    
-    template:
-        template
-*/

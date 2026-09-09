@@ -14,22 +14,22 @@ import saveRefreshToken from "../../utils/saveRefreshToken.js";
 
 const createUser = async ({
   body,
-  modelName,
+  model,
   res,
-  routeName,
+  route,
   routeObj,
   req,
 }: {
   body: any;
-  modelName: string;
+  model: string;
   res: Response;
-  routeName: string;
+  route: string;
   routeObj: Route;
   req: Request;
 }) => {
   // get dynamic auth field keys
-  const { authConfigObj } = getEnvs();
-  const { fieldsObj } = authConfigObj;
+  const { authConfig } = getEnvs();
+  const { fieldsObj } = authConfig;
 
   const emailKey = fieldsObj?.email;
   const passwordKey = fieldsObj?.password;
@@ -37,7 +37,7 @@ const createUser = async ({
   const purposeKey = fieldsObj?.purpose;
 
   // models
-  const Model = getModel({ modelName, routeName, routeObj });
+  const Model = getModel({ model, route, routeObj });
   const OTPModel = getOTPModel(routeObj);
 
   // token info
@@ -77,8 +77,8 @@ const createUser = async ({
   // send cookie
   const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
-    accessTokenName: authConfigObj.accessTokenName!,
-    refreshTokenName: authConfigObj.refreshTokenName!,
+    accessTokenName: authConfig.accessTokenName!,
+    refreshTokenName: authConfig.refreshTokenName!,
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,
@@ -109,8 +109,8 @@ const createUser = async ({
     message: "Your account has been created successfully!",
     statusCode: 201,
     data: sanitizeOne(newUser.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
-    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
+    accessToken: authConfig?.returnAccessToken ? accessToken! : undefined,
+    refreshToken: authConfig?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body[purposeKey!],
   });
 };

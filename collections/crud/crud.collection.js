@@ -1,10 +1,15 @@
-import { collection, zodFields, mongooseFields } from "../../dist/js/index.js";
+import {
+  collection,
+  zodFields,
+  mongooseFields,
+  getModel,
+} from "../../dist/js/index.js";
 
 const crudCollection = collection({
-  reqType: "crud",
-  routeName: "products",
-  modelName: "Product",
-  mongooseSchemaObj: {
+  type: "crud",
+  route: "products",
+  model: "Product",
+  schema: {
     name: mongooseFields.requiredString,
     price: mongooseFields.requiredNumber,
     category: mongooseFields.objectArray,
@@ -15,54 +20,126 @@ const crudCollection = collection({
     // cardNumber: mongooseFields.encryptedString,
     // cvv: mongooseFields.encryptedString,
   },
-  routesArray: [
+  routes: [
     {
       method: "get",
       path: "/",
       handler: "readAll",
-      authRole: "public",
-      validationKey: false,
-      // decryptedFieldsArray: ["cardNumber", "cvv"],
-      mongooseConfigObj: {
-        populateKey: "owner",
-        hiddenFieldsArray: ["__v", "updatedAt"],
+      auth: "public",
+      validation: false,
+      // decryptedFields: ["cardNumber", "cvv"],
+      config: {
+        populate: "owner",
+        hiddenFields: ["__v", "updatedAt"],
       },
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({item}) => {
+                return item[0].owner.email;
+              },
+              subject: "Testing Purpose",
+              type: "raw",
+              rawBody: "This email is sent to you for testing purpose, you can simply ignore it.",
+            } 
+          }
+        ]
+      }
     },
     {
       method: "get",
       path: "/:id",
       handler: "read",
-      authRole: "adminOrOwner",
-      validationKey: false,
-      // decryptedFieldsArray: ["cardNumber", "cvv"],
-      mongooseConfigObj: {
-        populateKey: "owner",
-        hiddenFieldsArray: ["__v"],
+      auth: "admin-or-owner",
+      validation: false,
+      // decryptedFields: ["cardNumber", "cvv"],
+      config: {
+        populate: "owner",
+        hiddenFields: ["__v"],
+      },
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({ item }) => {
+                return item.owner.email;
+              },
+              type: "template",
+              subject: "New Device Login",
+              template: {
+                name: "new-device-login",
+                newDeviceLogin: {
+                  secureAccountUrl:
+                    "https://secure-account.starkindustries.com",
+
+                  userEmail: async ({ item }) => {
+                    return item.owner.email;
+                  },
+
+                  userName: async ({ item }) => {
+                    const Model = getModel({ model: "User" });
+                    const userData = await Model.findOne({
+                      _id: item.owner._id,
+                    });
+                    const userName = `${userData.firstName.slice(0, 1).toUpperCase() + userData.firstName.slice(1)} ${userData.lastName}`;
+                    return userName;
+                  },
+
+                  loginTime: "current-time",
+                },
+              },
+            },
+          },
+        ],
       },
     },
     {
       method: "post",
       path: "/",
       handler: "create",
-      authRole: "authenticated",
-      validationKey: "createProduct",
-      // encryptedFieldsArray: ["cardNumber", "cvv"],
+      auth: "authenticated",
+      validation: "createProduct",
+      // encryptedFields: ["cardNumber", "cvv"],
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              type: "template",
+              subject: "Item created",
+              template: {
+                name: "account-created",
+                accountCreated: {
+                  dashboardUrl: "https://youtube.com",
+                  userEmail: "musa.fullstack08@gmail.com",
+                },
+              },
+              to: ({ user }) => {
+                return "musa.fullstack08@gmail.com";
+              },
+            },
+          },
+        ],
+      },
     },
     {
       method: "post",
       path: "/create/bulk",
       handler: "createBulk",
-      authRole: "admin",
+      auth: "admin",
     },
     {
       method: "post",
       path: "/:id/addFile",
       handler: "addFile",
-      authRole: "adminOrOwner",
-      fileArray: [
+      auth: "admin-or-owner",
+      files: [
         {
-          mongooseSchemaFieldName: "profileImage",
-          fieldName: "backgroundImage",
+          schemaField: "profileImage",
+          paramField: "backgroundImage",
         },
       ],
     },
@@ -70,20 +147,44 @@ const crudCollection = collection({
       method: "patch",
       path: "/:id",
       handler: "update",
-      authRole: "adminOrOwner",
-      validationKey: "update",
+      auth: "admin-or-owner",
+      validation: "update",
+      actions: {
+        after: [
+          {
+            emailAction: {
+              from: "system-email-sender",
+              to: async ({ data }) => {
+                console.log(data.body);
+              },
+              type: "template",
+              subject: "Item updated",
+              template: {
+                name: "account-updated",
+                accountUpdated: {
+                  changeDate: new Date().getDate(),
+                  fieldChanged: "isAvailable",
+                  newValue: true,
+                  userEmail: "imstark.official@gmail.com",
+                  userName: "Stark",
+                },
+              },
+            },
+          },
+        ],
+      },
     },
     {
       method: "patch",
       path: "/:id/updateFile",
       handler: "updateFile",
-      authRole: "adminOrOwner",
-      validationKey: "updateAvatar",
-      fileArray: [
+      auth: "admin-or-owner",
+      validation: "updateAvatar",
+      files: [
         {
-          fieldName: "backgroundImage",
-          mongooseSchemaFieldName: "profileImage",
-          validationIdentifierKey: "avatar",
+          paramField: "backgroundImage",
+          schemaField: "profileImage",
+          validationKey: "avatar",
         },
       ],
     },
@@ -91,41 +192,41 @@ const crudCollection = collection({
       method: "delete",
       path: "/:id",
       handler: "remove",
-      authRole: "adminOrOwner",
-      validationKey: false,
+      auth: "admin-or-owner",
+      validation: false,
     },
     {
       method: "delete",
       path: "/",
       handler: "removeMultiple",
-      authRole: "adminOrOwner",
-      validationKey: "removeMultiple",
-      mongooseConfigObj: {
-        removeMultipleFieldKey: "ids"
-      }
+      auth: "admin-or-owner",
+      validation: "removeMultiple",
+      config: {
+        targetField: "ids",
+      },
     },
     {
       method: "delete",
       path: "/all",
       handler: "removeAll",
-      authRole: "admin",
-      validationKey: false,
+      auth: "admin",
+      validation: false,
     },
     {
       method: "delete",
       path: "/:id/deleteFile",
       handler: "deleteFile",
-      authRole: "adminOrOwner",
-      validationKey: "deleteAvatar",
-      fileArray: [
+      auth: "admin-or-owner",
+      validation: "deleteAvatar",
+      files: [
         {
-          mongooseSchemaFieldName: "profileImage",
-          validationIdentifierKey: "stark",
+          schemaField: "profileImage",
+          validationKey: "stark",
         },
       ],
     },
   ],
-  validationsObj: {
+  validations: {
     createProduct: {
       name: zodFields.requiredString,
       price: zodFields.requiredNumber,
@@ -148,7 +249,7 @@ const crudCollection = collection({
       stark: zodFields.requiredString,
     },
     removeMultiple: {
-      ids: zodFields.requiredStringArray
+      ids: zodFields.requiredStringArray,
     },
   },
 });

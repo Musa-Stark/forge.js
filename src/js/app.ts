@@ -1,4 +1,4 @@
-import express  from "express";
+import express from "express";
 import type { Express } from "express";
 const app: Express = express();
 import { getEnvs } from "./config/envs.js";
@@ -17,13 +17,13 @@ import { setAppInfo } from "./terminal/appInfo.js";
 import printInfo from "./terminal/loggerConfig.js";
 import type { AuthConfig } from "./types/Constructor.js";
 import createRefreshModel from "./config/refreshModel.js";
+import { adminCollection } from "./admin/bunch.admin.js";
 
 // body - middlewares
 const jsonParser = express.json();
 const urlencodedParser = express.urlencoded({ extended: true });
 app.use(cookieParser());
 app.use(helmet());
-app.use(rateLimiter());
 
 // parse body - based on situation
 app.use((req, res, next) => {
@@ -41,39 +41,24 @@ app.use((req, res, next) => {
 // handle collection
 const handleCollection = (
   collections: Collection[],
-  authConfigObj: AuthConfig,
+  authConfig: AuthConfig,
 ): void => {
   for (const Req of collections) {
     setAppInfo(Req);
 
-    let {
-      reqType,
-      routeName,
-      routesArray,
-      modelName,
-      validationsObj,
-      mongooseSchemaObj,
-    } = Req;
+    let { type, route, routes, model, validations, schema } = Req;
 
-    if (reqType === "auth" && authConfigObj.mode === "builtin") {
-      mongooseSchemaObj = authConfigObj.schemaObj?.schema!;
-      modelName = authConfigObj.schemaObj?.modelName!;
+    if (type === "auth" && authConfig.mode === "builtin") {
+      schema = authConfig.mongooseConfig?.schema!;
+      model = authConfig.mongooseConfig?.model!;
     }
 
-    if (modelName) {
-      const MODEL = createModel(modelName, mongooseSchemaObj!, routeName);
-      registerModel[modelName] = MODEL;
+    if (model) {
+      const MODEL = createModel(model, schema!, route);
+      registerModel[model] = MODEL;
     }
 
-    handleReqType(
-      reqType,
-      app,
-      routeName,
-      routesArray,
-      modelName,
-      validationsObj,
-      mongooseSchemaObj,
-    );
+    handleReqType(type, app, route, routes, model, validations, schema);
   }
 };
 
@@ -85,21 +70,26 @@ const startServer = async (): Promise<void> => {
     isOffline,
     mongoDBURI,
     databaseName,
-    authConfigObj,
+    authConfig,
+    adminConfig,
   } = getEnvs();
   // connect db
   await connectDB({ isOffline, mongoDBURI, databaseName });
-  await createRefreshModel()
+  await createRefreshModel();
+
+  // rate limiter
+  app.use(rateLimiter());
 
   // collectionsArray
   const collectionArray = [healthCollection];
 
   // handleCollection config
-  if (authConfigObj?.mode === "builtin") collectionArray.push(authCollection);
+  if (authConfig?.mode === "builtin") collectionArray.push(authCollection);
+  if (adminConfig?.mode === "builtin") collectionArray.push(adminCollection);
   if (collections) collectionArray.push(...collections);
 
   // call - handleCollection
-  handleCollection(collectionArray, authConfigObj!);
+  handleCollection(collectionArray, authConfig!);
 
   // routeObj not found
   app.use((req, res) => {

@@ -9,7 +9,7 @@ const findRefreshToken = async (
   routeObj: Route,
 ) => {
   // Model
-  const RefreshToken = getModel({ modelName: "RefreshToken", routeObj });
+  const RefreshToken = getModel({ model: "RefreshToken", routeObj });
 
   // find same device tokens
   const foundRefreshToken = await RefreshToken.findOne({

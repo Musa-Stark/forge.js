@@ -16,11 +16,11 @@ const connectLocally = async (databaseName = "starkForge") => {
     process.exit(1);
   }
 
-  AppLog(
-    "check",
-    "db",
-    `Connected to OFFLINE-DB! Database name: '${databaseName}'`,
-  );
+  // AppLog(
+  //   "check",
+  //   "db",
+  //   `Connected to OFFLINE-DB! Database name: '${databaseName}'`,
+  // );
 };
 
 type connectDBParams = {
@@ -48,11 +48,11 @@ const connectDB = async ({
 
     await mongoose.connect(`${mongoDBURI}/${databaseName}`);
     appInfo.dbConnectionStatus = "Online";
-    AppLog(
-      "check",
-      "db",
-      `Connected successfully! Database name: '${databaseName}'`,
-    );
+    // AppLog(
+    //   "check",
+    //   "db",
+    //   `Connected successfully! Database name: '${databaseName}'`,
+    // );
   } catch (error) {
     AppLog("x", "db", "Error while connecting to database!");
     AppLog("x", "db", (error as Error).message);

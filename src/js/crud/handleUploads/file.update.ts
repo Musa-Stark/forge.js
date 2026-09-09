@@ -9,19 +9,19 @@ import validate from "../../utils/validate.js";
 import authorizeAccess from "../utils/authorizeAccess.js";
 
 const updateFile = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
-  validationsObj,
+  validations,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validation
     const body = validate(validationObj, req.body, routeObj);
@@ -31,8 +31,8 @@ const updateFile = ({
 
     // get item
     let item = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       _id: param as string,
       path: routeObj.path,
       clean: false,
@@ -40,7 +40,7 @@ const updateFile = ({
     });
 
     // authorizeAccess
-    authorizeAccess({ routeObj, routeName, item, req });
+    authorizeAccess({ routeObj, route, item, req });
 
     // update file
     const { updated, _id, mongooseField } =

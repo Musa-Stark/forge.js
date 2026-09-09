@@ -32,7 +32,7 @@ export const signJWT = ({
         message: "JWT secret is not configured",
         code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in the environment variables.",
+        hint: "Configure 'jwtSecret' in StarkForge({}). Use 'generateJWTSecret' function to print jwt secret in console.",
         details: getErrorDetail(routeObj),
       });
     }
@@ -42,7 +42,7 @@ export const signJWT = ({
         message: "JWT expiration time is not configured",
         code: "JWT_AGE_MISSING",
         statusCode: 500,
-        hint: "Configure the access or refresh token age in 'authConfigObj'.",
+        hint: "Configure the access or refresh token age in 'authConfig'.",
         details: getErrorDetail(routeObj),
       });
     }
@@ -89,7 +89,7 @@ export const verifyJWT = ({
         message: "JWT secret is not configured",
         code: "JWT_SECRET_MISSING",
         statusCode: 500,
-        hint: "Configure 'jwtSecret' in the environment variables.",
+        hint: "Import 'generateJWTSecret' from @starklabs/forge, run it 'generateJWTSecret()' and then copy-paste the masterKey from terminal to StarkForge({})",
         details: getErrorDetail(routeObj),
       });
 

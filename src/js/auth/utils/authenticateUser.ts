@@ -16,22 +16,22 @@ import { hash } from "../../utils/libsodium.js";
 
 const authenticateUser = async ({
   body,
-  modelName,
+  model,
   res,
   req,
-  routeName,
+  route,
   routeObj,
 }: {
   body: any;
-  modelName: string;
+  model: string;
   res: Response;
   req: Request;
-  routeName: string;
+  route: string;
   routeObj: Route;
 }) => {
   // get dynamic auth field keys
-  const { authConfigObj } = getEnvs();
-  const { fieldsObj } = authConfigObj;
+  const { authConfig } = getEnvs();
+  const { fieldsObj } = authConfig;
 
   const emailKey = fieldsObj?.email;
   const passwordKey = fieldsObj?.password;
@@ -58,8 +58,8 @@ const authenticateUser = async ({
 
   // user
   const user = await getUser({
-    modelName,
-    routeName,
+    model,
+    route,
     email: body[emailKey!] as string,
     needPassword: true,
     routeObj,
@@ -93,8 +93,8 @@ const authenticateUser = async ({
   // send cookie
   const { accessToken, refreshToken, refreshTokenAge } = sendCookie({
     res,
-    accessTokenName: authConfigObj.accessTokenName!,
-    refreshTokenName: authConfigObj.refreshTokenName!,
+    accessTokenName: authConfig.accessTokenName!,
+    refreshTokenName: authConfig.refreshTokenName!,
     accessTokenPayload: { sub: _id },
     refreshTokenPayload: { sub: _id },
     routeObj,
@@ -125,8 +125,8 @@ const authenticateUser = async ({
     message: "Authenticated successfully!",
     statusCode: 200,
     data: sanitizeOne(user.toObject(), routeObj),
-    accessToken: authConfigObj?.returnAccessToken ? accessToken! : undefined,
-    refreshToken: authConfigObj?.returnRefreshToken ? refreshToken! : undefined,
+    accessToken: authConfig?.returnAccessToken ? accessToken! : undefined,
+    refreshToken: authConfig?.returnRefreshToken ? refreshToken! : undefined,
     purpose: body[purposeKey!],
   });
 };

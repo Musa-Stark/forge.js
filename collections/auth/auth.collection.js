@@ -1,10 +1,10 @@
 import { zodFields, collection, mongooseFields } from "../../dist/js/index.js";
 
 const authCollection = collection({
-  reqType: "auth",
-  routeName: "auth",
-  modelName: "User",
-  mongooseSchemaObj: {
+  type: "auth",
+  route: "auth",
+  model: "User",
+  schema: {
     name: mongooseFields.requiredString,
     Email: mongooseFields.email,
     password: mongooseFields.password,
@@ -12,44 +12,44 @@ const authCollection = collection({
     profileImage: mongooseFields.fileMetaData,
     test: mongooseFields.fileMetaData,
   },
-  routesArray: [
+  routes: [
     {
       method: "post",
       handler: "signup",
       path: "/signup",
       mode: "credentials",
-      validationKey: "signup",
+      validation: "signup",
     },
     {
       method: "post",
       handler: "verifyOTP",
       path: "/verify-otp",
-      validationKey: "verifyOTP",
+      validation: "verifyOTP",
     },
     {
       method: "post",
       handler: "login",
       path: "/login",
       mode: "otp",
-      validationKey: "login",
+      validation: "login",
     },
     {
       method: "post",
       handler: "resendOTP",
       path: "/resend-otp",
-      validationKey: "resendOTP",
+      validation: "resendOTP",
     },
     {
       method: "post",
       handler: "forgotPassword",
       path: "/forgot-password",
-      validationKey: "forgotPassword",
+      validation: "forgotPassword",
     },
     {
       method: "post",
       handler: "resetPassword",
       path: "/reset-password",
-      validationKey: "resetPassword",
+      validation: "resetPassword",
     },
     {
       method: "get",
@@ -57,7 +57,7 @@ const authCollection = collection({
       path: "/logout",
     },
   ],
-  validationsObj: {
+  validations: {
     signup: {
       name: zodFields.requiredString,
       Email: zodFields.email,

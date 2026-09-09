@@ -9,13 +9,13 @@ import { sanitizeOne } from "../utils/sanitize.js";
 import runActions from "./utils/runActions.js";
 
 const remove = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
+  model: string;
   routeObj: Route;
-  routeName: string;
+  route: string;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // get /:parameter
@@ -23,24 +23,24 @@ const remove = ({
 
     // ensure item exists
     const item = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       _id: id as string,
       routeObj,
     });
 
     // authorize access
-    authorizeAccess({ routeObj, routeName, item, req });
+    authorizeAccess({ routeObj, route, item, req });
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // runActions object
     const ActionObj = {
       req,
       user: req.user,
-      routeName,
-      modelName,
+      route,
+      model,
       Model,
     };
 
@@ -58,7 +58,7 @@ const remove = ({
 
     // if '_id' excluded
     const idExcluded =
-      routeObj.mongooseConfigObj?.hiddenFieldsArray?.includes("_id");
+      routeObj.config?.hiddenFields?.includes("_id");
     if (idExcluded) delete cleaned["_id"];
 
     // after action

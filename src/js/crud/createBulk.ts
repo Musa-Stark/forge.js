@@ -7,25 +7,25 @@ import appResponse from "../utils/response.js";
 import getValidationKey from "../utils/validationKeyError.js";
 
 const createBulk = ({
-  modelName,
-  routeName,
-  validationsObj,
+  model,
+  route,
+  validations,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
 
     // model
-    const Model = getModel({ modelName, routeName, routeObj });
+    const Model = getModel({ model, route, routeObj });
 
     // create
     const newItems = await Model.insertMany(body);

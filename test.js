@@ -11,44 +11,58 @@ import {
   userCollection,
   accountCollection,
   actionCollection,
-  recentCollection
+  recentCollection,
+  emailCollection,
 } from "./collections/index.js";
 
 import "dotenv/config";
 
 new StarkNexus({
-  authConfigObj: {
+  authConfig: {
     mode: "builtin",
-    schemaObj: {
-      modelName: "User",
+    mongooseConfig: {
+      model: "User",
       schema: {
-        firstName: fields.requiredString,
+        firstName: fields.requiredIndexString,
         lastName: fields.optionalString,
         email: fields.email,
         password: fields.password,
-        profileImage: fields.optionalFileMetaData
+        profileImage: fields.optionalFileMetaData,
       },
     },
 
     accessTokenAge: "1d",
 
     loginMode: "credentials",
-    signupMode: "credentials"
+    signupMode: "credentials",
+    // verifyAccessUser: false
   },
 
   collections: [
-    crudCollection,
-    userCollection,
-    accountCollection,
-    actionCollection,
-    recentCollection
+    // crudCollection,
+    // userCollection,
+    // accountCollection,
+    // actionCollection,
+    // recentCollection,
+    emailCollection,
   ],
+  emailConfig: {
+    companyAddress: "Peshawar, Pakistan",
+    companyName: "Stark Industries",
+    companyUrl: "https://starkindustries.com",
+    supportEmail: "support@starkindustries.com",
+    unsubscribeUrl: "https://unsubscribeUrl",
+  },
+  adminConfig: {
+    mode: "builtin"
+  },
+  maxReqLimit: 999999999999999999999,
   port: 10000,
   apiVersion: 1,
-  isOffline: process.env.ISOFFLINE === "true",
+  isOffline: process.env.ISOFFLINE === "false",
   databaseName: process.env.DATABASE_NAME,
   mongoDBURI: process.env.MONGODB_URI,
-  adminEmailSender: process.env.ADMIN_EMAIL_SENDER,
+  systemEmailSender: process.env.ADMIN_EMAIL_SENDER,
   resendAPIKey: process.env.RESEND_API_KEY,
   domain: process.env.DOMAIN,
   jwtSecret: process.env.JWT_SECRET,

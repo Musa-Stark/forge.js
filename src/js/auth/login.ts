@@ -8,25 +8,25 @@ import getErrorDetail from "../utils/getErrorDetail.js";
 import { getEnvs } from "../config/envs.js";
 
 const login = ({
-  modelName,
+  model,
   routeObj,
-  routeName,
-  validationsObj,
+  route,
+  validations,
 }: {
-  modelName: string;
+  model: string;
   routeObj: Route;
-  routeName: string;
-  validationsObj: ValidationsObj;
+  route: string;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response) => {
     // get dynamic email and password
-    const { authConfigObj } = getEnvs();
-    const { fieldsObj } = authConfigObj;
+    const { authConfig } = getEnvs();
+    const { fieldsObj } = authConfig;
     const emailKey = fieldsObj?.email;
     const passwordKey = fieldsObj?.password;
 
     // validationObj
-    const validationObj = getValidationKey(routeObj, validationsObj);
+    const validationObj = getValidationKey(routeObj, validations);
 
     // validate
     const body = validate(validationObj, req.body, routeObj);
@@ -44,8 +44,8 @@ const login = ({
       body,
       res,
       purpose: "login",
-      routeName,
-      modelName,
+      route,
+      model,
       routeObj,
       req,
     });

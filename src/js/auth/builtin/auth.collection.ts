@@ -3,8 +3,8 @@ import type { Collection } from "../../types/Collection.js";
 import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
-  const { authConfigObj } = getEnvs();
-  vals.mongooseSchemaObj = authConfigObj?.schemaObj?.schema!;
+  const { authConfig } = getEnvs();
+  vals.schema = authConfig?.mongooseConfig?.schema!;
 
   return vals;
 };
@@ -16,67 +16,77 @@ const routes = (): Route[] => {
       handler: "signup",
       path: "/signup",
       mode: "otp",
-      validationKey: "signup",
+      validation: "signup",
+      auth: "public",
     },
     {
       method: "post",
       handler: "verifyOTP",
       path: "/verify-otp",
-      validationKey: "verifyOTP",
+      validation: "verifyOTP",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "login",
       path: "/login",
       mode: "otp",
-      validationKey: "login",
+      validation: "login",
+      auth: "public",
     },
     {
       method: "post",
       handler: "resendOTP",
       path: "/resend-otp",
-      validationKey: "resendOTP",
+      validation: "resendOTP",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "forgotPassword",
       path: "/forgot-password",
-      validationKey: "forgotPassword",
+      validation: "forgotPassword",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "resetPassword",
       path: "/reset-password",
-      validationKey: "resetPassword",
+      validation: "resetPassword",
+      auth: "authenticated",
     },
     {
       method: "get",
       handler: "logout",
       path: "/logout",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "logout",
       path: "/logout",
+      auth: "authenticated",
     },
     {
       method: "get",
       handler: "refresh",
       path: "/refresh-token",
+      auth: "authenticated",
     },
     {
       method: "post",
       handler: "refresh",
       path: "/refresh-token",
+      auth: "authenticated",
     },
   ];
 };
 
 export const authCollection = collection({
-  modelName: "User",
-  reqType: "auth",
-  routeName: "auth",
-  routesArray: routes(),
+  model: "User",
+  type: "auth",
+  route: "auth",
+  routes: routes(),
 });
 
 export default authCollection;

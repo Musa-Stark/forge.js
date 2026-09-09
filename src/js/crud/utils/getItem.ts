@@ -5,22 +5,22 @@ import getModel from "../../utils/getModel.js";
 import { sanitizeMany, sanitizeOne } from "../../utils/sanitize.js";
 
 const getItem = async ({
-  modelName,
-  routeName,
+  model,
+  route,
   path,
   _id,
   clean = true,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   path?: string;
   _id?: string;
   clean?: boolean;
   routeObj: Route;
 }) => {
   // get model
-  const Model = getModel({ modelName, routeName, routeObj });
+  const Model = getModel({ model, route, routeObj });
 
   // initialize data
   let data: any = null;
@@ -35,17 +35,17 @@ const getItem = async ({
       query = Model.find();
     }
 
-    // populateKey - populate
-    const populateKey = routeObj?.mongooseConfigObj?.populateKey;
-    if (populateKey) {
-      if (typeof populateKey === "boolean")
+    // populate - populate
+    const populate = routeObj?.config?.populate;
+    if (populate) {
+      if (typeof populate === "boolean")
         throw new AppError({
-          hint: "populateKey as boolean must be 'false' only. Else it should be string, representing the ref in your mongooseSchemaObj.",
-          message: "Invalid populateKey",
+          hint: "populate as boolean must be 'false' only. Else it should be string, representing the ref in your schema.",
+          message: "Invalid populate",
           statusCode: 409,
           details: getErrorDetail(routeObj),
         });
-      query = query.populate(populateKey as string, "_id email");
+      query = query.populate(populate as string, "_id email");
     }
 
     data = await query;
@@ -84,7 +84,7 @@ const getItem = async ({
       hint: _id
         ? `Check the '${path ?? "path"}' you provided in url: /${_id}`
         : "Hit a POST request and create an item",
-      details: getErrorDetail(routeObj, modelName),
+      details: getErrorDetail(routeObj, model),
     });
   }
 

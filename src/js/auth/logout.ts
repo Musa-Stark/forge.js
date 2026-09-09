@@ -11,7 +11,7 @@ import getModel from "../utils/getModel.js";
 import handleRefreshTokenValidation from "./utils/handleRefreshTokenValidation.js";
 
 const logout = (routeObj: Route) => {
-  const { authConfigObj } = getEnvs();
+  const { authConfig } = getEnvs();
 
   return async (req: Request, res: Response) => {
     const token = getToken({ req, routeObj, type: "refreshTokenName" });
@@ -33,7 +33,7 @@ const logout = (routeObj: Route) => {
       });
 
     // refreshToken model
-    const RefreshToken = getModel({ modelName: "RefreshToken", routeObj });
+    const RefreshToken = getModel({ model: "RefreshToken", routeObj });
 
     // handleRefreshTokenValidation
     await handleRefreshTokenValidation(
@@ -49,8 +49,8 @@ const logout = (routeObj: Route) => {
       { $set: { revoked: true } },
     );
 
-    clearCookie({ res, cookieName: authConfigObj.refreshTokenName!, routeObj });
-    clearCookie({ res, cookieName: authConfigObj.accessTokenName!, routeObj });
+    clearCookie({ res, cookieName: authConfig.refreshTokenName!, routeObj });
+    clearCookie({ res, cookieName: authConfig.accessTokenName!, routeObj });
 
     appResponse({ res, message: "Logged out successfully!" });
   };

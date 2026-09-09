@@ -10,22 +10,22 @@ import getErrorDetail from "../../utils/getErrorDetail.js";
 
 
 const addFile = ({
-  modelName,
-  routeName,
+  model,
+  route,
   routeObj,
 }: {
-  modelName: string;
-  routeName: string;
+  model: string;
+  route: string;
   routeObj: Route;
-  validationsObj: ValidationsObj;
+  validations: ValidationsObj;
 }) => {
   return async (req: Request, res: Response): Promise<void> => {
-    // if fileArray is missing
-    if (!routeObj?.fileArray?.length)
+    // if files is missing
+    if (!routeObj?.files?.length)
       throw new AppError({
-        message: "fileArray is missing or empty",
+        message: "files is missing or empty",
         statusCode: 400,
-        hint: "Checkout the collection configuration if fileArray is missing or empty",
+        hint: "Checkout the collection configuration if files is missing or empty",
         details: getErrorDetail(routeObj),
       });
 
@@ -37,8 +37,8 @@ const addFile = ({
 
     // get item
     const item = await getItem({
-      modelName,
-      routeName,
+      model,
+      route,
       _id: param as string,
       path: routeObj.path,
       clean: false,
@@ -46,7 +46,7 @@ const addFile = ({
     });
 
     // authorizeAccess
-    authorizeAccess({ routeObj, routeName, item, req });
+    authorizeAccess({ routeObj, route, item, req });
 
     // upload files
     const fileMetaData = await handleUploadFiles(req, routeObj);
@@ -57,9 +57,9 @@ const addFile = ({
 
         if (!mongooseSchemaField)
           throw new AppError({
-            message: `mongooseSchemaFieldName: '${field}' not found in mongodb document.`,
+            message: `schemaField: '${field}' not found in mongodb document.`,
             statusCode: 400,
-            hint: "Check if 'mongooseSchemaFieldName' is wrong. It should match the array [] name of your mongodb document -> fileMetaData.",
+            hint: "Check if 'schemaField' is wrong. It should match the array [] name of your mongodb document -> fileMetaData.",
             details: {
               handler: routeObj.handler,
               method: routeObj.method,
