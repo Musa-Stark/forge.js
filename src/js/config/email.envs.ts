@@ -31,8 +31,8 @@ export const validateFrom = (emailSender: string) => {
         method: "",
         path: "",
       },
-      hint: 'Expected value: "Stark Forge <noreply@starkindustries.com>"',
-      message: "Invalid email sender, from or systemEmailSender",
+      hint: `Expected value: "Stark Forge <noreply@starkindustries.com>".`,
+      message: "Invalid email sender, 'from' or 'systemEmailSender'.",
       statusCode: 409,
       code: "INVALID_EMAIL_SENDER",
     });
