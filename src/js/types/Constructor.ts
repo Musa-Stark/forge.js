@@ -1,21 +1,19 @@
-import type { Collection, MongooseObj, SchemaField } from "./Collection.ts";
+import type { Collection } from "./Collection.ts";
 import type { DurationType } from "../config/duration.ts";
 import type { UnifiedField } from "../lib/unified.types.js";
 import type { CommonEmailPlaceholders } from "./email/static-config.type.js";
+import type { CorsOptions } from "cors";
 
 // auth config types and interface -------------------------------------------------
 export type authMode = "credentials" | "otp";
+
 export interface AuthConfig {
   mode: "builtin" | "manual";
-
   returnAccessToken?: boolean;
   returnRefreshToken?: boolean;
-
   rotateRefreshToken?: boolean;
   refreshTokenRotationInterval?: DurationType;
-
   verifyAccessUser?: boolean;
-
   fieldsObj?: {
     email: "email" | "write_a_custom_field_name" | (string & {});
     password: "password" | "write_a_custom_field_name" | (string & {});
@@ -26,22 +24,23 @@ export interface AuthConfig {
     model: "User" | "WRITE_A_CUSTOM_USER_Model_Name" | (string & {});
     schema: Record<string, UnifiedField>;
   };
-
   accessTokenName?: "access_token" | "write_a_custom_name" | (string & {});
   refreshTokenName?: "refresh_token" | "write_a_custom_name" | (string & {});
-
   accessTokenAge?: DurationType;
   refreshTokenAge?: DurationType;
-
   signupMode?: authMode;
   loginMode?: authMode;
 }
 
-// adminConfig --------------------------------------------------------------------
+// adminConfig ---------------------------------------------------------------------
 export interface AdminConfig {
   mode: "builtin" | "manual";
 }
 
+// corsConfig ----------------------------------------------------------------------
+export interface CorsConfig extends CorsOptions {}
+
+// constructor ---------------------------------------------------------------------
 export interface Constructor {
   authConfig: AuthConfig;
   adminConfig: AdminConfig;
@@ -69,8 +68,10 @@ export interface Constructor {
   rateLimitMsg: string;
   systemEmailSender?: string;
   resendAPIKey?: string;
+  corsConfig?: CorsConfig;
 }
 
+// InternalConstructor -----------------------------------------------------------
 export interface InternalConstructor extends Constructor {
   userModelName?: string;
 }
