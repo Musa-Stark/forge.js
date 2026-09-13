@@ -32,7 +32,8 @@ let appInfo: AppInfo = {
 const resources: string[] = ["OTP", "RefreshToken"];
 
 const setAppInfo = (req: Collection) => {
-  const { authConfig } = getEnvs();
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
   if (req.model && !resources.includes(req.model)) {
     if (req.schema) appInfo.modelsCount!++;

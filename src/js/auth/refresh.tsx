@@ -15,7 +15,8 @@ import getRefreshToken from "./utils/handleGetToken.js";
 
 const refresh = ({ routeObj }: { routeObj: Route }) => {
   return async (req: Request, res: Response) => {
-    const { authConfig } = getEnvs();
+    const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
     // token info
     const { deviceType, jti, deviceName, os, ipAddress, familyId } =

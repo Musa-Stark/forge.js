@@ -37,13 +37,25 @@ export interface AdminConfig {
   mode: "builtin" | "manual";
 }
 
+// accountConfig -------------------------------------------------------------------
+export interface AccountConfig {
+  mode: "builtin" | "manual";
+}
+
 // corsConfig ----------------------------------------------------------------------
 export interface CorsConfig extends CorsOptions {}
 
+// builtinConfig -------------------------------------------------------------------
+export interface BuiltInConfig {
+  auth: AuthConfig;
+  admin: AdminConfig;
+  account: AccountConfig;
+  email?: CommonEmailPlaceholders;
+}
+
 // constructor ---------------------------------------------------------------------
 export interface Constructor {
-  authConfig: AuthConfig;
-  adminConfig: AdminConfig;
+  builtinConfig: BuiltInConfig;
   apiVersion: number;
   backendURL: string;
   cloudinaryAPIKey?: string;
@@ -54,7 +66,6 @@ export interface Constructor {
   databaseName?: string;
   domain?: string;
   ENV: string;
-  emailConfig?: CommonEmailPlaceholders;
   frontendURL?: string;
   frontendURLs?: string[];
   internalRoles?: string[];

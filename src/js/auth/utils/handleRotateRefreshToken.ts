@@ -35,7 +35,8 @@ const handleRotateRefreshToken = async ({
   iat,
 }: ROTATE_REFRESH_TOKEN) => {
   const RefreshToken = getModel({ model: "RefreshToken" });
-  const { authConfig } = getEnvs();
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
   const { refreshTokenName, rotateRefreshToken, refreshTokenRotationInterval } =
     authConfig;

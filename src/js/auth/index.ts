@@ -20,7 +20,9 @@ const auth = (
   validations?: ValidationsObj,
   schema?: MongooseSchema,
 ) => {
-  const { apiVersion, authConfig } = getEnvs();
+  const { apiVersion, builtinConfig } = getEnvs();
+  const {auth: authConfig} = builtinConfig;
+  
   let builtInValidation = null;
   if (authConfig?.mode === "builtin") {
     builtInValidation = getValidationsObj(authConfig?.mongooseConfig?.schema!);

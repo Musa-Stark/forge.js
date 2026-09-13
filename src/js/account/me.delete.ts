@@ -27,7 +27,7 @@ const remove = ({
     const item = await findUser(id, routeObj, model)
 
     // authorize access
-    authorizeAccess({ routeObj, route, item, req });
+    authorizeAccess({ routeObj, route, item: item.data, req });
 
     // model
     const Model = getModel({ model, route, routeObj });

@@ -14,7 +14,8 @@ const emailAction = async (
   context: ActionContext,
 ): Promise<void> => {
   const { from, to, type, rawBody, template, subject } = item;
-  const { systemEmailSender, emailConfig } = getEnvs();
+  const { systemEmailSender, builtinConfig } = getEnvs();
+  const {email: emailConfig} = builtinConfig;
 
   const details = {
     handler: "emailAction",

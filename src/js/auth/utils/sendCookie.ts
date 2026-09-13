@@ -30,10 +30,10 @@ export const sendCookie = ({
   deviceType,
 }: SendCookie) => {
   // envs
-  const { ENV, domain, authConfig } = getEnvs();
+  const { ENV, domain, builtinConfig } = getEnvs();
 
   // authConfig
-  const { accessTokenAge, refreshTokenAge } = authConfig;
+  const { accessTokenAge, refreshTokenAge } = builtinConfig.auth;
 
   // if domain not found in production
   if (ENV === "production" && !domain)

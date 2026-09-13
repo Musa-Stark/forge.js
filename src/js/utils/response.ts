@@ -20,7 +20,8 @@ const appResponse = ({
   refreshToken,
   purpose,
 }: AppResponse): void => {
-  const { authConfig } = getEnvs();
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
   res.status(statusCode).json({
     success: true,

@@ -11,7 +11,8 @@ import getModel from "../utils/getModel.js";
 import handleRefreshTokenValidation from "./utils/handleRefreshTokenValidation.js";
 
 const logout = (routeObj: Route) => {
-  const { authConfig } = getEnvs();
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
   return async (req: Request, res: Response) => {
     const token = getToken({ req, routeObj, type: "refreshTokenName" });

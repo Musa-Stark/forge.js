@@ -13,7 +13,8 @@ const getToken = ({
   routeObj: Route;
   type: "accessTokenName" | "refreshTokenName";
 }) => {
-  const { authConfig } = getEnvs();
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
 
   const tokenName = authConfig[type];
 

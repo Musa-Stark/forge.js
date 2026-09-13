@@ -14,8 +14,10 @@ const helper = (
 
 const getValidationsObj = (obj: Record<string, UnifiedField>) => {
   try {
-    const { authConfig } = getEnvs();
-    const { otp, purpose, email, password } = authConfig?.fieldsObj!;
+    const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
+
+    const { otp, purpose, email, password } = builtinConfig.auth?.fieldsObj!;
 
     if (!otp || !purpose || !email || !password)
       throw new Error(

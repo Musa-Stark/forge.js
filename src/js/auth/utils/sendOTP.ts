@@ -14,7 +14,8 @@ const sendOTP = async (
   const OTP = randomInt(100000, 1000000).toString();
   const otpExpiry = Date.now() + 1000 * 60 * 5;
 
-  const { isOffline, systemEmailSender, emailConfig } = getEnvs();
+  const { isOffline, systemEmailSender, builtinConfig } = getEnvs();
+  const { email: emailConfig } = builtinConfig;
 
   if (!isOffline && isOffline !== false)
     throw new AppError({

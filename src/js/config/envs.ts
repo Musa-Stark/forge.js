@@ -8,10 +8,10 @@ let envs: InternalConstructor = { ...defaultConfig };
 
 const setEnvs = (values: InternalConstructor): void => {
   // authConfig
-  authConfigValidation(values.authConfig);
+  authConfigValidation(values.builtinConfig.auth);
 
   // emailConfig
-  emailConfig(values.emailConfig as CommonEmailPlaceholders)
+  emailConfig(values.builtinConfig.email as CommonEmailPlaceholders)
 
   // Save final config
   envs = values;

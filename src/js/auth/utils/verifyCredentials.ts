@@ -16,8 +16,9 @@ const verifyCredentials = async ({
   routeObj: Route;
 }) => {
   // get dynamic auth field keys
-  const { authConfig } = getEnvs();
-  const { fieldsObj } = authConfig;
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
+  const { fieldsObj } = builtinConfig.auth;
 
   const emailKey = fieldsObj?.email;
   const passwordKey = fieldsObj?.password;

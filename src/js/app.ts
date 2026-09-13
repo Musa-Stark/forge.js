@@ -21,6 +21,8 @@ import printInfo from "./terminal/loggerConfig.js";
 import type { AuthConfig } from "./types/Constructor.js";
 import createRefreshModel from "./config/refreshModel.js";
 import { adminCollection } from "./admin/bunch.admin.js";
+import accountCollection from "./account/builtin/account.collection.js";
+import { zodFields } from "./index.js";
 
 // security - middlewares
 app.use(cookieParser());
@@ -48,10 +50,10 @@ const handleCollection = (
   collections: Collection[],
   authConfig: AuthConfig,
 ): void => {
-  for (const Req of collections) {
-    setAppInfo(Req);
+  for (const collection of collections) {
+    setAppInfo(collection);
 
-    let { type, route, routes, model, validations, schema } = Req;
+    let { type, route, routes, model, validations, schema } = collection;
 
     if (type === "auth" && authConfig.mode === "builtin") {
       schema = authConfig.mongooseConfig?.schema!;
@@ -75,10 +77,16 @@ const startServer = async (): Promise<void> => {
     isOffline,
     mongoDBURI,
     databaseName,
-    authConfig,
-    adminConfig,
+    builtinConfig,
     corsConfig,
   } = getEnvs();
+
+  // builtinConfig
+  const {
+    admin: adminConfig,
+    auth: authConfig,
+    account: accountConfig,
+  } = builtinConfig;
 
   // CORS
   if (corsConfig) {
@@ -96,8 +104,22 @@ const startServer = async (): Promise<void> => {
   const collectionArray = [healthCollection];
 
   // handleCollection config
+  // builtin collections --------------------------------------------------------------
   if (authConfig?.mode === "builtin") collectionArray.push(authCollection);
   if (adminConfig?.mode === "builtin") collectionArray.push(adminCollection);
+  // account --------------------------------------------------------------------------
+  if (accountConfig?.mode === "builtin")
+    collectionArray.push({
+      ...accountCollection,
+      validations: {
+        updateProfile: {
+          name: zodFields.optionalString,
+          password: zodFields.optionalString,
+        },
+      },
+    });
+
+  // manual collections ---------------------------------------------------------------
   if (collections) collectionArray.push(...collections);
 
   // call - handleCollection

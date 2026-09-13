@@ -39,7 +39,7 @@ const update = ({
     const item = await findUser(id, routeObj, model)
 
     // authorize access
-    authorizeAccess({ item, req, routeObj, route });
+    authorizeAccess({ item: item.data, req, routeObj, route });
 
     // if encryptedFields
     const encryptedFields = await handleEncryption(req.body, routeObj);

@@ -52,9 +52,9 @@ const protect =
   (routeObj: Route) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { userModelName, authConfig } = getEnvs();
+      const { userModelName, builtinConfig } = getEnvs();
 
-      const { verifyAccessUser } = authConfig;
+      const { verifyAccessUser } = builtinConfig.auth;
 
       const token = handleGetToken({ req, routeObj, type: "accessTokenName" });
 

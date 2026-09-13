@@ -3,8 +3,10 @@ import type { Collection } from "../../types/Collection.js";
 import type { Route } from "../../types/Collection.js";
 
 const collection = (vals: Collection) => {
-  const { authConfig } = getEnvs();
-  vals.schema = authConfig?.mongooseConfig?.schema!;
+  const { builtinConfig } = getEnvs();
+const {auth: authConfig} = builtinConfig;
+
+  vals.schema = builtinConfig.auth?.mongooseConfig?.schema!;
 
   return vals;
 };

@@ -18,24 +18,42 @@ import {
 import "dotenv/config";
 
 new StarkNexus({
-  authConfig: {
-    mode: "builtin",
-    mongooseConfig: {
-      model: "User",
-      schema: {
-        firstName: fields.requiredIndexString,
-        lastName: fields.optionalString,
-        email: fields.email,
-        password: fields.password,
-        profileImage: fields.optionalFileMetaData,
+  builtinConfig: {
+    auth: {
+      mode: "builtin",
+      mongooseConfig: {
+        model: "User",
+        schema: {
+          firstName: fields.requiredIndexString,
+          lastName: fields.optionalString,
+          email: fields.email,
+          password: fields.password,
+          profileImage: fields.optionalFileMetaData,
+        },
       },
+
+      accessTokenAge: "1d",
+
+      loginMode: "credentials",
+      signupMode: "credentials",
+      // verifyAccessUser: false
     },
 
-    accessTokenAge: "1d",
+    email: {
+      companyAddress: "Peshawar, Pakistan",
+      companyName: "Stark Industries",
+      companyUrl: "https://starkindustries.com",
+      supportEmail: "support@starkindustries.com",
+      unsubscribeUrl: "https://unsubscribeUrl",
+    },
 
-    loginMode: "credentials",
-    signupMode: "credentials",
-    // verifyAccessUser: false
+    admin: {
+      mode: "builtin",
+    },
+
+    account: {
+      mode: "builtin"
+    }
   },
 
   collections: [
@@ -46,16 +64,6 @@ new StarkNexus({
     // recentCollection,
     emailCollection,
   ],
-  emailConfig: {
-    companyAddress: "Peshawar, Pakistan",
-    companyName: "Stark Industries",
-    companyUrl: "https://starkindustries.com",
-    supportEmail: "support@starkindustries.com",
-    unsubscribeUrl: "https://unsubscribeUrl",
-  },
-  adminConfig: {
-    mode: "builtin",
-  },
   corsConfig: {
     credentials: true,
     origin: "http://localhost:3000",
