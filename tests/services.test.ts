@@ -192,6 +192,22 @@ describe("AccessPolicy", () => {
     expect(policy.ownerStamp(alice)).toEqual({ owner: alice._id });
     expect(policy.ownerStamp(undefined)).toEqual({});
   });
+
+  it("uses the configured owner field for checks, filters, stamping, and writable bodies", () => {
+    const customConfig = new ForgeConfig({
+      ENV: "test",
+      protectedFields: ["role"],
+      builtinConfig: { auth: { mode: "manual", ownerField: "createdBy" } },
+    });
+    const customPolicy = new AccessPolicy(customConfig, new Authenticator(customConfig, tokens, new InMemoryDataSource()));
+    const customDoc = { _id: id("9"), createdBy: alice._id };
+
+    expect(customPolicy.ownerOf(customDoc, { auth: "admin-or-owner" } as never)).toBe(alice._id);
+    expect(() => customPolicy.assertCanAccess({ auth: "admin-or-owner" } as never, alice, customDoc)).not.toThrow();
+    expect(customPolicy.scopeFilter({ auth: "admin-or-owner" } as never, alice)).toEqual({ createdBy: alice._id });
+    expect(customPolicy.ownerStamp(alice)).toEqual({ createdBy: alice._id });
+    expect(customPolicy.writableBody({ createdBy: id("3"), owner: id("4"), name: "n" }, alice)).toEqual({ owner: id("4"), name: "n" });
+  });
 });
 
 describe("ActionRunner", () => {

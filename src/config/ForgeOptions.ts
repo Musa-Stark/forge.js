@@ -112,6 +112,8 @@ export interface MfaOptions {
 
 export interface AuthConfig {
   mode: "builtin" | "manual";
+  /** Field used to store and check document ownership. @default "owner" */
+  ownerField?: string;
   returnAccessToken?: boolean;
   returnRefreshToken?: boolean;
   rotateRefreshToken?: boolean;

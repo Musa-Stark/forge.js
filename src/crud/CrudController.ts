@@ -453,7 +453,8 @@ export class CrudController {
     req: Request,
   ): Record<string, unknown> {
     // The owner always comes from the session, never from the request body.
-    return ctx.collection.schema && "owner" in ctx.collection.schema
+    const ownerField = this.services.config.auth.ownerField;
+    return ctx.collection.schema && ownerField in ctx.collection.schema
       ? { ...data, ...this.services.access.ownerStamp(req.user) }
       : data;
   }

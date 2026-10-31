@@ -53,6 +53,7 @@ export interface ResolvedMfaConfig {
 /** Auth configuration after defaults were applied and durations parsed. */
 export interface ResolvedAuthConfig {
   mode: "builtin" | "manual";
+  ownerField: string;
   returnAccessToken: boolean;
   returnRefreshToken: boolean;
   rotateRefreshToken: boolean;
@@ -391,6 +392,7 @@ export class ForgeConfig {
 
     return {
       mode: auth.mode,
+      ownerField: auth.ownerField ?? "owner",
       returnAccessToken: auth.returnAccessToken ?? false,
       returnRefreshToken: auth.returnRefreshToken ?? false,
       rotateRefreshToken: auth.rotateRefreshToken ?? true,

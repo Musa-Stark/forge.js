@@ -7,7 +7,7 @@ import type { Route } from "../types/Route.js";
 import { idToString } from "../utils/ids.js";
 import { omitKeys } from "../utils/sanitizeInput.js";
 
-const OWNER_FIELD = "owner";
+const DEFAULT_OWNER_FIELD = "owner";
 
 /**
  * Decides who may touch which document.
@@ -28,7 +28,7 @@ export class AccessPolicy {
 
   /** Id of the user who owns `doc` under the route's ownership rule. */
   ownerOf(doc: Doc, route: Route): string | undefined {
-    return route.ownership === "self" ? idToString(doc._id) : idToString(doc[OWNER_FIELD]);
+    return route.ownership === "self" ? idToString(doc._id) : idToString(doc[this.config.auth.ownerField ?? DEFAULT_OWNER_FIELD]);
   }
 
   /** Throws unless `user` may access `doc` through `route`. */
@@ -46,12 +46,12 @@ export class AccessPolicy {
   scopeFilter(route: Route, user: AuthenticatedUser | undefined): Filter {
     if (route.auth !== "admin-or-owner" || this.isAdmin(user)) return {};
     if (!user) throw new ForbiddenError({ message: "Authentication is required.", code: ErrorCode.FORBIDDEN });
-    return route.ownership === "self" ? { _id: user._id } : { [OWNER_FIELD]: user._id };
+    return route.ownership === "self" ? { _id: user._id } : { [this.config.auth.ownerField ?? DEFAULT_OWNER_FIELD]: user._id };
   }
 
   /** The owner value to stamp on a new document. */
   ownerStamp(user: AuthenticatedUser | undefined): Record<string, unknown> {
-    return user ? { [OWNER_FIELD]: user._id } : {};
+    return user ? { [this.config.auth.ownerField ?? DEFAULT_OWNER_FIELD]: user._id } : {};
   }
 
   /**
@@ -60,6 +60,6 @@ export class AccessPolicy {
    * non-admin could hand a document to another user by sending `owner` in an update.
    */
   writableBody<T extends Record<string, unknown>>(body: T, user: AuthenticatedUser | undefined): Partial<T> {
-    return this.isAdmin(user) ? body : omitKeys(body, [...this.config.protectedFields, OWNER_FIELD]);
+    return this.isAdmin(user) ? body : omitKeys(body, [...this.config.protectedFields, this.config.auth.ownerField ?? DEFAULT_OWNER_FIELD]);
   }
 }
