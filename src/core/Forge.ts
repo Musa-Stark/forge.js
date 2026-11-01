@@ -1,7 +1,7 @@
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors, { type CorsOptions } from "cors";
-import express, { type Express } from "express";
+import express, { type Express, type RequestHandler } from "express";
 import helmet from "helmet";
 import type { Server } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -20,6 +20,7 @@ import { originGuard } from "../http/middleware/OriginGuard.js";
 import { requestContext } from "../http/middleware/RequestContext.js";
 import { BannerPrinter } from "../terminal/BannerPrinter.js";
 import type { Collection } from "../types/Collection.js";
+import type { AccessLevel } from "../types/Route.js";
 import "../types/express.js";
 import { BuiltinCollections } from "./BuiltinCollections.js";
 import type { FeatureModule } from "./FeatureModule.js";
@@ -55,7 +56,8 @@ export class Forge {
     dependencies: ForgeDependencies = {},
   ) {
     // Install parsers as soon as Forge creates the app so routes registered
-    // directly on `forge.app` before build() can still read req.body.
+    // directly on `forge.app` before build() can read req.body and req.cookies.
+    this.app.use(cookieParser());
     this.app.use(express.json({ limit: options.bodyLimit ?? "100kb" }));
     this.app.use(express.urlencoded({ extended: false, limit: options.bodyLimit ?? "100kb" }));
 
@@ -95,6 +97,11 @@ export class Forge {
     return this;
   }
 
+  /** Verify the access token and set `req.user` before a custom route handler. */
+  auth(level: AccessLevel = "authenticated", roles?: readonly string[]): RequestHandler {
+    return this.services.authenticator.require(level, roles);
+  }
+
   get collections(): readonly Collection[] {
     return this.allCollections;
   }
@@ -121,7 +128,6 @@ export class Forge {
     }
     app.use(compression());
     app.use(services.limiters.global());
-    app.use(cookieParser());
     app.use(inputSanitizer());
     app.use(originGuard(this.allowedOrigins()));
 

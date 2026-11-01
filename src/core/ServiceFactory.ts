@@ -85,6 +85,7 @@ export class ServiceFactory {
       config,
       logger,
       data,
+      findModel: (modelName) => data.repository(modelName),
       compiler,
       tokens,
       hasher,

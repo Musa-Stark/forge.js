@@ -8,11 +8,6 @@ export { FeatureModule, type HandlerFn } from "./core/FeatureModule.js";
 export type { Services } from "./core/Services.js";
 export type { ForgeDependencies } from "./core/ServiceFactory.js";
 export { RouteContext } from "./core/RouteContext.js";
-export { Pagination, type PageRequest } from "./core/Pagination.js";
-export { ResponseSanitizer, type SanitizeOptions } from "./core/ResponseSanitizer.js";
-export { AccessPolicy } from "./core/AccessPolicy.js";
-export { ActionRunner, isCustomAction, isEmailAction } from "./core/ActionRunner.js";
-export { FieldTransformer, parseFieldSpec, type FieldSpec } from "./core/FieldTransformer.js";
 
 // ── Configuration ────────────────────────────────────────────────────────────
 export { ForgeConfig, Duration } from "./config/index.js";
@@ -37,8 +32,6 @@ export type {
   ModelDefinition,
 } from "./data/Repository.js";
 export { MongooseDataSource } from "./data/MongooseDataSource.js";
-export { MongooseRepository, toPlain } from "./data/MongooseRepository.js";
-export { SchemaCompiler } from "./data/SchemaCompiler.js";
 
 // ── Social sign-in ───────────────────────────────────────────────────────────
 export {
@@ -95,17 +88,6 @@ export type {
 export type { StoreFile } from "./types/StoreFile.js";
 export type { AuthenticatedUser } from "./types/AuthenticatedUser.js";
 export type { EmailTemplate } from "./types/email.js";
-
-// ── HTTP middleware and reusable HTTP services ───────────────────────────────
-export { Authenticator } from "./http/Authenticator.js";
-export { ResponseWriter, type SuccessBody, type PageMeta } from "./http/ResponseWriter.js";
-export { ErrorHandler } from "./http/middleware/ErrorHandler.js";
-export { RateLimiters } from "./http/middleware/RateLimiters.js";
-export { requestContext } from "./http/middleware/RequestContext.js";
-export { inputSanitizer } from "./http/middleware/InputSanitizer.js";
-export { originGuard } from "./http/middleware/OriginGuard.js";
-export { stripDangerousKeys, omitKeys } from "./utils/sanitizeInput.js";
-export { isObjectId, newObjectId, idToString } from "./utils/ids.js";
 
 /** Identity helper that gives you autocomplete when declaring a collection. */
 export const collection = (object: Collection): Collection => object;

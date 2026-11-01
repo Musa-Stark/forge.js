@@ -1,5 +1,5 @@
 import type { ForgeConfig } from "../config/ForgeConfig.js";
-import type { DataSource } from "../data/Repository.js";
+import type { DataSource, Repository } from "../data/Repository.js";
 import type { SchemaCompiler } from "../data/SchemaCompiler.js";
 import type { EmailService } from "../email/EmailService.js";
 import type { Authenticator } from "../http/Authenticator.js";
@@ -28,6 +28,8 @@ export interface Services {
   config: ForgeConfig;
   logger: Logger;
   data: DataSource;
+  /** Resolve a registered model by name to its framework-neutral repository. */
+  findModel(modelName: string): Repository;
   compiler: SchemaCompiler;
   tokens: TokenService;
   hasher: PasswordHasher;
