@@ -67,14 +67,16 @@ export class AccountController {
     }
 
     const item = await this.present(ctx, updated);
+    const response = {
+      success: true,
+      message: changingPassword ? "Profile updated. Please log in again with your new password." : "Profile updated successfully.",
+      data: item,
+    };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "update", { body }), item, result: item },
+      { ...ctx.actionContext(req, "update", { body }), item, result: response },
     );
-    this.services.responses.success(res, {
-      message: changingPassword ? "Profile updated. Please log in again with your new password." : "Profile updated successfully.",
-      data: replaced ?? item,
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   deleteMe = async (req: Request, res: Response, ctx: RouteContext): Promise<void> => {
@@ -87,11 +89,12 @@ export class AccountController {
     this.services.cookies.clear(res);
 
     const item = await this.present(ctx, user);
+    const response = { success: true, message: "Account deleted successfully.", data: item };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "remove"), item, result: item },
+      { ...ctx.actionContext(req, "remove"), item, result: response },
     );
-    this.services.responses.success(res, { message: "Account deleted successfully.", data: replaced ?? item });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   /** Removes everything that could still sign in as, or unlock, the deleted account. */

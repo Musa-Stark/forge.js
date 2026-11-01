@@ -103,11 +103,12 @@ export class FileController {
     stored: Record<string, unknown> = {},
   ): Promise<void> {
     const item = await this.support.present(ctx, doc);
+    const response = { success: true, message, data: item };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, operation, { files: stored }), item, result: item },
+      { ...ctx.actionContext(req, operation, { files: stored }), item, result: response },
     );
-    this.services.responses.success(res, { message, data: replaced ?? item });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   }
 
   private uploadsOf(ctx: RouteContext, exactly?: number): Upload[] {

@@ -225,14 +225,17 @@ describe("ActionRunner", () => {
     const seen: unknown[] = [];
     const result = await runner().runAfter(
       [
-        { customAction: (c) => { seen.push(c.result); return { step: 1 }; } },
+        { customAction: (c) => { seen.push(structuredClone(c.result)); return { step: 1 }; } },
         { customAction: () => { throw new Error("ignored"); } },
-        { customAction: (c) => { seen.push(c.result); return undefined; } },
+        { customAction: (c) => { seen.push(structuredClone(c.result)); return undefined; } },
       ],
-      { result: "orig" } as never,
+      { result: { message: "ok", data: "orig" } } as never,
     );
     expect(result).toEqual({ step: 1 });
-    expect(seen).toEqual(["orig", { step: 1 }]);
+    expect(seen).toEqual([
+      { message: "ok", data: "orig" },
+      { message: "ok", data: { step: 1 } },
+    ]);
   });
 
   it("returns undefined when no action replaces the result", async () => {

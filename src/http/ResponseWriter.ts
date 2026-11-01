@@ -8,6 +8,7 @@ export interface PageMeta {
 }
 
 export interface SuccessBody {
+  success?: boolean;
   status?: number;
   message: string;
   data?: unknown;
@@ -20,7 +21,7 @@ export interface SuccessBody {
 export class ResponseWriter {
   success(res: Response, body: SuccessBody): void {
     res.status(body.status ?? 200).json({
-      success: true,
+      success: body.success ?? true,
       message: body.message,
       ...(body.data !== undefined ? { data: body.data } : {}),
       ...(body.meta ? { meta: body.meta } : {}),

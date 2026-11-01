@@ -710,7 +710,28 @@ describe("actions", () => {
     expect(seen.route).toBe("notes");
     expect(seen.user._id).toBeTypeOf("string");
     expect(seen.item.title).toBe("hello");
+    expect(seen.result).toMatchObject({ success: true, message: "Note created successfully.", data: { title: "hello" } });
     expect(seen.repository).toBeDefined();
+  });
+
+  it("keeps item separate from the mutable response result", async () => {
+    let seen: any;
+    t = await boot(notes({
+      actions: {
+        after: [{ customAction: (ctx: any) => {
+          seen = ctx;
+          ctx.result.message = "Adjusted by hook.";
+          ctx.result.data = { title: "adjusted" };
+        } }],
+      },
+    }));
+    const a = await user("a@example.com");
+    const res = await a.post("/notes", { title: "original" });
+
+    expect(res.body.message).toBe("Adjusted by hook.");
+    expect(res.body.data).toEqual({ title: "adjusted" });
+    expect(seen.item.title).toBe("original");
+    expect(seen.result).toMatchObject({ success: true, message: "Adjusted by hook.", data: { title: "adjusted" } });
   });
 
   it("lets an action read another model through repositoryOf, for example to check that a referenced document exists", async () => {

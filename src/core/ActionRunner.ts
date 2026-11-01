@@ -79,10 +79,17 @@ export class ActionRunner {
       try {
         const result = await this.execute(action, {
           ...context,
-          result: replacement !== undefined ? replacement : context.result,
+          result: context.result,
         });
 
-        if (result !== undefined) replacement = result;
+        if (result !== undefined) {
+          replacement = result;
+          // After-action results are response envelopes. Preserve the historic
+          // return-value behavior by treating a returned value as new response data.
+          if (context.result && typeof context.result === "object" && "data" in context.result) {
+            (context.result as { data: unknown }).data = result;
+          }
+        }
       } catch (error) {
         this.logger.error(
           `An 'after' action failed on ${context.model}/${context.operation}.`,

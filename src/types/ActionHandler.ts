@@ -61,8 +61,8 @@ export interface ActionContext {
   item?: unknown;
 
   /**
-   * The data that will be sent to the client. In `after` actions a
-   * `customAction` may return a replacement.
+   * The mutable response body for `after` actions (message, data, and optional
+   * metadata). A returned value from `customAction` replaces `result.data`.
    */
   result?: unknown;
 }

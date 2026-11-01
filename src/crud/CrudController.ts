@@ -33,14 +33,16 @@ export class CrudController {
     const doc = await this.support.load(ctx, req);
     const item = await this.support.present(ctx, doc);
 
+    const response = {
+      success: true,
+      message: `${ctx.modelName} fetched successfully.`,
+      data: item,
+    };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "read"), item, result: item },
+      { ...ctx.actionContext(req, "read"), item, result: response },
     );
-    this.services.responses.success(res, {
-      message: `${ctx.modelName} fetched successfully.`,
-      data: replaced ?? item,
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   readAll = async (
@@ -71,15 +73,17 @@ export class CrudController {
     ]);
     const items = await this.support.presentMany(ctx, docs);
 
+    const response = {
+      success: true,
+      message: `${ctx.modelName} list fetched successfully.`,
+      data: items,
+      meta: this.services.pagination.meta(page, total),
+    };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "readAll"), item: items, result: items },
+      { ...ctx.actionContext(req, "readAll"), item: items, result: response },
     );
-    this.services.responses.success(res, {
-      message: `${ctx.modelName} list fetched successfully.`,
-      data: replaced ?? items,
-      meta: this.services.pagination.meta(page, total),
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   create = async (
@@ -127,18 +131,16 @@ export class CrudController {
         .create(this.withOwner(ctx, hashed, req));
       const item = await this.support.present(ctx, doc);
 
+      const response = { success: true, message: `${ctx.modelName} created successfully.`, data: item };
       const replaced = await this.services.actions.runAfter(
         ctx.route.actions?.after,
         {
           ...ctx.actionContext(req, "create", { body, files: stored }),
           item,
-          result: item,
+          result: response,
         },
       );
-      this.services.responses.created(res, {
-        message: `${ctx.modelName} created successfully.`,
-        data: replaced ?? item,
-      });
+      this.services.responses.created(res, { ...response, data: replaced ?? response.data });
     } catch (error) {
       await this.discardStored(ctx, stored);
       throw error;
@@ -186,14 +188,12 @@ export class CrudController {
     const docs = await this.support.repo(ctx).createMany(rows);
     const items = await this.support.presentMany(ctx, docs);
 
+    const response = { success: true, message: `${items.length} ${ctx.modelName} items created successfully.`, data: items };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "createBulk"), item: items, result: items },
+      { ...ctx.actionContext(req, "createBulk"), item: items, result: response },
     );
-    this.services.responses.created(res, {
-      message: `${items.length} ${ctx.modelName} items created successfully.`,
-      data: replaced ?? items,
-    });
+    this.services.responses.created(res, { ...response, data: replaced ?? response.data });
   };
 
   update = async (
@@ -244,18 +244,16 @@ export class CrudController {
       );
 
       const item = await this.support.present(ctx, updated);
+      const response = { success: true, message: `${ctx.modelName} updated successfully.`, data: item };
       const replaced = await this.services.actions.runAfter(
         ctx.route.actions?.after,
         {
           ...ctx.actionContext(req, "update", { body, files: stored }),
           item,
-          result: item,
+          result: response,
         },
       );
-      this.services.responses.success(res, {
-        message: `${ctx.modelName} updated successfully.`,
-        data: replaced ?? item,
-      });
+      this.services.responses.success(res, { ...response, data: replaced ?? response.data });
     } catch (error) {
       await this.discardStored(ctx, stored);
       throw error;
@@ -279,14 +277,12 @@ export class CrudController {
     await this.services.uploads.discard(this.support.filesOf(ctx, removed));
     const item = await this.support.present(ctx, removed);
 
+    const response = { success: true, message: `${ctx.modelName} deleted successfully.`, data: item };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
-      { ...ctx.actionContext(req, "remove"), item, result: item },
+      { ...ctx.actionContext(req, "remove"), item, result: response },
     );
-    this.services.responses.success(res, {
-      message: `${ctx.modelName} deleted successfully.`,
-      data: replaced ?? item,
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   removeMultiple = async (
@@ -326,18 +322,17 @@ export class CrudController {
       docs.flatMap((doc) => this.support.filesOf(ctx, doc)),
     );
 
+    const item = { deleted };
+    const response = { success: true, message: `${deleted} ${ctx.modelName} items deleted.`, data: item };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
       {
         ...ctx.actionContext(req, "removeMultiple"),
-        item: { deleted },
-        result: { deleted },
+        item,
+        result: response,
       },
     );
-    this.services.responses.success(res, {
-      message: `${deleted} ${ctx.modelName} items deleted.`,
-      data: replaced ?? { deleted },
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   removeAll = async (
@@ -358,18 +353,17 @@ export class CrudController {
       docs.flatMap((doc) => this.support.filesOf(ctx, doc)),
     );
 
+    const item = { deleted };
+    const response = { success: true, message: `${deleted} ${ctx.modelName} items deleted.`, data: item };
     const replaced = await this.services.actions.runAfter(
       ctx.route.actions?.after,
       {
         ...ctx.actionContext(req, "removeAll"),
-        item: { deleted },
-        result: { deleted },
+        item,
+        result: response,
       },
     );
-    this.services.responses.success(res, {
-      message: `${deleted} ${ctx.modelName} items deleted.`,
-      data: replaced ?? { deleted },
-    });
+    this.services.responses.success(res, { ...response, data: replaced ?? response.data });
   };
 
   /** Startup check: `removeAll` on an open route would let anyone empty the collection. */

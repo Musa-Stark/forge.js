@@ -99,13 +99,14 @@ Everything is validated **at startup**: unknown handlers, unknown validation nam
 actions: {
   before: [{ customAction: (ctx) => { if (!ctx.user) throw new ForbiddenError({ message: "no" }); } }],   // may abort
   after:  [
-    { customAction: (ctx) => ({ ...ctx.item, extra: true }) },        // a returned value replaces the response data
+    { customAction: (ctx) => ({ ...ctx.item, extra: true }) },        // a returned value replaces result.data
     { emailAction: { from: "system-email-sender", to: "ops@acme.dev", type: "raw", rawBody: "<p>Hi</p>", subject: "New item" } },
   ],
 }
 ```
 
 `after` actions run once the data is saved, so a failure is logged and does not turn a successful write into an error response.
+In an `after` action, `ctx.item` is the returned item (or items), while `ctx.result` is the mutable response body, including `success`, `message`, `data`, and any pagination metadata. You can edit `ctx.result.message` or `ctx.result.meta`; returning a value still replaces `ctx.result.data`.
 
 ### Pagination
 
