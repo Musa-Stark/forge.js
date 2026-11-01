@@ -54,6 +54,11 @@ export class Forge {
     options: ForgeOptions = {},
     dependencies: ForgeDependencies = {},
   ) {
+    // Install parsers as soon as Forge creates the app so routes registered
+    // directly on `forge.app` before build() can still read req.body.
+    this.app.use(express.json({ limit: options.bodyLimit ?? "100kb" }));
+    this.app.use(express.urlencoded({ extended: false, limit: options.bodyLimit ?? "100kb" }));
+
     this.config = new ForgeConfig(options);
     this.services = new ServiceFactory().create(this.config, dependencies);
 
@@ -116,8 +121,6 @@ export class Forge {
     }
     app.use(compression());
     app.use(services.limiters.global());
-    app.use(express.json({ limit: config.bodyLimit }));
-    app.use(express.urlencoded({ extended: false, limit: config.bodyLimit }));
     app.use(cookieParser());
     app.use(inputSanitizer());
     app.use(originGuard(this.allowedOrigins()));

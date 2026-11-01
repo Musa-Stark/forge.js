@@ -34,6 +34,32 @@ describe("lifecycle", () => {
     expect(forge.build()).toBe(forge.build());
   });
 
+  it("parses JSON and URL-encoded bodies on app routes registered before build()", async () => {
+    const forge = new Forge({ ENV: "test", port: 0 }, { dataSource: new InMemoryDataSource() });
+    forge.app.post("/custom-body", (req, res) => res.json({ body: req.body }));
+    const server = forge.build().listen(0);
+    await new Promise((resolve) => server.once("listening", resolve));
+    const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+
+    try {
+      const json = await fetch(`${base}/custom-body`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ source: "json" }),
+      });
+      const form = await fetch(`${base}/custom-body`, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: "source=form",
+      });
+
+      expect(await json.json()).toEqual({ body: { source: "json" } });
+      expect(await form.json()).toEqual({ body: { source: "form" } });
+    } finally {
+      await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+    }
+  });
+
   it("rejects start() when the port is taken", async () => {
     t = await createTestForge();
     const port = Number(new URL(t.url).port);
