@@ -734,6 +734,29 @@ describe("actions", () => {
     expect(seen.result).toMatchObject({ success: true, message: "Adjusted by hook.", data: { title: "adjusted" } });
   });
 
+  it("treats a returned response envelope as the response instead of nesting it in data", async () => {
+    const base = notes();
+    const withHook = {
+      ...base,
+      routes: base.routes.map((route) => route.handler === "readAll"
+        ? {
+            ...route,
+            actions: { after: [{ customAction: async ({ req, result }: any) => ({ query: req.query, ...result }) }] },
+          }
+        : route),
+    } as Collection;
+    t = await boot(withHook);
+    const a = await user("a@example.com");
+    await a.post("/notes", { title: "one" });
+
+    const res = await a.get("/notes?page=1");
+    expect(res.body.query).toEqual({ page: "1" });
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].title).toBe("one");
+    expect(res.body.data).not.toHaveProperty("data");
+    expect(res.body.meta).toEqual({ page: 1, limit: 50, total: 1, pages: 1 });
+  });
+
   it("lets an action read another model through repositoryOf, for example to check that a referenced document exists", async () => {
     const products = collection({
       type: "crud", route: "products", model: "Product",

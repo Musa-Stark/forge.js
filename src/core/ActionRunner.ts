@@ -83,11 +83,20 @@ export class ActionRunner {
         });
 
         if (result !== undefined) {
-          replacement = result;
-          // After-action results are response envelopes. Preserve the historic
-          // return-value behavior by treating a returned value as new response data.
-          if (context.result && typeof context.result === "object" && "data" in context.result) {
-            (context.result as { data: unknown }).data = result;
+          if (this.isResponse(result) && context.result && typeof context.result === "object") {
+            // Returning ctx.result (or a copy of it) replaces the response body,
+            // instead of nesting the envelope inside response.data.
+            const current = context.result as Record<string, unknown>;
+            const next = { ...result };
+            for (const key of Object.keys(current)) delete current[key];
+            Object.assign(current, next);
+            replacement = undefined;
+          } else {
+            replacement = result;
+            // Keep the established shorthand: returning a value replaces data.
+            if (context.result && typeof context.result === "object" && "data" in context.result) {
+              (context.result as { data: unknown }).data = result;
+            }
           }
         }
       } catch (error) {
@@ -111,5 +120,11 @@ export class ActionRunner {
 
     await this.emails.sendAction(action.emailAction, context);
     return undefined;
+  }
+
+  private isResponse(value: unknown): value is Record<string, unknown> {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    const response = value as Record<string, unknown>;
+    return response.success === true && typeof response.message === "string" && "data" in response;
   }
 }

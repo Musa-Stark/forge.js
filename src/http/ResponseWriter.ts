@@ -15,21 +15,24 @@ export interface SuccessBody {
   meta?: PageMeta;
   /** Extra top-level keys (e.g. tokens when `returnAccessToken` is enabled). */
   extra?: Record<string, unknown>;
+  [key: string]: unknown;
 }
 
 /** The one place that decides what a successful response looks like. */
 export class ResponseWriter {
   success(res: Response, body: SuccessBody): void {
+    const { status: _status, success, message, data, meta, extra, ...fields } = body;
     res.status(body.status ?? 200).json({
-      success: body.success ?? true,
-      message: body.message,
-      ...(body.data !== undefined ? { data: body.data } : {}),
-      ...(body.meta ? { meta: body.meta } : {}),
-      ...body.extra,
+      success: success ?? true,
+      message,
+      ...(data !== undefined ? { data } : {}),
+      ...(meta ? { meta } : {}),
+      ...fields,
+      ...extra,
     });
   }
 
-  created(res: Response, body: Omit<SuccessBody, "status">): void {
+  created(res: Response, body: SuccessBody): void {
     this.success(res, { ...body, status: 201 });
   }
 }
