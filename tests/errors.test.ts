@@ -62,6 +62,20 @@ describe("ErrorTranslator", () => {
     expect((error as ValidationError).issues.map((i) => i.path).sort()).toEqual(["age", "email"]);
   });
 
+  it("accepts a ZodError directly and formats its message for people", () => {
+    const result = z.object({ query: z.object({ clientId: z.string(), scope: z.string() }) })
+      .safeParse({ query: {} });
+    const error = new ValidationError(result.error!);
+
+    expect(error.message).toContain("query.clientId: Invalid input: expected string, received undefined");
+    expect(error.message).toContain("query.scope: Invalid input: expected string, received undefined");
+    expect(error.message).not.toContain("\n  {");
+    expect(error.issues).toEqual([
+      { path: "query.clientId", code: "invalid_type", message: "Invalid input: expected string, received undefined" },
+      { path: "query.scope", code: "invalid_type", message: "Invalid input: expected string, received undefined" },
+    ]);
+  });
+
   it("maps malformed JSON to 400 INVALID_JSON", () => {
     const error = translator.translate(Object.assign(new SyntaxError("bad"), { type: "entity.parse.failed" }));
     expect(error.statusCode).toBe(400);

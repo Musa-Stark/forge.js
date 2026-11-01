@@ -1,4 +1,5 @@
 import { ErrorCode } from "./ErrorCode.js";
+import { ZodError } from "zod";
 
 /** A single field-level problem, used by {@link ValidationError}. */
 export interface IssueDetail {
@@ -63,7 +64,21 @@ export class BadRequestError extends AppError {
 export class ValidationError extends AppError {
   readonly issues: readonly IssueDetail[];
 
-  constructor(options: SubclassOptions & { issues?: readonly IssueDetail[] }) {
+  constructor(options: (SubclassOptions & { issues?: readonly IssueDetail[] }) | ZodError) {
+    if (options instanceof ZodError) {
+      const issues = options.issues.map((issue) => ({
+        path: issue.path.map(String).join("."),
+        message: issue.message,
+        code: issue.code,
+      }));
+      const message = issues.length > 0
+        ? issues.map((issue) => `${issue.path || "input"}: ${issue.message}`).join("; ")
+        : "Invalid input.";
+      super({ code: ErrorCode.VALIDATION_FAILED, message, statusCode: 422, cause: options });
+      this.issues = issues;
+      return;
+    }
+
     const { issues, ...rest } = options;
     super({ code: ErrorCode.VALIDATION_FAILED, ...rest, statusCode: 422 });
     this.issues = issues ?? [];
