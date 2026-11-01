@@ -70,11 +70,16 @@ A request flows: `request-id → helmet → CORS → compression → rate limit 
 class ReportsModule extends FeatureModule {
   readonly type = "reports";
   protected handlers() {
-    return { summary: async (req, res, ctx) => this.services.responses.success(res, { message: "ok", data: {} }) };
+    return { summary: async (req, res, ctx) => {
+      const report = await ctx.repositoryOf("Report").findOne({ owner: req.user?._id });
+      return this.services.responses.success(res, { message: "ok", data: report });
+    } };
   }
 }
 forge.use(new ReportsModule(forge.services));      // then: collection({ type: "reports", route: "reports", routes: [...] })
 ```
+
+Custom handlers receive the same `RouteContext` used by built-in routes. It exposes `ctx.services`, the current route's `ctx.repository`, and `ctx.repositoryOf(modelName)` / `ctx.nativeModelOf(modelName)` for other registered models. The package root also exports reusable middleware (`requestContext`, `inputSanitizer`, `originGuard`), `Authenticator`, `RateLimiters`, `ResponseWriter`, and the shared pagination, sanitising, and action helpers, so extensions do not need imports from internal source paths.
 
 ## Collections and routes
 

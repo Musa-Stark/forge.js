@@ -25,6 +25,16 @@ export class RouteContext {
     return `${this.route.method.toUpperCase()} ${this.services.config.apiPrefix}/${this.collection.route}${this.route.path}`;
   }
 
+  /** Find any registered model's framework-neutral repository from a custom handler. */
+  repositoryOf(modelName: string): Repository {
+    return this.services.data.repository(modelName);
+  }
+
+  /** Find the native database model when the configured data source exposes one (for example Mongoose). */
+  nativeModelOf(modelName: string): unknown {
+    return this.services.data.nativeModel?.(modelName);
+  }
+
   /** Validated, stripped request body. With no validation configured the route accepts no body fields. */
   parseBody(body: unknown): Record<string, unknown> {
     if (!this.validator) return {};
