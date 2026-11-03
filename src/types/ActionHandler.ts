@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import type { Request, Response } from "express";
 import type { Model } from "mongoose";
 import type { Repository } from "../data/Repository.js";
 import type { EmailActionTemplate } from "./EmailActionTemplate.js";
@@ -21,6 +21,9 @@ export type ActionOperation =
 export interface ActionContext {
   /** Express request. */
   req: Request;
+
+  /** Express response. Use in an `after` action for cookies or headers. */
+  res: Response;
 
   /** Authenticated user, if any. */
   user?: Request["user"];

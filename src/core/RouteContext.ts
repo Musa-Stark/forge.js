@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import type { Request, Response } from "express";
 import { ZodError, type ZodIssue, type ZodObject, type ZodType } from "zod";
 import type { Repository } from "../data/Repository.js";
 import type { ActionContext, ActionOperation } from "../types/ActionHandler.js";
@@ -54,6 +54,7 @@ export class RouteContext {
   actionContext(req: Request, operation: ActionOperation, data: ActionContext["data"] = {}): ActionContext {
     return {
       req,
+      res: req.res as Response,
       ...(req.user ? { user: req.user } : {}),
       route: this.collection.route,
       operation,
