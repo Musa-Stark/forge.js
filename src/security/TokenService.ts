@@ -1,9 +1,12 @@
 import { createHash, randomBytes, randomInt, timingSafeEqual, createHmac } from "node:crypto";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { BadRequestError, ErrorCode, UnauthorizedError } from "../errors/index.js";
+import { BadRequestError, ConfigurationError, ErrorCode, UnauthorizedError } from "../errors/index.js";
 import type { Duration } from "../config/Duration.js";
 
 export type TokenType = "access" | "refresh";
+
+/** Claims accepted by {@link TokenService.signCustom}. Forge adds the `typ: "custom"` discriminator. */
+export type CustomTokenClaims = Record<string, unknown>;
 
 export interface MfaChallengeClaims {
   typ: "mfa";
@@ -68,6 +71,18 @@ export class TokenService {
 
   signRefresh(claims: Omit<RefreshClaims, "typ">, expiresIn: Duration): string {
     return this.sign({ ...claims, typ: "refresh" } satisfies RefreshClaims, expiresIn);
+  }
+
+  /** Signs an application-defined JWT with Forge's configured secret, issuer and pinned algorithm. */
+  signCustom(claims: CustomTokenClaims, expiresIn: Duration): string {
+    const reserved = ["iss", "aud", "exp", "nbf", "iat", "typ"];
+    const supplied = reserved.filter((key) => key in claims);
+    if (supplied.length > 0) {
+      throw new ConfigurationError({
+        message: `Custom token claims cannot set Forge-managed JWT fields: ${supplied.join(", ")}.`,
+      });
+    }
+    return this.sign({ ...claims, typ: "custom" }, expiresIn);
   }
 
   verifyAccess(token: string | undefined): AccessClaims {

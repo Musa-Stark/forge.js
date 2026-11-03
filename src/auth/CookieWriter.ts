@@ -1,4 +1,4 @@
-import type { Response } from "express";
+import type { CookieOptions, Response } from "express";
 import type { ForgeConfig } from "../config/ForgeConfig.js";
 import type { SessionTokens } from "./SessionService.js";
 
@@ -28,6 +28,11 @@ export class CookieWriter {
     if (tokens.refreshToken) {
       res.cookie(auth.refreshTokenName, tokens.refreshToken, { ...this.base(), maxAge: auth.refreshTokenAge.toMs() });
     }
+  }
+
+  /** Sets an application-defined token cookie using Forge's configured security defaults. */
+  setCustom(res: Response, name: string, value: string, options: CookieOptions = {}): void {
+    res.cookie(name, value, { ...this.base(), ...options });
   }
 
   /**

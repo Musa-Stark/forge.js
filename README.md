@@ -110,6 +110,25 @@ actions: {
 `after` actions run once the data is saved, so a failure is logged and does not turn a successful write into an error response.
 In an `after` action, `ctx.item` is the returned item (or items), while `ctx.result` is the mutable response body, including `success`, `message`, `data`, and any pagination metadata. You can edit `ctx.result.message` or `ctx.result.meta`; returning a value still replaces `ctx.result.data`.
 
+Actions also receive the Express response as `ctx.res`, so an app can create and send its own signed token outside Forge's built-in session flow:
+
+```ts
+after: [{
+  customAction: ({ res, item }) => {
+    const tokenAge = Duration.parse("1h");
+    const token = forge.services.tokens.signCustom(
+      { sub: (item as { _id: string })._id, accountId, permissions },
+      tokenAge,
+    );
+    forge.services.cookies.setCustom(res, "workspace-token", token, {
+      maxAge: tokenAge.toMs(),
+    });
+  },
+}]
+```
+
+`signCustom()` uses Forge's configured JWT secret, issuer, and pinned algorithm, and adds `typ: "custom"`. Forge manages the standard JWT claims and `typ`; pass application claims and the lifetime. `setCustom()` applies Forge's configured secure, HttpOnly, same-site, path, and domain cookie defaults; supplied cookie options override those defaults.
+
 ### Pagination
 
 `GET /notes?page=2&limit=20&sort=-createdAt,title` → `{ data: [...], meta: { page, limit, total, pages } }`. Page size is capped by `maxPageSize` (100); `sort` accepts only schema fields.
