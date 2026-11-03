@@ -106,6 +106,11 @@ export class Forge {
     return this.allCollections;
   }
 
+  /** Resolve a model registered by one of this Forge instance's collections. */
+  findModel(modelName: string) {
+    return this.services.findModel(modelName);
+  }
+
   /** Assembles the middleware stack and mounts every collection. Safe to call more than once. */
   build(): Express {
     if (this.built) return this.app;

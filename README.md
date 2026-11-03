@@ -76,7 +76,7 @@ class ReportsModule extends FeatureModule {
 forge.use(new ReportsModule(forge.services));      // then: collection({ type: "reports", route: "reports", routes: [...] })
 ```
 
-Custom handlers can use `services.findModel("Report")` to resolve a registered model by name to its framework-neutral repository.
+Custom handlers can use `services.findModel("Report")` to resolve a registered model by name to its framework-neutral repository. After `build()` (or `start()`), application code can use `forge.findModel("Report")` the same way.
 
 ## Collections and routes
 

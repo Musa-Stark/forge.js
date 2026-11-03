@@ -131,7 +131,34 @@ export abstract class FeatureModule {
     chain.push(this.services.authenticator.require(route.auth ?? "authenticated", route.roles));
     if (route.files?.length && MULTIPART_HANDLERS.has(route.handler)) chain.push(this.services.uploads.parser(route.files));
     chain.push((req: Request, res: Response, next: NextFunction) => {
-      handler(req, res, ctx).catch(next);
+      const run = async () => {
+        // CRUD handlers run hooks around their database operations and provide
+        // richer operation-specific context, so the shared wrapper serves the
+        // other feature types.
+        if (ctx.collection.type === "crud") {
+          await handler(req, res, ctx);
+          return;
+        }
+        const operation = route.handler as import("../types/ActionHandler.js").ActionOperation;
+        const actionContext = ctx.actionContext(req, operation);
+        const before = await this.services.actions.runBefore(route.actions?.before, actionContext);
+        if (before && typeof before === "object" && !Array.isArray(before)) {
+          req.body = { ...(req.body ?? {}), ...before };
+        }
+
+        const originalJson = res.json.bind(res);
+        res.json = ((body: unknown) => {
+          const responseBody = body && typeof body === "object" ? body as Record<string, unknown> : {};
+          const afterContext = { ...actionContext, item: responseBody.data, result: responseBody };
+          void this.services.actions.runAfter(route.actions?.after, afterContext).then((replacement) => {
+            if (replacement !== undefined) responseBody.data = replacement;
+            originalJson(responseBody);
+          });
+          return res;
+        }) as Response["json"];
+        await handler(req, res, ctx);
+      };
+      run().catch(next);
     });
     return chain;
   }
