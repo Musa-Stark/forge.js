@@ -81,6 +81,9 @@ export class Forge {
       ...new BuiltinCollections(this.config, this.services.compiler).build(),
       ...this.config.collections,
     ];
+    // Register schemas during construction so findModel() is usable by app
+    // setup code before start() opens the database connection.
+    for (const collection of this.allCollections) this.modules.get(collection.type)?.prepare(collection);
     Forge.lastCreated = this;
   }
 
@@ -94,6 +97,9 @@ export class Forge {
         message: "Call use() before build() / start().",
       });
     this.modules.set(module.type, module);
+    for (const collection of this.allCollections) {
+      if (collection.type === module.type) module.prepare(collection);
+    }
     return this;
   }
 
@@ -191,7 +197,7 @@ export class Forge {
     const { config, services } = this;
     const seen = new Set<string>();
 
-    // Prepare every collection first (registers models), then mount routes.
+    // Models were prepared in the constructor; routes can now be mounted.
     for (const collection of this.allCollections) {
       if (!ROUTE_SEGMENT.test(collection.route)) {
         throw new ConfigurationError({
@@ -199,7 +205,6 @@ export class Forge {
           code: ErrorCode.CONFIGURATION_ERROR,
         });
       }
-      this.moduleFor(collection).prepare(collection);
     }
 
     for (const collection of this.allCollections) {
