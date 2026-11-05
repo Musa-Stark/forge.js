@@ -17,6 +17,7 @@ import { HealthModule } from "../health/HealthModule.js";
 import { ErrorHandler } from "../http/middleware/ErrorHandler.js";
 import { inputSanitizer } from "../http/middleware/InputSanitizer.js";
 import { originGuard } from "../http/middleware/OriginGuard.js";
+import type { CustomAuthOptions } from "../http/Authenticator.js";
 import { requestContext } from "../http/middleware/RequestContext.js";
 import { BannerPrinter } from "../terminal/BannerPrinter.js";
 import type { Collection } from "../types/Collection.js";
@@ -100,6 +101,11 @@ export class Forge {
   /** Verify the access token and set `req.user` before a custom route handler. */
   auth(level: AccessLevel = "authenticated", roles?: readonly string[]): RequestHandler {
     return this.services.authenticator.require(level, roles);
+  }
+
+  /** Verify an application-defined signed token and populate `req.user` for a custom route. */
+  customAuth(options: CustomAuthOptions = {}): RequestHandler {
+    return this.services.authenticator.requireCustom(options);
   }
 
   get collections(): readonly Collection[] {

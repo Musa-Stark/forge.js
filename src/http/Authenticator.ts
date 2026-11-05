@@ -5,6 +5,17 @@ import type { DataSource } from "../data/Repository.js";
 import type { TokenService } from "../security/TokenService.js";
 import type { AuthenticatedUser } from "../types/AuthenticatedUser.js";
 import type { AccessLevel } from "../types/Route.js";
+import type { VerifiedCustomTokenClaims } from "../security/TokenService.js";
+
+/** Custom token source and request property configuration for custom-token middleware. */
+export interface CustomAuthOptions {
+  /** Read the token from any request location. Defaults to Bearer auth, then the `customToken` cookie. */
+  extractToken?: (req: Request) => string | undefined;
+  /** Request property that receives the verified claims. @default "customToken" */
+  name?: string;
+  /** Cookie name used by the default token extractor. @default "customToken" */
+  cookieName?: string;
+}
 
 /**
  * Resolves who is calling and enforces a route's access level.
@@ -56,6 +67,33 @@ export class Authenticator {
         next(error);
       }
     };
+  }
+
+  /** Middleware for application-defined signed tokens, with a customizable source and claim mapping. */
+  requireCustom(options: CustomAuthOptions = {}): RequestHandler {
+    return async (req, _res, next) => {
+      try {
+        const claims = this.tokens.verifyCustom((options.extractToken ?? ((request) => this.extractCustomToken(request, options.cookieName)))(req));
+        const name = options.name ?? "customToken";
+        if (!/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) {
+          throw new TypeError("Custom auth request property name must be a valid JavaScript identifier.");
+        }
+        (req as Request & Record<string, unknown>)[name] = claims;
+        next();
+      } catch (error) {
+        next(error);
+      }
+    };
+  }
+
+  private extractCustomToken(req: Request, cookieName = "customToken"): string | undefined {
+    const header = req.get("authorization");
+    if (header) {
+      const [scheme, value] = header.split(" ");
+      if (scheme?.toLowerCase() === "bearer" && value) return value;
+    }
+    const cookie = (req.cookies as Record<string, unknown> | undefined)?.[cookieName];
+    return typeof cookie === "string" ? cookie : undefined;
   }
 
   async authenticate(req: Request): Promise<AuthenticatedUser> {

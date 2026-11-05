@@ -69,7 +69,8 @@ export {
 } from "./security/CryptoVault.js";
 export { Totp, base32 } from "./security/Totp.js";
 export { PasswordHasher } from "./security/PasswordHasher.js";
-export type { CustomTokenClaims } from "./security/TokenService.js";
+export type { CustomTokenClaims, VerifiedCustomTokenClaims } from "./security/TokenService.js";
+export type { CustomAuthOptions } from "./http/Authenticator.js";
 
 // ── Field helpers ────────────────────────────────────────────────────────────
 export { default as fields } from "./fields/unified.fields.js";

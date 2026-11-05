@@ -129,6 +129,23 @@ after: [{
 
 `signCustom()` uses Forge's configured JWT secret, issuer, and pinned algorithm, and adds `typ: "custom"`. Forge manages the standard JWT claims and `typ`; pass application claims and the lifetime. `setCustom()` applies Forge's configured secure, HttpOnly, same-site, path, and domain cookie defaults; supplied cookie options override those defaults.
 
+Protect custom endpoints with the matching verifier middleware:
+
+```ts
+app.get("/workspace", forge.customAuth(), (req, res) => {
+  // Verified application claims are available on req.customToken.
+  res.json({ accountId: req.customToken?.accountId });
+});
+
+app.get("/integration", forge.customAuth({
+  name: "workspaceClaims",
+  cookieName: "workspace-token",
+  extractToken: (req) => req.get("x-workspace-token") ?? req.cookies?.["workspace-token"],
+}), handler);
+```
+
+`customAuth()` accepts only tokens signed by `signCustom()`. It attaches the verified claims to `req.customToken` by default; pass `name` to use another request property. Its default token source is a Bearer token followed by the `customToken` cookie. `extractToken` can read from any request source. This middleware does not set `req.user`; use it when controllers need the custom token claims directly.
+
 ### Pagination
 
 `GET /notes?page=2&limit=20&sort=-createdAt,title` → `{ data: [...], meta: { page, limit, total, pages } }`. Page size is capped by `maxPageSize` (100); `sort` accepts only schema fields.

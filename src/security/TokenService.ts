@@ -8,6 +8,9 @@ export type TokenType = "access" | "refresh";
 /** Claims accepted by {@link TokenService.signCustom}. Forge adds the `typ: "custom"` discriminator. */
 export type CustomTokenClaims = Record<string, unknown>;
 
+/** Verified application token claims, including Forge's standard JWT fields. */
+export type VerifiedCustomTokenClaims = CustomTokenClaims & { typ: "custom"; iat?: number; exp?: number; iss?: string };
+
 export interface MfaChallengeClaims {
   typ: "mfa";
   sub: string;
@@ -87,6 +90,26 @@ export class TokenService {
 
   verifyAccess(token: string | undefined): AccessClaims {
     return this.verify<AccessClaims>(token, "access");
+  }
+
+  /** Verifies a token created with {@link signCustom}; access and refresh tokens are rejected. */
+  verifyCustom(token: string | undefined): VerifiedCustomTokenClaims {
+    if (!token || typeof token !== "string") {
+      throw new UnauthorizedError({ message: "A custom token is required.", code: ErrorCode.ACCESS_TOKEN_MISSING });
+    }
+    try {
+      const payload = jwt.verify(token, this.requireSecret(), { algorithms: [ALGORITHM], issuer: ISSUER }) as JwtPayload;
+      if (payload.typ !== "custom") throw new Error("Wrong token type");
+      return payload as VerifiedCustomTokenClaims;
+    } catch (error) {
+      if (error instanceof UnauthorizedError) throw error;
+      const name = (error as { name?: string }).name;
+      throw new UnauthorizedError({
+        message: name === "TokenExpiredError" ? "The custom token has expired." : "The custom token is invalid.",
+        code: name === "TokenExpiredError" ? ErrorCode.ACCESS_TOKEN_EXPIRED : ErrorCode.ACCESS_TOKEN_INVALID,
+        cause: error,
+      });
+    }
   }
 
   verifyRefresh(token: string | undefined): RefreshClaims {
