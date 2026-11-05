@@ -46,8 +46,8 @@ export interface RouteDbConfig {
 
   /**
    * Fields removed from the JSON response. Include `"_id"` to drop the id.
-   * Prefix with `!` to opt back in to a field hidden by default
-   * (credentials, tokens and other secrets can never be un-hidden).
+   * Prefix with `!` to opt back in to a field hidden by default. Forge's
+   * built-in credential fields (such as `password` and token hashes) stay hidden.
    */
   hiddenFields?: string[];
 

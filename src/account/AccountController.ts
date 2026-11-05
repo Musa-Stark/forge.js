@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { ErrorCode, NotFoundError, UnauthorizedError } from "../errors/index.js";
 import type { RouteContext } from "../core/RouteContext.js";
 import type { Services } from "../core/Services.js";
+import { parseFieldSpec } from "../core/FieldTransformer.js";
 import { MAGIC_LINK_MODEL, MFA_FACTOR_MODEL, OAUTH_IDENTITY_MODEL } from "../data/internalModels.js";
 import type { Doc } from "../data/Repository.js";
 
@@ -107,7 +108,12 @@ export class AccountController {
   }
 
   private async present(ctx: RouteContext, doc: Doc): Promise<Record<string, unknown>> {
-    const plain = await this.services.transformer.decrypt(doc, ctx.route.decryptedFields);
+    const configured = ctx.route.config?.hiddenFields ?? [];
+    const optedIn = new Set(configured.filter((field) => field.startsWith("!")).map((field) => field.slice(1)));
+    const hidden = new Set(configured.filter((field) => !field.startsWith("!")));
+    for (const field of optedIn) hidden.delete(field);
+    const decryptable = (ctx.route.decryptedFields ?? []).filter((spec) => !hidden.has(parseFieldSpec(spec).name));
+    const plain = await this.services.transformer.decrypt(doc, decryptable);
     return { ...this.services.sanitizer.one(doc, { hiddenFields: ctx.route.config?.hiddenFields }), ...plain };
   }
 }

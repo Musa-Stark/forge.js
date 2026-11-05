@@ -91,7 +91,7 @@ Custom handlers can use `services.findModel("Report")` to resolve a registered m
 `auth` levels (who may call it): `public` · `authenticated` · `admin` · `admin-or-owner` (admins, or the owner of the document).
 `roles` (which kind of user may call it): `roles: ["editor", "admin"]`. See [Roles](#roles).
 
-Route options: `roles`, `validation` (name of a group in `validations`, or `false`), `config` (`populate`, `populateSelect`, `hiddenFields`, `targetField`, `maxBulkSize`), `files`, `encryptedFields`, `decryptedFields`, `hashedFields` (suffix `?` = optional), `actions` (`before` / `after`), `ownership`, `mode`.
+Route options: `roles`, `validation` (name of a group in `validations`, or `false`), `config` (`populate`, `populateSelect`, `hiddenFields`, `targetField`, `maxBulkSize`), `files`, `encryptedFields`, `decryptedFields`, `hashedFields` (suffix `?` = optional), `actions` (`before` / `after`), `ownership`, `mode`. Hashed fields are hidden on every route in their collection by default; a response route can include `config.hiddenFields: ["!pin"]` to explicitly return the stored hash. Encrypted fields remain hidden unless that route declares the field in `decryptedFields`; `"!secret"` opts it out of `hiddenFields` so its decrypted value can be returned.
 
 Everything is validated **at startup**: unknown handlers, unknown validation names, bad action shapes, `removeAll` on a non-admin route and more are reported together in one `ConfigurationError`.
 

@@ -23,7 +23,7 @@ export class ResponseSanitizer {
     this.secrets = new Set<string>([...ALWAYS_SECRET, ...extraSecrets]);
   }
 
-  /** Register fields that must never be returned (e.g. `select: false` fields, hashed fields). */
+  /** Register fields that must never be returned (e.g. credential fields). */
   addSecrets(fields: readonly string[]): void {
     for (const field of fields) this.secrets.add(field);
   }
@@ -35,9 +35,10 @@ export class ResponseSanitizer {
       if (entry.startsWith("!")) optedIn.add(entry.slice(1));
       else hidden.add(entry);
     }
+    for (const field of optedIn) hidden.delete(field);
     for (const field of HIDDEN_BY_DEFAULT) if (!optedIn.has(field)) hidden.add(field);
 
-    const result = this.strip(doc, 0) as Record<string, unknown>;
+    const result = this.strip(doc, 0, optedIn) as Record<string, unknown>;
     for (const key of Object.keys(result)) {
       if (hidden.has(key) || (isSealedValue(result[key]) && !options.decrypted?.includes(key))) {
         delete result[key];
@@ -50,18 +51,19 @@ export class ResponseSanitizer {
     return docs.map((doc) => this.one(doc, options));
   }
 
-  private strip(value: unknown, depth: number): unknown {
+  private strip(value: unknown, depth: number, optedIn: ReadonlySet<string> = new Set()): unknown {
     if (depth > 8) return value;
     // Encrypted values inside nested objects (for example a populated document) are never decrypted, so they are dropped.
     // The fields of the document itself (depth 0) are handled by `one`, which knows which ones were decrypted.
-    if (Array.isArray(value)) return value.filter((v) => !isSealedValue(v)).map((v) => this.strip(v, depth + 1));
+    if (Array.isArray(value)) return value.filter((v) => !isSealedValue(v)).map((v) => this.strip(v, depth + 1, optedIn));
     if (value && typeof value === "object" && !(value instanceof Date) && !Buffer.isBuffer(value)) {
       const out: Record<string, unknown> = {};
       for (const [key, v] of Object.entries(value as Record<string, unknown>)) {
-        if (this.secrets.has(key)) continue;
-        if (typeof v === "string" && v.startsWith(HASH_PREFIX)) continue;
+        if (ALWAYS_SECRET.includes(key as (typeof ALWAYS_SECRET)[number])) continue;
+        if (this.secrets.has(key) && !(depth === 0 && optedIn.has(key))) continue;
+        if (typeof v === "string" && v.startsWith(HASH_PREFIX) && !(depth === 0 && optedIn.has(key))) continue;
         if (depth > 0 && isSealedValue(v)) continue;
-        out[key] = this.strip(v, depth + 1);
+        out[key] = this.strip(v, depth + 1, optedIn);
       }
       return out;
     }

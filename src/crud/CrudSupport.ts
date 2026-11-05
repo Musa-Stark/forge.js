@@ -59,9 +59,13 @@ export class CrudSupport {
 
   /** Decrypts requested fields and removes everything private. */
   async present(ctx: RouteContext, doc: Doc): Promise<Record<string, unknown>> {
-    const hiddenFields = [...(ctx.route.config?.hiddenFields ?? []), ...this.hashedFields(ctx)];
-    // A hidden field is never returned, so it is not decrypted either, even when the route lists it in `decryptedFields`.
-    const decryptable = (ctx.route.decryptedFields ?? []).filter((spec) => !hiddenFields.includes(parseFieldSpec(spec).name));
+    const configured = ctx.route.config?.hiddenFields ?? [];
+    const optedIn = new Set(configured.filter((field) => field.startsWith("!")).map((field) => field.slice(1)));
+    const hiddenFields = [...configured, ...this.hashedFields(ctx).filter((field) => !optedIn.has(field))];
+    // A field explicitly opted out of hiding may be decrypted when the route declares it in decryptedFields.
+    const hidden = new Set(hiddenFields.filter((field) => !field.startsWith("!")));
+    for (const field of optedIn) hidden.delete(field);
+    const decryptable = (ctx.route.decryptedFields ?? []).filter((spec) => !hidden.has(parseFieldSpec(spec).name));
     const plain = await this.services.transformer.decrypt(doc, decryptable);
     const clean = this.services.sanitizer.one(doc, { hiddenFields });
     return { ...clean, ...plain };
@@ -82,7 +86,7 @@ export class CrudSupport {
     const blocked = new Set([
       ...(schema ? this.services.compiler.secretFieldsOf(schema) : []),
       ...ctx.collection.routes.flatMap((r) => [...bare(r.encryptedFields), ...bare(r.hashedFields)]),
-      ...bare(ctx.route.config?.hiddenFields),
+      ...bare(ctx.route.config?.hiddenFields?.filter((field) => !field.startsWith("!"))),
     ]);
     return Object.keys(schema ?? {}).filter((f) => !blocked.has(f));
   }
