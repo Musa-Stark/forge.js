@@ -56,12 +56,6 @@ export class Forge {
     options: ForgeOptions = {},
     dependencies: ForgeDependencies = {},
   ) {
-    // Install parsers as soon as Forge creates the app so routes registered
-    // directly on `forge.app` before build() can read req.body and req.cookies.
-    this.app.use(cookieParser());
-    this.app.use(express.json({ limit: options.bodyLimit ?? "100kb" }));
-    this.app.use(express.urlencoded({ extended: false, limit: options.bodyLimit ?? "100kb" }));
-
     this.config = new ForgeConfig(options);
     this.services = new ServiceFactory().create(this.config, dependencies);
 
@@ -82,6 +76,11 @@ export class Forge {
       ...new BuiltinCollections(this.config, this.services.compiler).build(),
       ...this.config.collections,
     ];
+
+    // Core middleware must be installed during construction so routes registered
+    // on `forge.app` before build()/start() still sit behind CORS, helmet, etc.
+    this.installCoreMiddleware();
+
     Forge.lastCreated = this;
   }
 
@@ -112,30 +111,11 @@ export class Forge {
     return this.allCollections;
   }
 
-  /** Assembles the middleware stack and mounts every collection. Safe to call more than once. */
+  /** Mounts every collection and the terminal error handlers. Safe to call more than once. */
   build(): Express {
     if (this.built) return this.app;
     const { app, config, services } = this;
-
-    app.disable("x-powered-by");
-    app.set("trust proxy", config.trustProxy);
-
     const errors = new ErrorHandler(config, services.logger);
-
-    app.use(requestContext());
-    app.use(helmet());
-    app.use(cors(this.corsOptions()));
-    if (config.logRequests) {
-      app.use(
-        morgan("tiny", {
-          stream: { write: (line) => services.logger.info(line.trim()) },
-        }),
-      );
-    }
-    app.use(compression());
-    app.use(services.limiters.global());
-    app.use(inputSanitizer());
-    app.use(originGuard(this.allowedOrigins()));
 
     this.mountCollections();
 
@@ -186,6 +166,37 @@ export class Forge {
       });
     }
     await this.services.data.disconnect();
+  }
+
+  /**
+   * Shared request pipeline (parsers + security + limits). Installed once in
+   * the constructor so anything mounted on `forge.app` afterwards inherits it.
+   * Collection routes and 404/error handlers stay in `build()` so `use()` can
+   * still swap modules, and so late handlers remain last.
+   */
+  private installCoreMiddleware(): void {
+    const { app, config, services } = this;
+
+    app.disable("x-powered-by");
+    app.set("trust proxy", config.trustProxy);
+
+    app.use(cookieParser());
+    app.use(express.json({ limit: config.bodyLimit }));
+    app.use(express.urlencoded({ extended: false, limit: config.bodyLimit }));
+    app.use(requestContext());
+    app.use(helmet());
+    app.use(cors(this.corsOptions()));
+    if (config.logRequests) {
+      app.use(
+        morgan("tiny", {
+          stream: { write: (line) => services.logger.info(line.trim()) },
+        }),
+      );
+    }
+    app.use(compression());
+    app.use(services.limiters.global());
+    app.use(inputSanitizer());
+    app.use(originGuard(this.allowedOrigins()));
   }
 
   private mountCollections(): void {

@@ -60,6 +60,32 @@ describe("lifecycle", () => {
     }
   });
 
+  it("applies CORS and helmet to forge.app routes registered before start()", async () => {
+    const forge = new Forge(
+      { ENV: "test", port: 0, frontendURL: "https://app.example.com" },
+      { dataSource: new InMemoryDataSource() },
+    );
+    extra.push(forge);
+    forge.app.get("/custom-cors", (_req, res) => res.json({ ok: true }));
+
+    const server = await forge.start();
+    const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+
+    const custom = await fetch(`${base}/custom-cors`, {
+      headers: { origin: "https://app.example.com" },
+    });
+    expect(custom.status).toBe(200);
+    expect(custom.headers.get("access-control-allow-origin")).toBe("https://app.example.com");
+    expect(custom.headers.get("access-control-allow-credentials")).toBe("true");
+    expect(custom.headers.get("x-content-type-options")).toBe("nosniff");
+
+    const builtin = await fetch(`${base}${forge.config.apiPrefix}/health`, {
+      headers: { origin: "https://app.example.com" },
+    });
+    expect(builtin.status).toBe(200);
+    expect(builtin.headers.get("access-control-allow-origin")).toBe("https://app.example.com");
+  });
+
   it("rejects start() when the port is taken", async () => {
     t = await createTestForge();
     const port = Number(new URL(t.url).port);
